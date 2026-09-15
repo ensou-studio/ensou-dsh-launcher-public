@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ensou.example/schemas/windows-pilot-observation-plan-v1.schema.json",
+  "title": "Ensou DSH Windows Pilot Observation Plan v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "planType",
+    "edition",
+    "testRunId",
+    "minimumObservationSeconds",
+    "expectedObserverSha256",
+    "recording",
+    "candidate",
+    "requiredActions",
+    "allowedVisibleImageNames"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "planType": { "const": "ensou-dsh-windows-pilot-observation-plan" },
+    "edition": { "enum": ["personal", "enterprise"] },
+    "testRunId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "minimumObservationSeconds": {
+      "type": "integer",
+      "minimum": 900,
+      "maximum": 7200
+    },
+    "expectedObserverSha256": { "$ref": "#/$defs/sha256" },
+    "recording": { "$ref": "#/$defs/recording" },
+    "candidate": { "$ref": "#/$defs/candidate" },
+    "requiredActions": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "prefixItems": [
+        { "const": "launcher-first-start" },
+        { "const": "tray-hide-show" },
+        { "const": "dsh-start" },
+        { "const": "webui-open" },
+        { "const": "subprocess-path" },
+        { "const": "workspace-terminal-path" },
+        { "const": "controlled-failure-recovery" },
+        { "const": "update-rollback-recovery" },
+        { "const": "launcher-restart" }
+      ],
+      "items": false
+    },
+    "allowedVisibleImageNames": {
+      "type": "array",
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9._+-]{0,127}$"
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "absoluteWindowsPath": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 32767,
+      "pattern": "^(?:[A-Za-z]:\\\\|\\\\\\\\)[^\\u0000]+$"
+    },
+    "recording": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recorderExecutablePath",
+        "recorderExecutableSha256",
+        "outputPath",
+        "mediaType",
+        "audioCaptured"
+      ],
+      "properties": {
+        "recorderExecutablePath": { "$ref": "#/$defs/absoluteWindowsPath" },
+        "recorderExecutableSha256": { "$ref": "#/$defs/sha256" },
+        "outputPath": { "$ref": "#/$defs/absoluteWindowsPath" },
+        "mediaType": { "enum": ["video/mp4", "application/octet-stream"] },
+        "audioCaptured": { "const": false }
+      }
+    },
+    "candidateFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "path", "sha256", "requiredAtStart"],
+      "properties": {
+        "role": {
+          "enum": [
+            "manifest",
+            "installer",
+            "launcher",
+            "bootstrapper",
+            "maintenance",
+            "node",
+            "runtime-entrypoint"
+          ]
+        },
+        "path": { "$ref": "#/$defs/absoluteWindowsPath" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "requiredAtStart": { "type": "boolean" }
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "releaseSetId",
+        "generation",
+        "sequence",
+        "launcherRepositoryCommit",
+        "harnessSourceTag",
+        "harnessSourceCommit",
+        "files"
+      ],
+      "properties": {
+        "releaseSetId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:+/-]{1,160}$"
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "launcherRepositoryCommit": { "$ref": "#/$defs/commit" },
+        "harnessSourceTag": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:+/-]{1,160}$"
+        },
+        "harnessSourceCommit": { "$ref": "#/$defs/commit" },
+        "files": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "prefixItems": [
+            {
+              "allOf": [
+                { "$ref": "#/$defs/candidateFile" },
+                { "properties": { "role": { "const": "manifest" } } }
+              ]
+            },
+            {
+              "allOf": [
+                { "$ref": "#/$defs/candidateFile" },
+                { "properties": { "role": { "const": "installer" } } }
+              ]
+            },
+            {
+              "allOf": [
+                { "$ref": "#/$defs/candidateFile" },
+                { "properties": { "role": { "const": "launcher" } } }
+              ]
+            },
+            {
+              "allOf": [
+                { "$ref": "#/$defs/candidateFile" },
+                { "properties": { "role": { "const": "bootstrapper" } } }
+              ]
+            },
+            {
+              "allOf": [
+                { "$ref": "#/$defs/candidateFile" },
+                { "properties": { "role": { "const": "maintenance" } } }
+              ]
+            },
+            {
+              "allOf": [
+                { "$ref": "#/$defs/candidateFile" },
+                { "properties": { "role": { "const": "node" } } }
+              ]
+            },
+            {
+              "allOf": [
+                { "$ref": "#/$defs/candidateFile" },
+                { "properties": { "role": { "const": "runtime-entrypoint" } } }
+              ]
+            }
+          ],
+          "items": false
+        }
+      }
+    }
+  }
+}

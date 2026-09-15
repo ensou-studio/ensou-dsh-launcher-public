@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ensou.example/schemas/enterprise-plugin-policy-v1.schema.json",
+  "title": "Ensou DSH Enterprise canonical plugin policy v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "policyId",
+    "generation",
+    "skillsRoot",
+    "skillPacks",
+    "compatibility",
+    "revoked",
+    "critical"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "policyId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "generation": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "skillsRoot": { "$ref": "#/$defs/relativePath" },
+    "skillPacks": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": { "$ref": "#/$defs/skillPack" }
+    },
+    "compatibility": { "$ref": "#/$defs/compatibility" },
+    "revoked": { "type": "boolean" },
+    "critical": { "type": "boolean" }
+  },
+  "$defs": {
+    "token": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$"
+    },
+    "releaseId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$"
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^[A-Za-z0-9@+_.-]+(?:/[A-Za-z0-9@+_.-]+)*$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "sizeBytes"],
+      "properties": {
+        "path": { "$ref": "#/$defs/relativePath" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 67108864
+        }
+      }
+    },
+    "skillPack": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["skillId", "version", "root", "files"],
+      "properties": {
+        "skillId": { "$ref": "#/$defs/token" },
+        "version": { "$ref": "#/$defs/token" },
+        "root": { "$ref": "#/$defs/relativePath" },
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10000,
+          "items": { "$ref": "#/$defs/file" }
+        }
+      }
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["launcherReleaseIds", "runtimeReleaseIds"],
+      "properties": {
+        "launcherReleaseIds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/releaseId" }
+        },
+        "runtimeReleaseIds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/releaseId" }
+        }
+      }
+    }
+  }
+}

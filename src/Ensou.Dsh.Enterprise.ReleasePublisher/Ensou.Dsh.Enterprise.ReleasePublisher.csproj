@@ -1,0 +1,109 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RootNamespace>Ensou.Dsh.Enterprise.ReleasePublisher</RootNamespace>
+    <AssemblyName>Ensou.Dsh.Enterprise.ReleasePublisher</AssemblyName>
+    <Product>Ensou DSH Enterprise Release Publisher</Product>
+    <EnterpriseDirectLocalRuntimeAdmission Condition="'$(EnterpriseDirectLocalRuntimeAdmission)' == ''">false</EnterpriseDirectLocalRuntimeAdmission>
+    <DefineConstants Condition="'$(EnterpriseDirectLocalRuntimeAdmission)' == 'true'">$(DefineConstants);ENTERPRISE_DIRECT_LOCAL_RUNTIME_ADMISSION</DefineConstants>
+    <RuntimeIdentifier Condition="'$(EnterprisePluginCompatibilityRunnerProductionBuild)' == 'true'">win-x64</RuntimeIdentifier>
+    <SelfContained Condition="'$(EnterprisePluginCompatibilityRunnerProductionBuild)' == 'true'">true</SelfContained>
+    <PublishSingleFile Condition="'$(EnterprisePluginCompatibilityRunnerProductionBuild)' == 'true'">true</PublishSingleFile>
+    <EnterpriseRuntimeAdmissionKeyId Condition="'$(EnterpriseRuntimeAdmissionKeyId)' == ''"></EnterpriseRuntimeAdmissionKeyId>
+    <EnterpriseRuntimeAdmissionKeyX Condition="'$(EnterpriseRuntimeAdmissionKeyX)' == ''"></EnterpriseRuntimeAdmissionKeyX>
+    <EnterpriseRuntimeAdmissionKeyY Condition="'$(EnterpriseRuntimeAdmissionKeyY)' == ''"></EnterpriseRuntimeAdmissionKeyY>
+    <EnterprisePluginAdmissionKeyId Condition="'$(EnterprisePluginAdmissionKeyId)' == ''"></EnterprisePluginAdmissionKeyId>
+    <EnterprisePluginAdmissionKeyX Condition="'$(EnterprisePluginAdmissionKeyX)' == ''"></EnterprisePluginAdmissionKeyX>
+    <EnterprisePluginAdmissionKeyY Condition="'$(EnterprisePluginAdmissionKeyY)' == ''"></EnterprisePluginAdmissionKeyY>
+    <EnterprisePluginPromotionJournalKeyId Condition="'$(EnterprisePluginPromotionJournalKeyId)' == ''"></EnterprisePluginPromotionJournalKeyId>
+    <EnterprisePluginPromotionJournalKeyX Condition="'$(EnterprisePluginPromotionJournalKeyX)' == ''"></EnterprisePluginPromotionJournalKeyX>
+    <EnterprisePluginPromotionJournalKeyY Condition="'$(EnterprisePluginPromotionJournalKeyY)' == ''"></EnterprisePluginPromotionJournalKeyY>
+    <EnterprisePluginCompatibilityRunnerSha256 Condition="'$(EnterprisePluginCompatibilityRunnerSha256)' == ''"></EnterprisePluginCompatibilityRunnerSha256>
+    <EnterpriseBrandAuthorizationKeyId Condition="'$(EnterpriseBrandAuthorizationKeyId)' == ''"></EnterpriseBrandAuthorizationKeyId>
+    <EnterpriseBrandAuthorizationKeyX Condition="'$(EnterpriseBrandAuthorizationKeyX)' == ''"></EnterpriseBrandAuthorizationKeyX>
+    <EnterpriseBrandAuthorizationKeyY Condition="'$(EnterpriseBrandAuthorizationKeyY)' == ''"></EnterpriseBrandAuthorizationKeyY>
+    <EnterpriseLeaseKeyId Condition="'$(EnterpriseLeaseKeyId)' == ''"></EnterpriseLeaseKeyId>
+    <EnterpriseLeaseKeyX Condition="'$(EnterpriseLeaseKeyX)' == ''"></EnterpriseLeaseKeyX>
+    <EnterpriseLeaseKeyY Condition="'$(EnterpriseLeaseKeyY)' == ''"></EnterpriseLeaseKeyY>
+    <EnterpriseLocalDataCertificationKeyId Condition="'$(EnterpriseLocalDataCertificationKeyId)' == ''"></EnterpriseLocalDataCertificationKeyId>
+    <EnterpriseLocalDataCertificationKeyX Condition="'$(EnterpriseLocalDataCertificationKeyX)' == ''"></EnterpriseLocalDataCertificationKeyX>
+    <EnterpriseLocalDataCertificationKeyY Condition="'$(EnterpriseLocalDataCertificationKeyY)' == ''"></EnterpriseLocalDataCertificationKeyY>
+    <EnterprisePilotEvidenceKeyId Condition="'$(EnterprisePilotEvidenceKeyId)' == ''"></EnterprisePilotEvidenceKeyId>
+    <EnterprisePilotEvidenceKeyX Condition="'$(EnterprisePilotEvidenceKeyX)' == ''"></EnterprisePilotEvidenceKeyX>
+    <EnterprisePilotEvidenceKeyY Condition="'$(EnterprisePilotEvidenceKeyY)' == ''"></EnterprisePilotEvidenceKeyY>
+  </PropertyGroup>
+  <ItemGroup>
+    <AssemblyMetadata Include="EnterpriseRuntimeAdmissionKeyId" Value="$(EnterpriseRuntimeAdmissionKeyId)" />
+    <AssemblyMetadata Include="EnterpriseRuntimeAdmissionKeyX" Value="$(EnterpriseRuntimeAdmissionKeyX)" />
+    <AssemblyMetadata Include="EnterpriseRuntimeAdmissionKeyY" Value="$(EnterpriseRuntimeAdmissionKeyY)" />
+    <AssemblyMetadata Include="EnterprisePluginAdmissionKeyId" Value="$(EnterprisePluginAdmissionKeyId)" />
+    <AssemblyMetadata Include="EnterprisePluginAdmissionKeyX" Value="$(EnterprisePluginAdmissionKeyX)" />
+    <AssemblyMetadata Include="EnterprisePluginAdmissionKeyY" Value="$(EnterprisePluginAdmissionKeyY)" />
+    <AssemblyMetadata Include="EnterprisePluginPromotionJournalKeyId" Value="$(EnterprisePluginPromotionJournalKeyId)" />
+    <AssemblyMetadata Include="EnterprisePluginPromotionJournalKeyX" Value="$(EnterprisePluginPromotionJournalKeyX)" />
+    <AssemblyMetadata Include="EnterprisePluginPromotionJournalKeyY" Value="$(EnterprisePluginPromotionJournalKeyY)" />
+    <AssemblyMetadata Include="EnterprisePluginCompatibilityRunnerSha256" Value="$(EnterprisePluginCompatibilityRunnerSha256)" />
+    <AssemblyMetadata Include="EnterpriseBrandAuthorizationKeyId" Value="$(EnterpriseBrandAuthorizationKeyId)" />
+    <AssemblyMetadata Include="EnterpriseBrandAuthorizationKeyX" Value="$(EnterpriseBrandAuthorizationKeyX)" />
+    <AssemblyMetadata Include="EnterpriseBrandAuthorizationKeyY" Value="$(EnterpriseBrandAuthorizationKeyY)" />
+    <AssemblyMetadata Include="EnterpriseLeaseKeyId" Value="$(EnterpriseLeaseKeyId)" />
+    <AssemblyMetadata Include="EnterpriseLeaseKeyX" Value="$(EnterpriseLeaseKeyX)" />
+    <AssemblyMetadata Include="EnterpriseLeaseKeyY" Value="$(EnterpriseLeaseKeyY)" />
+    <AssemblyMetadata Include="EnterpriseLocalDataCertificationKeyId" Value="$(EnterpriseLocalDataCertificationKeyId)" />
+    <AssemblyMetadata Include="EnterpriseLocalDataCertificationKeyX" Value="$(EnterpriseLocalDataCertificationKeyX)" />
+    <AssemblyMetadata Include="EnterpriseLocalDataCertificationKeyY" Value="$(EnterpriseLocalDataCertificationKeyY)" />
+    <AssemblyMetadata Include="EnterprisePilotEvidenceKeyId" Value="$(EnterprisePilotEvidenceKeyId)" />
+    <AssemblyMetadata Include="EnterprisePilotEvidenceKeyX" Value="$(EnterprisePilotEvidenceKeyX)" />
+    <AssemblyMetadata Include="EnterprisePilotEvidenceKeyY" Value="$(EnterprisePilotEvidenceKeyY)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ensou.Dsh.Enterprise.Installation\Ensou.Dsh.Enterprise.Installation.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\versions\locked.json"
+      Condition="'$(EnterpriseDirectLocalRuntimeAdmission)' == 'false'"
+      LogicalName="Ensou.Dsh.Enterprise.ReleasePublisher.Contract.versions.locked.json" />
+    <EmbeddedResource Include="..\..\versions\direct-local.locked.json"
+      Condition="'$(EnterpriseDirectLocalRuntimeAdmission)' == 'true'"
+      LogicalName="Ensou.Dsh.Enterprise.ReleasePublisher.Contract.versions.locked.json" />
+    <EmbeddedResource Include="..\..\upstream-patches\**\manifest.json"
+      LogicalName="Ensou.Dsh.Enterprise.ReleasePublisher.Contract.manifest.%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Ensou.Dsh.Enterprise.ReleasePublisherTests" />
+    <InternalsVisibleTo Include="Ensou.Dsh.Enterprise.DirectLocalReleasePublisherTests" />
+    <InternalsVisibleTo Include="Ensou.Dsh.Enterprise.BrandAuthorizationTests" />
+    <InternalsVisibleTo Include="Ensou.Dsh.Enterprise.LocalDataCertificationTests" />
+    <InternalsVisibleTo Include="Ensou.Dsh.EnterprisePluginCompatibilityRunner" />
+    <InternalsVisibleTo Include="Ensou.Dsh.EnterprisePluginCompatibilityRunnerTests" />
+  </ItemGroup>
+  <Target Name="ValidateEnterpriseRuntimeAdmissionContractSelection" BeforeTargets="CoreCompile">
+    <Error Condition="'$(EnterpriseDirectLocalRuntimeAdmission)' != 'false' and '$(EnterpriseDirectLocalRuntimeAdmission)' != 'true'"
+      Text="EnterpriseDirectLocalRuntimeAdmission must be exactly 'false' or 'true'." />
+  </Target>
+  <Target Name="ValidateEnterpriseReleasePublisherPublish" BeforeTargets="PrepareForPublish">
+    <Error Condition="'$(RuntimeIdentifier)' != 'win-x64'"
+      Text="Production Enterprise ReleasePublisher must publish for win-x64." />
+    <Error Condition="'$(SelfContained)' != 'true' or '$(PublishSingleFile)' != 'true'"
+      Text="Production Enterprise ReleasePublisher must publish as one self-contained single-file executable so its Pilot SHA-256 identifies the Publisher itself." />
+    <Error Condition="'$(EnterpriseRuntimeAdmissionKeyId)' == '' or '$(EnterpriseRuntimeAdmissionKeyX)' == '' or '$(EnterpriseRuntimeAdmissionKeyY)' == ''"
+      Text="Production Enterprise ReleasePublisher publish requires the compiled runtime-admission public key." />
+    <Error Condition="'$(EnterprisePluginAdmissionKeyId)' == '' or '$(EnterprisePluginAdmissionKeyX)' == '' or '$(EnterprisePluginAdmissionKeyY)' == ''"
+      Text="Production Enterprise ReleasePublisher publish requires the independent compiled plugin-admission public key." />
+    <Error Condition="'$(EnterprisePluginPromotionJournalKeyId)' == '' or '$(EnterprisePluginPromotionJournalKeyX)' == '' or '$(EnterprisePluginPromotionJournalKeyY)' == ''"
+      Text="Production Enterprise ReleasePublisher publish requires the independent compiled plugin-promotion journal authorization public key." />
+    <Error Condition="'$(EnterprisePluginCompatibilityRunnerSha256)' == ''"
+      Text="Production Enterprise ReleasePublisher publish requires the pinned post-signing EnterprisePluginCompatibilityRunner SHA-256." />
+    <Error Condition="'$(EnterpriseBrandAuthorizationKeyId)' == '' or '$(EnterpriseBrandAuthorizationKeyX)' == '' or '$(EnterpriseBrandAuthorizationKeyY)' == ''"
+      Text="Production Enterprise ReleasePublisher publish requires the independent compiled brand-authorization public key." />
+    <Error Condition="'$(EnterpriseLeaseKeyId)' == '' or '$(EnterpriseLeaseKeyX)' == '' or '$(EnterpriseLeaseKeyY)' == ''"
+      Text="Production Enterprise ReleasePublisher publish requires the compiled Launcher lease-verification public key." />
+    <Error Condition="'$(EnterpriseLocalDataCertificationKeyId)' == '' or '$(EnterpriseLocalDataCertificationKeyX)' == '' or '$(EnterpriseLocalDataCertificationKeyY)' == ''"
+      Text="Production Enterprise ReleasePublisher publish requires the independent compiled local-data certification public key." />
+    <Error Condition="'$(EnterprisePilotEvidenceKeyId)' == '' or '$(EnterprisePilotEvidenceKeyX)' == '' or '$(EnterprisePilotEvidenceKeyY)' == ''"
+      Text="Production Enterprise ReleasePublisher publish requires the independent compiled Windows Pilot evidence attestation public key." />
+    <Error Condition="'$(EnterpriseAuthenticodeSignerSha256Thumbprint)' == ''"
+      Text="Production Enterprise ReleasePublisher publish requires the pinned Authenticode signer SHA-256 thumbprint." />
+  </Target>
+</Project>

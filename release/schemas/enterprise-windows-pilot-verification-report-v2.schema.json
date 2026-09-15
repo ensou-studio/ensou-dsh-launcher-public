@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.ensou.example/enterprise-windows-pilot-verification-report-v2.schema.json",
+  "title": "Ensou DSH Enterprise Windows Pilot verification receipt v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "reportType",
+    "decision",
+    "standaloneAdmissionEvidence",
+    "generatedAtUtc",
+    "evidenceEnvelopeSha256",
+    "evidenceBodySha256",
+    "pilotEvidenceKeyId",
+    "publisherExecutableSha256",
+    "readinessReplayReportSha256",
+    "testRunId",
+    "customerAudienceId",
+    "targetReleaseSetId",
+    "targetGeneration",
+    "targetSequence",
+    "livePilotManifestSha256",
+    "verifiedReleaseManifestSha256",
+    "checks",
+    "failureCode",
+    "failureMessage",
+    "authentication"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 2 },
+    "reportType": {
+      "const": "ensou-dsh-enterprise-windows-pilot-verification-receipt"
+    },
+    "decision": { "enum": ["VERIFIED", "REJECT"] },
+    "standaloneAdmissionEvidence": { "const": false },
+    "generatedAtUtc": { "type": "string", "format": "date-time" },
+    "evidenceEnvelopeSha256": { "$ref": "#/$defs/sha256" },
+    "evidenceBodySha256": { "$ref": "#/$defs/sha256" },
+    "pilotEvidenceKeyId": { "type": ["string", "null"] },
+    "publisherExecutableSha256": { "type": ["string", "null"] },
+    "readinessReplayReportSha256": { "type": ["string", "null"] },
+    "testRunId": { "type": ["string", "null"] },
+    "customerAudienceId": { "type": ["string", "null"] },
+    "targetReleaseSetId": { "type": ["string", "null"] },
+    "targetGeneration": { "type": ["integer", "null"] },
+    "targetSequence": { "type": ["integer", "null"] },
+    "livePilotManifestSha256": { "type": ["string", "null"] },
+    "verifiedReleaseManifestSha256": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 5,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/sha256" }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "status", "evidence"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "status": { "enum": ["PASS", "FAIL"] },
+          "evidence": { "type": "string", "minLength": 1, "maxLength": 512 }
+        }
+      }
+    },
+    "failureCode": { "type": ["string", "null"] },
+    "failureMessage": { "type": ["string", "null"] },
+    "authentication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "purpose",
+        "keyId",
+        "encoding",
+        "canonicalization",
+        "lowS",
+        "value"
+      ],
+      "properties": {
+        "algorithm": { "const": "ES256" },
+        "purpose": {
+          "const": "enterprise-windows-pilot-verifier-report"
+        },
+        "keyId": { "$ref": "#/$defs/keyId" },
+        "encoding": { "const": "IEEE-P1363" },
+        "canonicalization": { "const": "ENSOU-R8-CANONICAL-JSON-V1" },
+        "lowS": { "const": true },
+        "value": {
+          "type": "string",
+          "minLength": 86,
+          "maxLength": 86,
+          "pattern": "^[A-Za-z0-9_-]{86}$"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "decision": { "const": "VERIFIED" } } },
+      "then": {
+        "properties": {
+          "pilotEvidenceKeyId": { "$ref": "#/$defs/keyId" },
+          "publisherExecutableSha256": { "$ref": "#/$defs/sha256" },
+          "readinessReplayReportSha256": { "$ref": "#/$defs/sha256" },
+          "testRunId": { "$ref": "#/$defs/uuid" },
+          "customerAudienceId": { "$ref": "#/$defs/uuid" },
+          "targetReleaseSetId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"
+          },
+          "targetGeneration": { "type": "integer", "minimum": 1 },
+          "targetSequence": { "type": "integer", "minimum": 1 },
+          "livePilotManifestSha256": { "$ref": "#/$defs/sha256" },
+          "verifiedReleaseManifestSha256": { "minItems": 5, "maxItems": 5 },
+          "checks": {
+            "items": { "properties": { "status": { "const": "PASS" } } }
+          },
+          "failureCode": { "type": "null" },
+          "failureMessage": { "type": "null" }
+        }
+      },
+      "else": {
+        "properties": {
+          "failureCode": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]{1,128}$"
+          },
+          "failureMessage": { "type": "string", "minLength": 1, "maxLength": 512 },
+          "checks": {
+            "contains": {
+              "type": "object",
+              "required": ["status"],
+              "properties": { "status": { "const": "FAIL" } }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "keyId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+    }
+  }
+}

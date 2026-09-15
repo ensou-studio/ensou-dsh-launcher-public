@@ -1,0 +1,16 @@
+{
+  "schema": "ensou.dsh.upstream-patch-index.v2",
+  "entries": [
+    {
+      "id": "dsh-v0.1.2-rc.1-enterprise-direct-local-v1",
+      "patchVariant": "enterprise-direct-local-v1",
+      "directory": "dsh-v0.1.2-rc.1/enterprise-direct-local-v1",
+      "repository": "https://github.com/deepseek-ai/deepseek-harness.git",
+      "tag": "dsh-v0.1.2-rc.1",
+      "commit": "a66e4702047846cdaa10c66c9d3df3951f5ea70d",
+      "tree": "27ab636bb3d77e698f5637e518db44ae1f61e262",
+      "manifestSha256": "977ebb374bf9449e34daa7b0ef393a06b2c862d944200abb69a30434a2597cf0",
+      "patchSha256": "7f10ec9492b399cede422428013b0c77bc932699fa3a14fa7ced158454272b6f"
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.ensou.example/release/enterprise-stable-publication-context-v1.schema.json",
+  "title": "Ensou DSH Enterprise stable publication attestation context v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "contextType", "operationId", "orchestrationId", "releaseSetId", "planSha256", "sourceIdentitySha256", "sourceR9HeadSha256", "offlinePromotionRequestSha256", "offlineAuthorizationSha256", "bundleSetSha256", "expectedFeedIdentitySha256", "expectedChannelHead", "expectedJournalHead", "candidateManifestSha256", "channelManifestUri", "trust"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "contextType": { "const": "ensou-dsh-enterprise-stable-publication-context" },
+    "operationId": { "$ref": "#/definitions/operationId" },
+    "orchestrationId": { "$ref": "#/definitions/orchestrationId" },
+    "releaseSetId": { "$ref": "#/definitions/releaseSetId" },
+    "planSha256": { "$ref": "#/definitions/sha256" },
+    "sourceIdentitySha256": { "$ref": "#/definitions/sha256" },
+    "sourceR9HeadSha256": { "$ref": "#/definitions/sha256" },
+    "offlinePromotionRequestSha256": { "$ref": "#/definitions/sha256" },
+    "offlineAuthorizationSha256": { "$ref": "#/definitions/sha256" },
+    "bundleSetSha256": { "$ref": "#/definitions/sha256" },
+    "expectedFeedIdentitySha256": { "$ref": "#/definitions/sha256" },
+    "expectedChannelHead": { "$ref": "#/definitions/rawStateExpectation" },
+    "expectedJournalHead": { "$ref": "#/definitions/rawStateExpectation" },
+    "candidateManifestSha256": { "$ref": "#/definitions/sha256" },
+    "channelManifestUri": { "$ref": "#/definitions/httpsUri" },
+    "trust": { "$ref": "#/definitions/trust" }
+  },
+  "definitions": {
+    "sha256": { "type": "string", "minLength": 64, "maxLength": 64, "pattern": "^[0-9a-f]{64}$" },
+    "operationId": { "type": "string", "minLength": 32, "maxLength": 32, "pattern": "^[0-9a-f]{32}$" },
+    "orchestrationId": { "type": "string", "minLength": 36, "maxLength": 36, "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$" },
+    "releaseSetId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$" },
+    "httpsUri": { "type": "string", "minLength": 12, "maxLength": 2048, "pattern": "^https://[^/?#\\s]+(?:/[^?#\\s]*)?$" },
+    "p256Coordinate": { "type": "string", "minLength": 43, "maxLength": 43, "pattern": "^[A-Za-z0-9_-]{43}$" },
+    "keyId": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$" },
+    "rawStateExpectation": {
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["state"], "properties": { "state": { "const": "missing" }, "sizeBytes": { "type": "null" }, "sha256": { "type": "null" } } },
+        { "type": "object", "additionalProperties": false, "required": ["state", "sizeBytes", "sha256"], "properties": { "state": { "const": "present" }, "sizeBytes": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "sha256": { "$ref": "#/definitions/sha256" } } }
+      ]
+    },
+    "trust": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "keyId", "purpose", "x", "y"],
+      "properties": {
+        "algorithm": { "const": "ES256" },
+        "keyId": { "$ref": "#/definitions/keyId" },
+        "purpose": { "const": "stable-public-promotion-attestation" },
+        "x": { "$ref": "#/definitions/p256Coordinate" },
+        "y": { "$ref": "#/definitions/p256Coordinate" }
+      }
+    }
+  }
+}

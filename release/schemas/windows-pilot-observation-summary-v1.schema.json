@@ -1,0 +1,425 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ensou.example/schemas/windows-pilot-observation-summary-v1.schema.json",
+  "title": "Ensou DSH Windows Pilot Observation Summary v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "summaryType",
+    "standaloneAdmissionEvidence",
+    "testRunId",
+    "edition",
+    "verdict",
+    "reasonCodes",
+    "planSha256",
+    "observerExecutableSha256",
+    "startedAtUtc",
+    "completedAtUtc",
+    "monotonicDurationMilliseconds",
+    "sampling",
+    "executionIdentity",
+    "platform",
+    "candidate",
+    "actions",
+    "recording",
+    "evidenceLog",
+    "unexpectedWindows"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "summaryType": { "const": "ensou-dsh-windows-pilot-observation-summary" },
+    "standaloneAdmissionEvidence": { "const": false },
+    "testRunId": { "$ref": "#/$defs/uuid" },
+    "edition": { "enum": ["personal", "enterprise"] },
+    "verdict": { "enum": ["ELIGIBLE_FOR_REVIEW", "BLOCKED", "FAIL"] },
+    "reasonCodes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/reasonCode" }
+    },
+    "planSha256": { "$ref": "#/$defs/sha256" },
+    "observerExecutableSha256": { "$ref": "#/$defs/sha256" },
+    "startedAtUtc": { "type": "string", "format": "date-time" },
+    "completedAtUtc": { "type": "string", "format": "date-time" },
+    "monotonicDurationMilliseconds": { "type": "integer", "minimum": 0 },
+    "sampling": { "$ref": "#/$defs/sampling" },
+    "executionIdentity": { "$ref": "#/$defs/executionIdentity" },
+    "platform": { "$ref": "#/$defs/platform" },
+    "candidate": { "$ref": "#/$defs/candidate" },
+    "actions": { "$ref": "#/$defs/actions" },
+    "recording": { "$ref": "#/$defs/recording" },
+    "evidenceLog": { "$ref": "#/$defs/evidenceLog" },
+    "unexpectedWindows": {
+      "type": "array",
+      "maxItems": 64,
+      "items": { "$ref": "#/$defs/unexpectedWindow" }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": ["verdict"],
+        "properties": { "verdict": { "const": "ELIGIBLE_FOR_REVIEW" } }
+      },
+      "then": {
+        "properties": {
+          "reasonCodes": { "maxItems": 0 },
+          "monotonicDurationMilliseconds": { "minimum": 900000 },
+          "sampling": {
+            "allOf": [
+              { "$ref": "#/$defs/sampling" },
+              {
+                "properties": {
+                  "lightweightCount": { "minimum": 1 },
+                  "fullCount": { "minimum": 1 },
+                  "maximumFullGapMilliseconds": { "maximum": 1000 },
+                  "lostEventCount": { "const": 0 }
+                }
+              }
+            ]
+          },
+          "candidate": {
+            "allOf": [
+              { "$ref": "#/$defs/candidate" },
+              {
+                "properties": {
+                  "files": {
+                    "minItems": 7,
+                    "maxItems": 7,
+                    "prefixItems": [
+                      {
+                        "properties": {
+                          "sizeBytes": { "minimum": 1 },
+                          "observed": { "const": true }
+                        },
+                        "required": ["sizeBytes", "observed"]
+                      },
+                      {
+                        "properties": {
+                          "sizeBytes": { "minimum": 1 },
+                          "observed": { "const": true }
+                        },
+                        "required": ["sizeBytes", "observed"]
+                      },
+                      {
+                        "properties": {
+                          "sizeBytes": { "minimum": 1 },
+                          "observed": { "const": true }
+                        },
+                        "required": ["sizeBytes", "observed"]
+                      },
+                      {
+                        "properties": {
+                          "sizeBytes": { "minimum": 1 },
+                          "observed": { "const": true }
+                        },
+                        "required": ["sizeBytes", "observed"]
+                      },
+                      {
+                        "properties": {
+                          "sizeBytes": { "minimum": 1 },
+                          "observed": { "const": true }
+                        },
+                        "required": ["sizeBytes", "observed"]
+                      },
+                      {
+                        "properties": {
+                          "sizeBytes": { "minimum": 1 },
+                          "observed": { "const": true }
+                        },
+                        "required": ["sizeBytes", "observed"]
+                      },
+                      {
+                        "properties": {
+                          "sizeBytes": { "minimum": 1 },
+                          "observed": { "const": true }
+                        },
+                        "required": ["sizeBytes", "observed"]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          "actions": { "minItems": 9, "maxItems": 9 },
+          "recording": {
+            "allOf": [
+              { "$ref": "#/$defs/recording" },
+              {
+                "properties": {
+                  "sizeBytes": { "minimum": 1 },
+                  "observationCoverageMilliseconds": { "minimum": 900000 },
+                  "audioCaptured": { "const": false },
+                  "sha256": { "not": { "const": "0000000000000000000000000000000000000000000000000000000000000000" } }
+                }
+              }
+            ]
+          },
+          "unexpectedWindows": { "maxItems": 0 }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "reasonCode": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,95}$" },
+    "sampling": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lightweightIntervalMilliseconds",
+        "fullSnapshotMaximumIntervalMilliseconds",
+        "lightweightCount",
+        "fullCount",
+        "maximumFullGapMilliseconds",
+        "lostEventCount"
+      ],
+      "properties": {
+        "lightweightIntervalMilliseconds": { "const": 250 },
+        "fullSnapshotMaximumIntervalMilliseconds": { "const": 1000 },
+        "lightweightCount": { "type": "integer", "minimum": 0 },
+        "fullCount": { "type": "integer", "minimum": 0 },
+        "maximumFullGapMilliseconds": { "type": "integer", "minimum": 0 },
+        "lostEventCount": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "executionIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["elevationType", "integrityRid", "administratorMembership"],
+      "properties": {
+        "elevationType": { "enum": ["default", "limited"] },
+        "integrityRid": { "const": 8192 },
+        "administratorMembership": { "enum": ["absent", "enabled", "deny-only"] }
+      }
+    },
+    "platform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operatingSystemFamily",
+        "release",
+        "majorVersion",
+        "minorVersion",
+        "buildNumber",
+        "workstation",
+        "processArchitecture",
+        "operatingSystemArchitecture",
+        "processMachine",
+        "nativeMachine",
+        "wowOrEmulated"
+      ],
+      "properties": {
+        "operatingSystemFamily": { "const": "windows" },
+        "release": { "enum": ["windows-10", "windows-11"] },
+        "majorVersion": { "const": 10 },
+        "minorVersion": { "const": 0 },
+        "buildNumber": { "type": "integer", "minimum": 10240 },
+        "workstation": { "const": true },
+        "processArchitecture": { "const": "x64" },
+        "operatingSystemArchitecture": { "const": "x64" },
+        "processMachine": { "const": "native" },
+        "nativeMachine": { "const": "amd64" },
+        "wowOrEmulated": { "const": false }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "buildNumber": { "minimum": 22000 } }, "required": ["buildNumber"] },
+          "then": { "properties": { "release": { "const": "windows-11" } } },
+          "else": { "properties": { "release": { "const": "windows-10" } } }
+        }
+      ]
+    },
+    "candidateFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "sha256", "sizeBytes", "observed"],
+      "properties": {
+        "role": {
+          "enum": [
+            "manifest",
+            "installer",
+            "launcher",
+            "bootstrapper",
+            "maintenance",
+            "node",
+            "runtime-entrypoint"
+          ]
+        },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "sizeBytes": { "type": "integer", "minimum": 0 },
+        "observed": { "type": "boolean" }
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "releaseSetId",
+        "generation",
+        "sequence",
+        "launcherRepositoryCommit",
+        "harnessSourceTag",
+        "harnessSourceCommit",
+        "files"
+      ],
+      "properties": {
+        "releaseSetId": { "type": "string", "pattern": "^[A-Za-z0-9._:+/-]{1,160}$" },
+        "generation": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "launcherRepositoryCommit": { "$ref": "#/$defs/commit" },
+        "harnessSourceTag": { "type": "string", "pattern": "^[A-Za-z0-9._:+/-]{1,160}$" },
+        "harnessSourceCommit": { "$ref": "#/$defs/commit" },
+        "files": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "prefixItems": [
+            {
+              "allOf": [
+                { "$ref": "#/$defs/candidateFile" },
+                { "properties": { "role": { "const": "manifest" } } }
+              ]
+            },
+            {
+              "allOf": [
+                { "$ref": "#/$defs/candidateFile" },
+                { "properties": { "role": { "const": "installer" } } }
+              ]
+            },
+            {
+              "allOf": [
+                { "$ref": "#/$defs/candidateFile" },
+                { "properties": { "role": { "const": "launcher" } } }
+              ]
+            },
+            {
+              "allOf": [
+                { "$ref": "#/$defs/candidateFile" },
+                { "properties": { "role": { "const": "bootstrapper" } } }
+              ]
+            },
+            {
+              "allOf": [
+                { "$ref": "#/$defs/candidateFile" },
+                { "properties": { "role": { "const": "maintenance" } } }
+              ]
+            },
+            {
+              "allOf": [
+                { "$ref": "#/$defs/candidateFile" },
+                { "properties": { "role": { "const": "node" } } }
+              ]
+            },
+            {
+              "allOf": [
+                { "$ref": "#/$defs/candidateFile" },
+                { "properties": { "role": { "const": "runtime-entrypoint" } } }
+              ]
+            }
+          ],
+          "items": false
+        }
+      }
+    },
+    "completedAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actionId", "completedAtMonotonicMilliseconds"],
+      "properties": {
+        "actionId": {
+          "enum": [
+            "launcher-first-start",
+            "tray-hide-show",
+            "dsh-start",
+            "webui-open",
+            "subprocess-path",
+            "workspace-terminal-path",
+            "controlled-failure-recovery",
+            "update-rollback-recovery",
+            "launcher-restart"
+          ]
+        },
+        "completedAtMonotonicMilliseconds": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 9,
+      "prefixItems": [
+        { "allOf": [{ "$ref": "#/$defs/completedAction" }, { "properties": { "actionId": { "const": "launcher-first-start" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/completedAction" }, { "properties": { "actionId": { "const": "tray-hide-show" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/completedAction" }, { "properties": { "actionId": { "const": "dsh-start" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/completedAction" }, { "properties": { "actionId": { "const": "webui-open" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/completedAction" }, { "properties": { "actionId": { "const": "subprocess-path" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/completedAction" }, { "properties": { "actionId": { "const": "workspace-terminal-path" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/completedAction" }, { "properties": { "actionId": { "const": "controlled-failure-recovery" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/completedAction" }, { "properties": { "actionId": { "const": "update-rollback-recovery" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/completedAction" }, { "properties": { "actionId": { "const": "launcher-restart" } } }] }
+      ],
+      "items": false
+    },
+    "recording": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mediaType",
+        "sizeBytes",
+        "sha256",
+        "observationCoverageMilliseconds",
+        "audioCaptured",
+        "startChallengeSha256",
+        "endChallengeSha256"
+      ],
+      "properties": {
+        "mediaType": { "enum": ["video/mp4", "application/octet-stream"] },
+        "sizeBytes": { "type": "integer", "minimum": 0 },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "observationCoverageMilliseconds": { "type": "integer", "minimum": 0 },
+        "audioCaptured": { "const": false },
+        "startChallengeSha256": { "$ref": "#/$defs/sha256" },
+        "endChallengeSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "evidenceLog": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mediaType", "sizeBytes", "sha256", "terminalRecordSha256", "recordCount"],
+      "properties": {
+        "mediaType": { "const": "application/x-ndjson" },
+        "sizeBytes": { "type": "integer", "minimum": 1 },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "terminalRecordSha256": { "$ref": "#/$defs/sha256" },
+        "recordCount": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "unexpectedWindow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "processImageName",
+        "className",
+        "titleSha256",
+        "titleCategory",
+        "firstSeenMonotonicMilliseconds"
+      ],
+      "properties": {
+        "processImageName": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "className": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "titleSha256": { "$ref": "#/$defs/sha256" },
+        "titleCategory": {
+          "enum": ["empty", "other", "application-error", "unhandled-error", "security-prompt"]
+        },
+        "firstSeenMonotonicMilliseconds": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

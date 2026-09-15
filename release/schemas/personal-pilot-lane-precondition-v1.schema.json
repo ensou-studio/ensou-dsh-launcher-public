@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://updates.dsh.example.invalid/schemas/personal-pilot-lane-precondition-v1.schema.json",
+  "title": "Ensou DSH Personal Pilot lane precondition v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "evidenceType",
+    "deviceId",
+    "lane",
+    "capturedAtUtc",
+    "managedRootState",
+    "currentPointerPresent",
+    "startupRegistrationPresent",
+    "baselineReleaseSetId",
+    "baselineCurrentPointerSha256",
+    "source",
+    "result"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "evidenceType": {
+      "const": "ensou-dsh-personal-pilot-lane-precondition"
+    },
+    "deviceId": {
+      "enum": ["pilot-desktop-desktop", "pilot-notebook"]
+    },
+    "lane": {
+      "enum": ["existing-install-upgrade", "clean-first-install"]
+    },
+    "capturedAtUtc": {
+      "type": "string",
+      "minLength": 28,
+      "maxLength": 28,
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[.][0-9]{7}Z$"
+    },
+    "managedRootState": {
+      "enum": ["EXISTING_INSTALL_PRESENT", "ABSENT"]
+    },
+    "currentPointerPresent": { "type": "boolean" },
+    "startupRegistrationPresent": { "type": "boolean" },
+    "baselineReleaseSetId": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "baselineCurrentPointerSha256": {
+      "type": ["string", "null"],
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source": { "const": "real-device" },
+    "result": { "const": "PASS" }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "deviceId": { "const": "pilot-desktop-desktop" },
+        "lane": { "const": "existing-install-upgrade" },
+        "managedRootState": { "const": "EXISTING_INSTALL_PRESENT" },
+        "currentPointerPresent": { "const": true },
+        "baselineReleaseSetId": { "type": "string" },
+        "baselineCurrentPointerSha256": { "type": "string" }
+      }
+    },
+    {
+      "properties": {
+        "deviceId": { "const": "pilot-notebook" },
+        "lane": { "const": "clean-first-install" },
+        "managedRootState": { "const": "ABSENT" },
+        "currentPointerPresent": { "const": false },
+        "startupRegistrationPresent": { "const": false },
+        "baselineReleaseSetId": { "type": "null" },
+        "baselineCurrentPointerSha256": { "type": "null" }
+      }
+    }
+  ]
+}

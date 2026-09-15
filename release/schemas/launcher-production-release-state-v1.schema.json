@@ -1,0 +1,263 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ensou DSH Launcher production release state documents v1",
+  "oneOf": [
+    { "$ref": "#/definitions/identity" },
+    { "$ref": "#/definitions/head" },
+    { "$ref": "#/definitions/receipt" }
+  ],
+  "definitions": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "wholeSecondUtc": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "edition": { "enum": ["Personal", "Enterprise"] },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion", "identityType", "orchestrationId", "edition",
+        "planSha256", "createdAtUtc"
+      ],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "identityType": { "const": "ensou-dsh-launcher-production-release-state" },
+        "orchestrationId": { "type": "string", "format": "uuid" },
+        "edition": { "$ref": "#/definitions/edition" },
+        "planSha256": { "$ref": "#/definitions/sha256" },
+        "initializationSha256": { "$ref": "#/definitions/sha256" },
+        "createdAtUtc": { "$ref": "#/definitions/wholeSecondUtc" }
+      }
+    },
+    "head": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion", "stateType", "orchestrationId", "edition",
+        "planSha256", "identitySha256", "revision", "phase", "receiptFileName",
+        "receiptSha256", "updatedAtUtc"
+      ],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "stateType": { "const": "ensou-dsh-launcher-production-release-head" },
+        "orchestrationId": { "type": "string", "format": "uuid" },
+        "edition": { "$ref": "#/definitions/edition" },
+        "planSha256": { "$ref": "#/definitions/sha256" },
+        "identitySha256": { "$ref": "#/definitions/sha256" },
+        "revision": { "type": "integer", "minimum": 1, "maximum": 3 },
+        "phase": {
+          "enum": [
+            "PLAN_ADMITTED", "CLIENT_SIGNING_REQUESTED",
+            "CLIENT_SIGNATURES_IMPORTED"
+          ]
+        },
+        "receiptFileName": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[a-z0-9-]+\\.json$"
+        },
+        "receiptSha256": { "$ref": "#/definitions/sha256" },
+        "updatedAtUtc": { "$ref": "#/definitions/wholeSecondUtc" }
+      }
+    },
+    "artifactIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "fileName", "sizeBytes", "sha256", "peContentSha256"],
+      "properties": {
+        "role": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "fileName": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*\\.exe$"
+        },
+        "sizeBytes": { "type": "integer", "minimum": 1, "maximum": 536870912 },
+        "sha256": { "$ref": "#/definitions/sha256" },
+        "peContentSha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "signedArtifactIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role", "fileName", "sizeBytes", "sha256", "peContentSha256",
+        "timestampProtocol"
+      ],
+      "properties": {
+        "role": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "fileName": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*\\.exe$"
+        },
+        "sizeBytes": { "type": "integer", "minimum": 1, "maximum": 536870912 },
+        "sha256": { "$ref": "#/definitions/sha256" },
+        "peContentSha256": { "$ref": "#/definitions/sha256" },
+        "timestampProtocol": { "const": "RFC3161" }
+      }
+    },
+    "planData": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "releaseSetId", "channel", "sourceCommit", "sourceTree",
+        "manifestUri", "artifactBaseUri",
+        "runtimeCandidate", "clientInputs"
+      ],
+      "properties": {
+        "releaseSetId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "channel": { "enum": ["pilot", "stable"] },
+        "sourceCommit": {
+          "type": "string",
+          "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+        },
+        "sourceTree": {
+          "type": "string",
+          "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+        },
+        "manifestUri": { "type": "string", "pattern": "^https://" },
+        "artifactBaseUri": { "type": "string", "pattern": "^https://" },
+        "runtimeCandidate": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "releaseId", "githubReleaseTag", "archiveSha256",
+            "metadataSha256", "hashEvidenceSha256",
+            "localMetadataPromotionEligible", "publicationStatus"
+          ],
+          "properties": {
+            "releaseId": { "type": "string", "minLength": 1, "maxLength": 128 },
+            "githubReleaseTag": { "type": "string", "minLength": 1, "maxLength": 128 },
+            "archiveSha256": { "$ref": "#/definitions/sha256" },
+            "metadataSha256": { "$ref": "#/definitions/sha256" },
+            "hashEvidenceSha256": { "$ref": "#/definitions/sha256" },
+            "localMetadataPromotionEligible": { "const": true },
+            "publicationStatus": {
+              "const": "IMMUTABLE_SOURCE_RELEASE_UNVERIFIED"
+            }
+          }
+        },
+        "clientInputs": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": { "$ref": "#/definitions/artifactIdentity" }
+        }
+      }
+    },
+    "requestData": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requestRelativePath", "requestSha256", "nonce", "createdAtUtc",
+        "expiresAtUtc", "files"
+      ],
+      "properties": {
+        "requestRelativePath": {
+          "const": "requests/client-signing.v1/signing-request.v1.json"
+        },
+        "requestSha256": { "$ref": "#/definitions/sha256" },
+        "nonce": { "type": "string", "pattern": "^[A-Za-z0-9_-]{43}$" },
+        "createdAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "expiresAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "files": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["role", "fileName", "sha256", "peContentSha256"],
+            "properties": {
+              "role": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+              "fileName": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*\\.exe$"
+              },
+              "sha256": { "$ref": "#/definitions/sha256" },
+              "peContentSha256": { "$ref": "#/definitions/sha256" }
+            }
+          }
+        }
+      }
+    },
+    "importData": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "responseRelativePath", "responseSha256", "completedAtUtc",
+        "authenticationKeyId", "files"
+      ],
+      "properties": {
+        "responseRelativePath": {
+          "const": "imports/client-signing.v1/signing-response.v1.json"
+        },
+        "responseSha256": { "$ref": "#/definitions/sha256" },
+        "completedAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "authenticationKeyId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "files": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": { "$ref": "#/definitions/signedArtifactIdentity" }
+        }
+      }
+    },
+    "receiptBase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion", "receiptType", "orchestrationId", "edition",
+        "planSha256", "identitySha256", "revision", "phase", "previousReceiptSha256",
+        "transitionSha256", "data", "recordedAtUtc"
+      ],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "receiptType": { "const": "ensou-dsh-launcher-production-release-transition" },
+        "orchestrationId": { "type": "string", "format": "uuid" },
+        "edition": { "$ref": "#/definitions/edition" },
+        "planSha256": { "$ref": "#/definitions/sha256" },
+        "identitySha256": { "$ref": "#/definitions/sha256" },
+        "revision": { "type": "integer", "minimum": 1, "maximum": 3 },
+        "phase": {
+          "enum": [
+            "PLAN_ADMITTED", "CLIENT_SIGNING_REQUESTED",
+            "CLIENT_SIGNATURES_IMPORTED"
+          ]
+        },
+        "previousReceiptSha256": { "$ref": "#/definitions/sha256" },
+        "transitionSha256": { "$ref": "#/definitions/sha256" },
+        "data": { "type": "object" },
+        "recordedAtUtc": { "$ref": "#/definitions/wholeSecondUtc" }
+      }
+    },
+    "receipt": {
+      "allOf": [
+        { "$ref": "#/definitions/receiptBase" },
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "revision": { "const": 1 },
+                "phase": { "const": "PLAN_ADMITTED" },
+                "data": { "$ref": "#/definitions/planData" }
+              }
+            },
+            {
+              "properties": {
+                "revision": { "const": 2 },
+                "phase": { "const": "CLIENT_SIGNING_REQUESTED" },
+                "data": { "$ref": "#/definitions/requestData" }
+              }
+            },
+            {
+              "properties": {
+                "revision": { "const": 3 },
+                "phase": { "const": "CLIENT_SIGNATURES_IMPORTED" },
+                "data": { "$ref": "#/definitions/importData" }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

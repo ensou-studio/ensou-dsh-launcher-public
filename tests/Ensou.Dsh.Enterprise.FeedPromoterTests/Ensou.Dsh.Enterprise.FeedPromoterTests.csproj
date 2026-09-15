@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Ensou.Dsh.Enterprise.FeedPromoterTests</RootNamespace>
+    <AssemblyName>Ensou.Dsh.Enterprise.FeedPromoterTests</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Ensou.Dsh.Enterprise.FeedPromoter\Ensou.Dsh.Enterprise.FeedPromoter.csproj" />
+    <ProjectReference Include="..\..\src\Ensou.Dsh.Enterprise.ReleaseContracts\Ensou.Dsh.Enterprise.ReleaseContracts.csproj" />
+  </ItemGroup>
+</Project>

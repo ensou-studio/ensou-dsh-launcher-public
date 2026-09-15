@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "fixtureType": "ensou-dsh-launcher-installer-signing-real-fixture-status",
+  "authenticodeCertificate": "PENDING",
+  "rfc3161TimestampAuthority": "PENDING",
+  "realSignedPersonalInstaller": "PENDING",
+  "realSignedEnterpriseInstaller": "PENDING",
+  "realUnsignedPayloadSelfChecks": "PENDING",
+  "realSignedPayloadSelfChecks": "PENDING",
+  "realReleaseManifestTrustProbes": "PENDING",
+  "exactSingleRfc3161AttributeValue": "PENDING",
+  "legacyCounterSignatureAbsence": "PENDING",
+  "rfc3161RequestWindowBinding": "PENDING",
+  "packagesLockFiles": "AVAILABLE",
+  "productionLockedOfflineRestoreReplay": "PENDING",
+  "realSourceBuildInputInventory": "PENDING",
+  "productionAdmission": "NO_GO",
+  "reason": "Package lock bytes are available, but no production locked-offline replay and source-build capture exists; production Authenticode certificate, exact single-value RFC3161 evidence without legacy counterSignature, request-window timestamp evidence, and exact signed Installer fixtures also remain unavailable."
+}

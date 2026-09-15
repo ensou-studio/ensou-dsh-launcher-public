@@ -1,0 +1,456 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ensou DSH Launcher production release plan v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "planType",
+    "orchestrationId",
+    "edition",
+    "releaseSetId",
+    "targetChannel",
+    "sourceCommit",
+    "manifestUri",
+    "artifactBaseUri",
+    "runtimeCandidate",
+    "authenticodePolicy",
+    "releaseManifestTrust",
+    "releaseCompatibility",
+    "externalResponseTrusts",
+    "clientSigningInputs"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 2 },
+    "planType": { "const": "ensou-dsh-launcher-production-release" },
+    "orchestrationId": {
+      "type": "string",
+      "minLength": 36,
+      "maxLength": 36,
+      "pattern": "^(?![\\s\\S]*\\p{Cc})[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "edition": { "enum": ["Personal", "Enterprise"] },
+    "releaseSetId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "targetChannel": { "enum": ["pilot", "stable"] },
+    "sourceCommit": {
+      "type": "string",
+      "minLength": 40,
+      "maxLength": 64,
+      "pattern": "^(?![\\s\\S]*\\p{Cc})(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "manifestUri": {
+      "type": "string",
+      "minLength": 12,
+      "maxLength": 2048,
+      "pattern": "^(?![\\s\\S]*\\p{Cc})https://[\\s\\S]+$"
+    },
+    "artifactBaseUri": {
+      "type": "string",
+      "minLength": 12,
+      "maxLength": 2048,
+      "pattern": "^(?![\\s\\S]*\\p{Cc})https://[\\s\\S]+$"
+    },
+    "personalAccountOrigin": { "$ref": "#/definitions/httpsAccountOrigin" },
+    "personalPilotTemplateStatus": { "const": "NO_GO_TEMPLATE_PENDING_REAL_DEVICE_EVIDENCE" },
+    "personalPilotDevices": {
+      "type": "array", "minItems": 2, "maxItems": 2,
+      "items": [
+        {
+          "allOf": [
+            { "$ref": "#/definitions/personalPilotDevice" },
+            {
+              "properties": {
+                "deviceId": { "const": "pilot-desktop-desktop" },
+                "hostLabel": { "const": "PILOT-DESKTOP" },
+                "lane": { "const": "existing-install-upgrade" },
+                "roleAcceptance": { "const": "existing-version-upgrade" }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/definitions/personalPilotDevice" },
+            {
+              "properties": {
+                "deviceId": { "const": "pilot-notebook" },
+                "hostLabel": { "const": "PilotNotebook notebook" },
+                "lane": { "const": "clean-first-install" },
+                "roleAcceptance": { "const": "first-install" }
+              }
+            }
+          ]
+        }
+      ],
+      "additionalItems": false
+    },
+    "pilotEvidenceTrustPolicySha256": { "$ref": "#/definitions/sha256" },
+    "runtimeCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["releaseId", "githubReleaseTag", "archive", "metadata", "hashEvidence"],
+      "dependencies": {
+        "githubRepository": ["githubReleaseCommit"],
+        "githubReleaseCommit": ["githubRepository"]
+      },
+      "properties": {
+        "releaseId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "githubReleaseTag": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "githubRepository": { "$ref": "#/definitions/githubRepository" },
+        "githubReleaseCommit": { "$ref": "#/definitions/githubCommit" },
+        "archive": { "$ref": "#/definitions/inputFile" },
+        "metadata": { "$ref": "#/definitions/inputFile" },
+        "hashEvidence": { "$ref": "#/definitions/inputFile" }
+      }
+    },
+    "authenticodePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["signerSha256Thumbprint", "requireTrustedTimestamp", "maximumResponseAgeMinutes"],
+      "properties": {
+        "signerSha256Thumbprint": { "$ref": "#/definitions/sha256" },
+        "requireTrustedTimestamp": { "const": true },
+        "maximumResponseAgeMinutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1440
+        }
+      }
+    },
+    "releaseManifestTrust": {
+      "allOf": [
+        { "$ref": "#/definitions/trustDomain" },
+        { "properties": { "purpose": { "const": "release-manifest-signing" } } }
+      ]
+    },
+    "stablePublicationTrust": {
+      "allOf": [
+        { "$ref": "#/definitions/trustDomain" },
+        { "properties": {
+          "purpose": { "const": "stable-public-promotion-attestation" },
+          "keyId": { "maxLength": 64, "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$" }
+        } }
+      ]
+    },
+    "releaseCompatibility": { "type": "object" },
+    "externalResponseTrusts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "clientSigning",
+        "manifestPublishing",
+        "installerSigning",
+        "feedPromotion"
+      ],
+      "properties": {
+        "clientSigning": {
+          "allOf": [
+            { "$ref": "#/definitions/trustDomain" },
+            { "properties": { "purpose": { "const": "client-signing-response" } } }
+          ]
+        },
+        "manifestPublishing": {
+          "allOf": [
+            { "$ref": "#/definitions/trustDomain" },
+            { "properties": { "purpose": { "const": "manifest-publishing-response" } } }
+          ]
+        },
+        "installerSigning": { "$ref": "#/definitions/trustDomain" },
+        "feedPromotion": {
+          "allOf": [
+            { "$ref": "#/definitions/trustDomain" },
+            { "properties": { "purpose": { "const": "feed-promotion-response" } } }
+          ]
+        }
+      }
+    },
+    "clientSigningInputs": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "fileName", "path", "sizeBytes", "sha256", "peContentSha256"],
+        "properties": {
+          "role": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "pattern": "^(?![\\s\\S]*\\p{Cc})[a-z][a-z0-9-]*$"
+          },
+          "fileName": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 255,
+            "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._-]*\\.exe$"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 32767,
+            "pattern": "^(?![\\s\\S]*\\p{Cc})[\\s\\S]+$"
+          },
+          "sizeBytes": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 536870912
+          },
+          "sha256": { "$ref": "#/definitions/sha256" },
+          "peContentSha256": { "$ref": "#/definitions/sha256" }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "runtimeCandidate": { "required": ["githubRepository"] }
+        },
+        "required": ["runtimeCandidate"]
+      },
+      "then": {
+        "properties": {
+          "edition": { "const": "Enterprise" },
+          "targetChannel": { "const": "stable" }
+        }
+      }
+    },
+    {
+      "if": { "required": ["stablePublicationTrust"] },
+      "then": {
+        "properties": {
+          "edition": { "const": "Enterprise" },
+          "targetChannel": { "const": "stable" }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "edition": { "const": "Personal" } },
+        "required": ["edition"]
+      },
+      "then": {
+        "required": ["personalAccountOrigin"],
+        "not": { "required": ["pilotEvidenceTrustPolicySha256"] },
+        "allOf": [
+          {
+            "if": {
+              "properties": { "targetChannel": { "const": "pilot" } },
+              "required": ["targetChannel"]
+            },
+            "then": { "required": ["personalPilotDevices"] },
+            "else": {
+              "not": { "anyOf": [
+                { "required": ["personalPilotDevices"] },
+                { "required": ["personalPilotTemplateStatus"] }
+              ] }
+            }
+          }
+        ],
+        "properties": {
+          "releaseCompatibility": { "$ref": "#/definitions/personalReleaseCompatibility" },
+          "externalResponseTrusts": {
+            "properties": {
+              "installerSigning": {
+                "allOf": [
+                  { "$ref": "#/definitions/trustDomain" },
+                  { "properties": { "purpose": { "const": "personal-installer-signing-response" } } }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "required": ["pilotEvidenceTrustPolicySha256"],
+        "not": { "anyOf": [
+          { "required": ["personalPilotDevices"] },
+          { "required": ["personalPilotTemplateStatus"] },
+          { "required": ["personalAccountOrigin"] }
+        ] },
+        "properties": {
+          "targetChannel": { "const": "stable" },
+          "releaseCompatibility": { "$ref": "#/definitions/enterpriseReleaseCompatibility" },
+          "externalResponseTrusts": {
+            "properties": {
+              "installerSigning": {
+                "allOf": [
+                  { "$ref": "#/definitions/trustDomain" },
+                  { "properties": { "purpose": { "const": "installer-signing-response" } } }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "githubRepository": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 140,
+      "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?/[A-Za-z0-9](?:[A-Za-z0-9._-]{0,98}[A-Za-z0-9_-])?$"
+    },
+    "githubCommit": {
+      "type": "string",
+      "minLength": 40,
+      "maxLength": 40,
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^(?![\\s\\S]*\\p{Cc})[0-9a-f]{64}$"
+    },
+    "p256Coordinate": {
+      "type": "string",
+      "minLength": 43,
+      "maxLength": 43,
+      "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9_-]{43}$"
+    },
+    "httpsAccountOrigin": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 512,
+      "pattern": "^https://(?!(?:localhost|[0-9]{1,3}(?:\\.[0-9]{1,3}){3})/)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))*/$"
+    },
+    "trustDomain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "keyId", "purpose", "x", "y"],
+      "properties": {
+        "algorithm": { "const": "ES256" },
+        "keyId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._:-]*$"
+        },
+        "purpose": {
+          "enum": [
+            "client-signing-response",
+            "release-manifest-signing",
+            "manifest-publishing-response",
+            "installer-signing-response",
+            "personal-installer-signing-response",
+            "feed-promotion-response",
+            "stable-public-promotion-attestation"
+          ]
+        },
+        "x": { "$ref": "#/definitions/p256Coordinate" },
+        "y": { "$ref": "#/definitions/p256Coordinate" }
+      }
+    },
+    "personalReleaseCompatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["startupStubVersion", "canonicalLowSFromSequence"],
+      "properties": {
+        "startupStubVersion": {
+          "const": "1.2.0"
+        },
+        "canonicalLowSFromSequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      }
+    },
+    "personalPilotDevice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "deviceId",
+        "hostLabel",
+        "architecture",
+        "lane",
+        "installationIdentity",
+        "tokenOrSecretIncluded",
+        "roleAcceptance",
+        "perDeviceAcceptance"
+      ],
+      "properties": {
+        "deviceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "hostLabel": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "architecture": { "const": "win-x64" },
+        "lane": { "enum": ["existing-install-upgrade", "clean-first-install"] },
+        "installationIdentity": { "const": "separate-device-identity" },
+        "tokenOrSecretIncluded": { "const": false },
+        "roleAcceptance": { "enum": ["first-install", "existing-version-upgrade"] },
+        "perDeviceAcceptance": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "uniqueItems": true,
+          "items": [
+            { "const": "startup-update-detection" },
+            { "const": "runtime-only-update" },
+            { "const": "launcher-only-update" },
+            { "const": "failed-update-rollback" },
+            { "const": "offline-last-known-good" },
+            { "const": "local-chat-and-workspace-unchanged" },
+            { "const": "no-command-window" }
+          ],
+          "additionalItems": false
+        }
+      }
+    },
+    "enterpriseReleaseCompatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["startupStubProtocol"],
+      "properties": {
+        "startupStubProtocol": { "const": 1 }
+      }
+    },
+    "inputFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fileName", "path", "sizeBytes", "sha256"],
+      "properties": {
+        "fileName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 32767,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[\\s\\S]+$"
+        },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8589934592
+        },
+        "sha256": { "$ref": "#/definitions/sha256" }
+      }
+    }
+  }
+}

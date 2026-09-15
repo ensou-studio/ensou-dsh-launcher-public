@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "environment": "production",
+  "channel": "pilot",
+  "runtimeIdentifier": "win-x64",
+  "layoutProfile": "enterprise",
+  "artifactAuthorization": "SIGNED_RELEASE_SET",
+  "releaseSetId": "replace-with-reviewed-release-set-id",
+  "generation": 1,
+  "sequence": 1,
+  "minAcceptedSequence": 0,
+  "releaseDirectory": "C:\\controlled-release\\pilot",
+  "publisherLedgerPath": "C:\\controlled-release\\pilot-ledger.v2.json",
+  "publisherLedgerSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "installerExecutablePath": "C:\\controlled-release\\Ensou.Dsh.Enterprise.Installer.exe",
+  "bootstrapperExecutablePath": "C:\\controlled-release\\Ensou.Dsh.Enterprise.Bootstrapper.exe",
+  "launcherExecutablePath": "C:\\controlled-release\\Ensou.Dsh.Enterprise.Launcher.exe",
+  "clientBootstrapperExecutablePath": "C:\\controlled-release\\Ensou.Dsh.Enterprise.ClientBootstrapper.exe",
+  "maintenanceExecutablePath": "C:\\controlled-release\\Ensou.Dsh.Enterprise.Maintenance.exe",
+  "runtimeSourceMetadataPath": "C:\\controlled-release\\runtime.metadata.json",
+  "runtimeAdmissionReceiptPath": "C:\\controlled-release\\runtime.organization-admission.v1.json",
+  "pluginPolicyMetadataPath": "C:\\controlled-release\\plugin-policy.artifact.json",
+  "launcherTrust": {
+    "updateManifestUri": "https://updates.replace.example/v2/channels/pilot/release-set.v2.json",
+    "updateManifestOrigin": "https://updates.replace.example/",
+    "updateArtifactOrigin": "https://artifacts.replace.example/",
+    "releaseKeyId": "replace-release-key",
+    "releaseKeyX": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "releaseKeyY": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "controlPlaneOrigin": "https://control.replace.example/",
+    "authorizationOrigin": "https://authorization.replace.example/",
+    "gatewayOrigin": "https://gateway.replace.example/",
+    "managedArtifactOrigin": "https://managed-artifacts.replace.example/",
+    "leaseKeyId": "replace-lease-key",
+    "leaseKeyX": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "leaseKeyY": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "authenticodeSignerSha256Thumbprint": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "runtimeAdmissionKey": {
+    "keyId": "replace-runtime-admission-key",
+    "x": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "y": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+  },
+  "brandAuthorizationKey": {
+    "keyId": "replace-brand-authorization-key",
+    "x": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "y": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+  },
+  "brandAuthorization": {
+    "receiptPath": "C:\\controlled-evidence\\brand-authorization.v1.json",
+    "receiptSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "evidencePath": "C:\\controlled-evidence\\written-brand-permission.pdf",
+    "evidenceSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "distributionAudienceId": "00000000-0000-4000-8000-000000000000"
+  },
+  "startupUpdateContract": {
+    "checkOnEveryStartup": true,
+    "atomicReleaseSetActivation": true,
+    "bootstrapHealthRollback": true,
+    "maximumOfflineGraceHours": 168
+  },
+  "localDataCompatibilityEvidence": {
+    "fromUpstreamTag": "dsh-v0.1.1-rc.2",
+    "toUpstreamTag": "dsh-v0.1.2-rc.1",
+    "sourceRuntimeArchiveSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "targetRuntimeArchiveSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "reportPath": "C:\\controlled-evidence\\local-data-compatibility-evidence.json",
+    "reportSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "certification": {
+      "receiptPath": "C:\\controlled-evidence\\local-data-certification.v1.json",
+      "receiptSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "certificationAudienceId": "00000000-0000-4000-8000-000000000000"
+    }
+  }
+}

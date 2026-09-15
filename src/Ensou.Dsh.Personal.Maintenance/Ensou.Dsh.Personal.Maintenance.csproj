@@ -1,0 +1,64 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>Ensou.Dsh.Personal.Maintenance</RootNamespace>
+    <AssemblyName>Ensou.Dsh.Personal.Maintenance</AssemblyName>
+    <Product>Ensou DSH Personal Versioned Maintenance</Product>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>..\..\assets\branding\dsh-official-whale.ico</ApplicationIcon>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <PublishTrimmed>false</PublishTrimmed>
+    <PublishAot>false</PublishAot>
+    <PersonalProductionBuild Condition="'$(PersonalProductionBuild)' == ''">false</PersonalProductionBuild>
+    <PersonalDevelopmentPublish Condition="'$(PersonalDevelopmentPublish)' == ''">false</PersonalDevelopmentPublish>
+    <PersonalChannel Condition="'$(PersonalChannel)' == '' and '$(PersonalProductionBuild)' != 'true' and '$(PersonalDevelopmentPublish)' != 'true'">stable</PersonalChannel>
+    <PersonalCanonicalLowSFromSequence Condition="'$(PersonalCanonicalLowSFromSequence)' == '' and '$(PersonalProductionBuild)' != 'true' and '$(PersonalDevelopmentPublish)' != 'true'">1</PersonalCanonicalLowSFromSequence>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ensou.Dsh.UpdateEngine\Ensou.Dsh.UpdateEngine.csproj"
+      GlobalPropertiesToRemove="RuntimeIdentifier;SelfContained;PublishSingleFile" />
+  </ItemGroup>
+  <ItemGroup>
+    <AssemblyMetadata Include="PersonalProductionBuild" Value="$(PersonalProductionBuild)" />
+    <AssemblyMetadata Include="PersonalManifestOrigin" Value="$(PersonalManifestOrigin)" />
+    <AssemblyMetadata Include="PersonalArtifactOrigin" Value="$(PersonalArtifactOrigin)" />
+    <AssemblyMetadata Include="PersonalChannel" Value="$(PersonalChannel)" />
+    <AssemblyMetadata Include="PersonalReleaseKeyId" Value="$(PersonalReleaseKeyId)" />
+    <AssemblyMetadata Include="PersonalReleaseKeyX" Value="$(PersonalReleaseKeyX)" />
+    <AssemblyMetadata Include="PersonalReleaseKeyY" Value="$(PersonalReleaseKeyY)" />
+    <AssemblyMetadata Include="PersonalStartupStubVersion" Value="$(PersonalStartupStubVersion)" />
+    <AssemblyMetadata Include="PersonalCanonicalLowSFromSequence" Value="$(PersonalCanonicalLowSFromSequence)" />
+    <AssemblyMetadata Include="PersonalAuthenticodeSignerSha256Thumbprint" Value="$(PersonalAuthenticodeSignerSha256Thumbprint)" />
+  </ItemGroup>
+  <Target Name="ValidatePersonalMaintenancePublish" BeforeTargets="PrepareForPublish">
+    <Error Condition="'$(RuntimeIdentifier)' != 'win-x64' or '$(SelfContained)' != 'true' or '$(PublishSingleFile)' != 'true' or '$(EnableCompressionInSingleFile)' != 'true'"
+      Text="Personal Maintenance must publish compressed single-file, self-contained win-x64." />
+    <Error Condition="'$(PublishTrimmed)' == 'true'"
+      Text="Personal Maintenance publish must not enable trimming." />
+    <Error Condition="'$(PublishAot)' == 'true'"
+      Text="Personal Maintenance publish must not enable NativeAOT." />
+    <Error Condition="('$(PersonalProductionBuild)' != 'true' and '$(PersonalDevelopmentPublish)' != 'true') or ('$(PersonalProductionBuild)' == 'true' and '$(PersonalDevelopmentPublish)' == 'true')"
+      Text="Personal Maintenance publish must select exactly one of production or development mode." />
+    <Error Condition="'$(PersonalManifestOrigin)' == '' or '$(PersonalArtifactOrigin)' == '' or '$(PersonalChannel)' == '' or '$(PersonalReleaseKeyId)' == '' or '$(PersonalReleaseKeyX)' == '' or '$(PersonalReleaseKeyY)' == '' or '$(PersonalStartupStubVersion)' == '' or '$(PersonalCanonicalLowSFromSequence)' == ''"
+      Text="Personal Maintenance publish requires the complete immutable compiled release trust fingerprint." />
+    <Error Condition="'$(PersonalProductionBuild)' == 'true' and '$(PersonalAuthenticodeSignerSha256Thumbprint)' == ''"
+      Text="Production Personal Maintenance requires the pinned Authenticode signer." />
+    <Error Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(PersonalCanonicalLowSFromSequence)', '^[1-9][0-9]{0,15}$'))"
+      Text="Personal canonical low-S cutover must be one canonical positive decimal integer." />
+    <Error Condition="$([System.Int64]::Parse('$(PersonalCanonicalLowSFromSequence)')) &gt; 9007199254740991"
+      Text="Personal canonical low-S cutover must not exceed the maximum safe integer." />
+  </Target>
+  <Target Name="RejectLoosePersonalMaintenanceAssemblies" AfterTargets="Publish">
+    <ItemGroup>
+      <_PersonalLooseManaged Include="$(PublishDir)Ensou.Dsh.*.dll" />
+    </ItemGroup>
+    <Error Condition="'@(_PersonalLooseManaged)' != ''"
+      Text="Personal Maintenance publish contains replaceable Ensou managed DLLs: @(_PersonalLooseManaged)" />
+  </Target>
+</Project>

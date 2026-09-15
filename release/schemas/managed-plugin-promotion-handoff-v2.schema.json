@@ -1,0 +1,297 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ensou.example/schemas/managed-plugin-promotion-handoff-v2.schema.json",
+  "title": "Managed plugin policy production publisher handoff v2",
+  "description": "Production unsigned publisher-input template. Development-E2E diagnostics are not production admission evidence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "handoffType",
+    "targetEnvironment",
+    "promotionStatus",
+    "signingStatus",
+    "productionSignaturePresent",
+    "policy",
+    "compatibility",
+    "digests",
+    "publisherInputTemplate",
+    "inputs",
+    "harnessCompatibility",
+    "generationAdmission",
+    "verification",
+    "signing"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 2 },
+    "handoffType": { "const": "managed-plugin-policy-publisher-input-template" },
+    "targetEnvironment": { "const": "production-release-candidate" },
+    "promotionStatus": { "const": "UNSIGNED_PUBLISHER_REVIEW_REQUIRED" },
+    "signingStatus": { "const": "UNSIGNED_CANDIDATE" },
+    "productionSignaturePresent": { "const": false },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policyId",
+        "generation",
+        "critical",
+        "revoked",
+        "rawPolicyFileName",
+        "rawPolicySizeBytes",
+        "rawPolicySha256"
+      ],
+      "properties": {
+        "policyId": { "$ref": "#/$defs/uuid" },
+        "generation": { "$ref": "#/$defs/positiveSafeInteger" },
+        "critical": { "type": "boolean" },
+        "revoked": { "const": false },
+        "rawPolicyFileName": { "const": "plugin-policy.json" },
+        "rawPolicySizeBytes": { "$ref": "#/$defs/positiveSafeInteger" },
+        "rawPolicySha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["launcherReleaseIds", "runtimeReleaseIds"],
+      "properties": {
+        "launcherReleaseIds": { "$ref": "#/$defs/oneReleaseId" },
+        "runtimeReleaseIds": { "$ref": "#/$defs/oneReleaseId" }
+      }
+    },
+    "digests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "archiveSha256",
+        "archiveSizeBytes",
+        "metadataSha256",
+        "metadataSizeBytes",
+        "rawPolicySha256",
+        "rawPolicySizeBytes"
+      ],
+      "properties": {
+        "archiveSha256": { "$ref": "#/$defs/sha256" },
+        "archiveSizeBytes": { "$ref": "#/$defs/positiveSafeInteger" },
+        "metadataSha256": { "$ref": "#/$defs/sha256" },
+        "metadataSizeBytes": { "$ref": "#/$defs/positiveSafeInteger" },
+        "rawPolicySha256": { "$ref": "#/$defs/sha256" },
+        "rawPolicySizeBytes": { "$ref": "#/$defs/positiveSafeInteger" }
+      }
+    },
+    "publisherInputTemplate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "templateOnly",
+        "directlyConsumable",
+        "component",
+        "filePath",
+        "policyMetadataPath",
+        "fileName",
+        "metadataFileName",
+        "signingStatusRequired",
+        "releaseId",
+        "uri",
+        "requiresReleasePublisherId",
+        "requiresHttpsUri",
+        "requiresIndependentPublisherRevalidation"
+      ],
+      "properties": {
+        "templateOnly": { "const": true },
+        "directlyConsumable": { "const": false },
+        "component": { "const": "plugin-policy" },
+        "filePath": { "$ref": "#/$defs/absoluteWindowsPath" },
+        "policyMetadataPath": { "$ref": "#/$defs/absoluteWindowsPath" },
+        "fileName": { "$ref": "#/$defs/nonEmptyString" },
+        "metadataFileName": { "$ref": "#/$defs/nonEmptyString" },
+        "signingStatusRequired": { "const": "UNSIGNED_CANDIDATE" },
+        "releaseId": { "type": "null" },
+        "uri": { "type": "null" },
+        "requiresReleasePublisherId": { "const": true },
+        "requiresHttpsUri": { "const": true },
+        "requiresIndependentPublisherRevalidation": { "const": true }
+      }
+    },
+    "inputs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": { "$ref": "#/$defs/input" }
+    },
+    "harnessCompatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "path",
+        "sha256",
+        "sizeBytes",
+        "observedAtUtc",
+        "testRunId",
+        "harnessSourceTag"
+      ],
+      "properties": {
+        "status": { "const": "EXTERNAL_RECEIPT_VALIDATED" },
+        "path": { "$ref": "#/$defs/absoluteWindowsPath" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "sizeBytes": { "$ref": "#/$defs/positiveSafeInteger" },
+        "observedAtUtc": { "$ref": "#/$defs/wholeSecondUtc" },
+        "testRunId": { "$ref": "#/$defs/uuid" },
+        "harnessSourceTag": { "const": "dsh-v0.1.2-rc.1" }
+      }
+    },
+    "generationAdmission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ledgerPath",
+        "ledgerSha256",
+        "observedHighestPromotedGeneration",
+        "candidateGeneration",
+        "reservationPath",
+        "reservationSha256",
+        "reservationSizeBytes",
+        "decision"
+      ],
+      "properties": {
+        "ledgerPath": { "$ref": "#/$defs/absoluteWindowsPath" },
+        "ledgerSha256": { "$ref": "#/$defs/sha256" },
+        "observedHighestPromotedGeneration": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "candidateGeneration": { "$ref": "#/$defs/positiveSafeInteger" },
+        "reservationPath": { "$ref": "#/$defs/absoluteWindowsPath" },
+        "reservationSha256": { "$ref": "#/$defs/sha256" },
+        "reservationSizeBytes": { "$ref": "#/$defs/positiveSafeInteger" },
+        "decision": { "const": "EXCLUSIVELY_RESERVED_UNSIGNED_CANDIDATE" }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "repositoryRoot",
+        "headCommit",
+        "repositoryClean",
+        "relevantSourcePathsClean",
+        "workingTreeOverrideUsed",
+        "policyTestScript",
+        "policyBuilderScript",
+        "handoffScript",
+        "skillArtifactTestScript",
+        "compatibilityReceiptTestScript",
+        "generationReservationScript",
+        "skillArtifactVerification",
+        "policyTest"
+      ],
+      "properties": {
+        "status": { "const": "UNSIGNED_CANDIDATE_CONTRACTS_VERIFIED" },
+        "repositoryRoot": { "$ref": "#/$defs/absoluteWindowsPath" },
+        "headCommit": { "$ref": "#/$defs/gitObject" },
+        "repositoryClean": { "const": true },
+        "relevantSourcePathsClean": { "const": true },
+        "workingTreeOverrideUsed": { "const": false },
+        "policyTestScript": { "$ref": "#/$defs/script" },
+        "policyBuilderScript": { "$ref": "#/$defs/script" },
+        "handoffScript": { "$ref": "#/$defs/script" },
+        "skillArtifactTestScript": { "$ref": "#/$defs/script" },
+        "compatibilityReceiptTestScript": { "$ref": "#/$defs/script" },
+        "generationReservationScript": { "$ref": "#/$defs/script" },
+        "skillArtifactVerification": { "const": "VERIFIED_BY_TEST_MANAGED_ARTIFACT" },
+        "policyTest": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    },
+    "signing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "privateKeyUsed", "signerActionRequired"],
+      "properties": {
+        "status": { "const": "UNSIGNED_CANDIDATE" },
+        "privateKeyUsed": { "const": false },
+        "signerActionRequired": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "gitObject": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "wholeSecondUtc": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "positiveSafeInteger": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "nonEmptyString": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "absoluteWindowsPath": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 4096,
+      "pattern": "^(?:[A-Za-z]:\\\\|\\\\\\\\).+$"
+    },
+    "releaseId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$"
+    },
+    "oneReleaseId": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": { "$ref": "#/$defs/releaseId" }
+    },
+    "inputFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fileName", "sizeBytes", "sha256"],
+      "properties": {
+        "fileName": { "$ref": "#/$defs/nonEmptyString" },
+        "sizeBytes": { "$ref": "#/$defs/positiveSafeInteger" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "id", "version", "artifact", "metadata", "source"],
+      "properties": {
+        "kind": { "const": "skill" },
+        "id": { "$ref": "#/$defs/nonEmptyString" },
+        "version": { "$ref": "#/$defs/nonEmptyString" },
+        "artifact": { "$ref": "#/$defs/inputFile" },
+        "metadata": { "$ref": "#/$defs/inputFile" },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["commit", "tree", "builderBlob"],
+          "properties": {
+            "commit": { "$ref": "#/$defs/gitObject" },
+            "tree": { "$ref": "#/$defs/gitObject" },
+            "builderBlob": { "$ref": "#/$defs/gitObject" }
+          }
+        }
+      }
+    },
+    "script": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "$ref": "#/$defs/absoluteWindowsPath" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  }
+}

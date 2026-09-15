@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ensou.example/schemas/enterprise-local-data-forward-result-v1.schema.json",
+  "title": "Ensou DSH enterprise local-data forward result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "resultType", "fromUpstreamTag", "toUpstreamTag", "decision",
+    "sourceRuntimeArchiveSha256", "targetRuntimeArchiveSha256", "targetRuntimeBootPassed",
+    "credentialsMigrationObserved", "credentialsLayoutBefore", "credentialsLayoutAfter",
+    "credentialsSha256Before", "credentialsSha256After", "authoritativeFilesPreserved",
+    "workspaceTreePreserved", "queryPersistence", "treeChanges", "apiLanes",
+    "recordedAtUtc", "coveredLanes", "deferredLanes"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "resultType": { "const": "ensou-dsh-local-data-forward-result" },
+    "fromUpstreamTag": { "$ref": "#/$defs/upstreamTag" },
+    "toUpstreamTag": { "$ref": "#/$defs/upstreamTag" },
+    "decision": { "const": "PASS" },
+    "sourceRuntimeArchiveSha256": { "$ref": "#/$defs/sha256" },
+    "targetRuntimeArchiveSha256": { "$ref": "#/$defs/sha256" },
+    "targetRuntimeBootPassed": { "const": true },
+    "credentialsMigrationObserved": { "const": true },
+    "credentialsLayoutBefore": { "const": "pre-release-flat" },
+    "credentialsLayoutAfter": { "const": "version-1-refs" },
+    "credentialsSha256Before": { "$ref": "#/$defs/sha256" },
+    "credentialsSha256After": { "$ref": "#/$defs/sha256" },
+    "authoritativeFilesPreserved": {
+      "type": "array", "minItems": 4, "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 1024 }
+    },
+    "workspaceTreePreserved": { "const": true },
+    "queryPersistence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["classification", "sqliteArtifactsBefore", "sqliteArtifactsAfter"],
+      "properties": {
+        "classification": { "const": "memory-only-derived" },
+        "sqliteArtifactsBefore": { "type": "array", "maxItems": 0 },
+        "sqliteArtifactsAfter": { "type": "array", "maxItems": 0 }
+      }
+    },
+    "treeChanges": { "type": "array", "items": { "type": "object" } },
+    "apiLanes": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "sourceSeedDecision", "targetForwardDecision", "fullSessionApiRoundTripPassed",
+        "conversationProviderRoundTripPassed", "attachmentPublicApiRoundTripPassed",
+        "sessionQuerySemanticParityPassed", "requestImageNormalization"
+      ],
+      "properties": {
+        "sourceSeedDecision": { "const": "PASS" },
+        "targetForwardDecision": { "const": "PASS" },
+        "fullSessionApiRoundTripPassed": { "const": true },
+        "conversationProviderRoundTripPassed": { "const": true },
+        "attachmentPublicApiRoundTripPassed": { "const": true },
+        "sessionQuerySemanticParityPassed": { "const": true },
+        "requestImageNormalization": {
+          "const": "not-applicable-managed-text-only-policy-public-refusal-proven"
+        }
+      }
+    },
+    "recordedAtUtc": { "type": "string", "format": "date-time" },
+    "coveredLanes": {
+      "type": "array", "minItems": 10, "maxItems": 10, "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 128 }
+    },
+    "deferredLanes": { "type": "array", "maxItems": 0 }
+  },
+  "$defs": {
+    "upstreamTag": { "type": "string", "pattern": "^dsh-v[A-Za-z0-9][A-Za-z0-9._+-]{0,122}$" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}

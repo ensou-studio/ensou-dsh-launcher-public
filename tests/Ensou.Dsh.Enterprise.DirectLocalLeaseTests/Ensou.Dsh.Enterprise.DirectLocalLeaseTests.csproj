@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RootNamespace>Ensou.Dsh.Enterprise.DirectLocalLeaseTests</RootNamespace>
+    <AssemblyName>Ensou.Dsh.Enterprise.DirectLocalLeaseTests</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Ensou.Dsh.Enterprise.Client\Ensou.Dsh.Enterprise.Client.csproj" />
+    <ProjectReference Include="..\..\src\Ensou.Dsh.Enterprise.Contracts\Ensou.Dsh.Enterprise.Contracts.csproj" />
+  </ItemGroup>
+</Project>

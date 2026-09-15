@@ -1,0 +1,167 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://updates.dsh.example.invalid/schemas/personal-reproducible-build-run-v1.schema.json",
+  "title": "Ensou DSH Personal isolated reproducible build run v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "evidenceType",
+    "runLabel",
+    "buildId",
+    "planSha256",
+    "sourceCommit",
+    "sourceTree",
+    "sourceStatus",
+    "sourceInventorySha256",
+    "checkoutIdentitySha256",
+    "outputRootIdentitySha256",
+    "sdkVersion",
+    "buildMode",
+    "packageClosureSha256",
+    "outputs",
+    "result"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "evidenceType": {
+      "const": "ensou-dsh-personal-isolated-reproducible-build-run"
+    },
+    "runLabel": { "enum": ["isolated-a", "isolated-b"] },
+    "buildId": { "$ref": "#/definitions/uuidV4" },
+    "planSha256": { "$ref": "#/definitions/sha256" },
+    "sourceCommit": { "$ref": "#/definitions/gitObject" },
+    "sourceTree": { "$ref": "#/definitions/gitObject" },
+    "sourceStatus": { "const": "CLEAN_TRACKED_HEAD" },
+    "sourceInventorySha256": { "$ref": "#/definitions/sha256" },
+    "checkoutIdentitySha256": { "$ref": "#/definitions/sha256" },
+    "outputRootIdentitySha256": { "$ref": "#/definitions/sha256" },
+    "sdkVersion": { "const": "10.0.302" },
+    "buildMode": {
+      "const": "deterministic-ci-release-win-x64-self-contained-single-file"
+    },
+    "packageClosureSha256": { "$ref": "#/definitions/sha256" },
+    "outputs": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": [
+        {
+          "allOf": [
+            { "$ref": "#/definitions/output" },
+            {
+              "properties": {
+                "role": { "const": "startup-stub" },
+                "fileName": { "const": "Ensou.Dsh.Bootstrapper.exe" }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/definitions/output" },
+            {
+              "properties": {
+                "role": { "const": "client-bootstrapper" },
+                "fileName": { "const": "Ensou.Dsh.ClientBootstrapper.exe" }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/definitions/output" },
+            {
+              "properties": {
+                "role": { "const": "launcher" },
+                "fileName": { "const": "Ensou.Dsh.Launcher.exe" }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/definitions/output" },
+            {
+              "properties": {
+                "role": { "const": "maintenance" },
+                "fileName": { "const": "Ensou.Dsh.Personal.Maintenance.exe" }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/definitions/output" },
+            {
+              "properties": {
+                "role": { "const": "installer" },
+                "fileName": { "const": "Ensou.Dsh.Personal.Installer.exe" }
+              }
+            }
+          ]
+        }
+      ],
+      "additionalItems": false
+    },
+    "result": { "const": "PASS" }
+  },
+  "definitions": {
+    "sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "gitObject": {
+      "type": "string",
+      "minLength": 40,
+      "maxLength": 64,
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "uuidV4": {
+      "type": "string",
+      "minLength": 36,
+      "maxLength": 36,
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "fileName",
+        "sizeBytes",
+        "sha256",
+        "peContentSha256"
+      ],
+      "properties": {
+        "role": {
+          "enum": [
+            "startup-stub",
+            "client-bootstrapper",
+            "launcher",
+            "maintenance",
+            "installer"
+          ]
+        },
+        "fileName": {
+          "enum": [
+            "Ensou.Dsh.Bootstrapper.exe",
+            "Ensou.Dsh.ClientBootstrapper.exe",
+            "Ensou.Dsh.Launcher.exe",
+            "Ensou.Dsh.Personal.Maintenance.exe",
+            "Ensou.Dsh.Personal.Installer.exe"
+          ]
+        },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 256,
+          "maximum": 1073741824
+        },
+        "sha256": { "$ref": "#/definitions/sha256" },
+        "peContentSha256": { "$ref": "#/definitions/sha256" }
+      }
+    }
+  }
+}

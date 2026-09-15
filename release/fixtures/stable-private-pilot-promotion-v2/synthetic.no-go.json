@@ -1,0 +1,504 @@
+{
+  "schemaVersion": 2,
+  "evidenceType": "ensou-dsh-enterprise-stable-private-pilot-promotion-evidence",
+  "evidenceMode": "synthetic-fixture",
+  "orchestrationId": "11111111-1111-4111-8111-111111111111",
+  "edition": "Enterprise",
+  "product": "ensou-dsh-enterprise",
+  "targetChannel": "stable",
+  "exposureRing": "private-pilot",
+  "canonicalStableManifestUri": "https://updates.ensou.example/v2/channels/stable/release-set.v2.json",
+  "r7": {
+    "revision": 7,
+    "phase": "INSTALLER_SIGNATURE_IMPORTED",
+    "headSha256": "0101010101010101010101010101010101010101010101010101010101010101",
+    "receiptRelativePath": "receipts/0007-installer-signature-imported.json",
+    "receiptSha256": "0202020202020202020202020202020202020202020202020202020202020202",
+    "signedInstaller": {
+      "fileName": "Ensou.Dsh.Enterprise.Installer.exe",
+      "relativePath": "imports/installer-signing.v1/signed/Ensou.Dsh.Enterprise.Installer.exe",
+      "sizeBytes": 104857600,
+      "sha256": "0303030303030303030303030303030303030303030303030303030303030303",
+      "peContentSha256": "0404040404040404040404040404040404040404040404040404040404040404",
+      "immutableInstallerIdentitySha256": "0505050505050505050505050505050505050505050505050505050505050505"
+    }
+  },
+  "sourceBaseline": {
+    "releaseSetId": "stable-v2026.08.20.1",
+    "sequence": 9,
+    "manifest": {
+      "role": "release-manifest",
+      "fileName": "release-set.v2.json",
+      "uri": "https://updates.ensou.example/v2/channels/stable/release-set.v2.json",
+      "objectVersionId": "source-manifest-v9",
+      "etag": "\"source-manifest-v9\"",
+      "sizeBytes": 4096,
+      "sha256": "1010101010101010101010101010101010101010101010101010101010101010"
+    },
+    "launcherBinary": {
+      "fileName": "Ensou.Dsh.Enterprise.Launcher.exe",
+      "relativePath": "launcher/stable-v2026.08.20.1/Ensou.Dsh.Enterprise.Launcher.exe",
+      "sizeBytes": 83886080,
+      "sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "peContentSha256": "1212121212121212121212121212121212121212121212121212121212121212"
+    },
+    "authenticode": {
+      "verificationStatus": "PENDING",
+      "status": "PENDING",
+      "digestAlgorithm": "SHA256",
+      "signerCertificateSha256": "1313131313131313131313131313131313131313131313131313131313131313",
+      "timestampProtocol": "RFC3161",
+      "timestampUtc": "2026-08-20T02:00:00Z",
+      "timestampAuthorityCertificateSha256": "1414141414141414141414141414141414141414141414141414141414141414"
+    },
+    "capabilityProbe": {
+      "verificationStatus": "PENDING",
+      "command": "--authenticated-stable-update-capability-self-check",
+      "arguments": [
+        "--authenticated-stable-update-capability-self-check"
+      ],
+      "exitCode": 0,
+      "stdoutSizeBytes": 651,
+      "stdoutSha256": "5216e34e0a76cc1c20a8d23dd24ea69a2186c58c3044c20b5f912a4e13bcf005",
+      "parsed": {
+        "schemaVersion": 1,
+        "probeType": "ensou-dsh-enterprise-authenticated-stable-update-capability-v1",
+        "edition": "Enterprise",
+        "channel": "stable",
+        "manifestPath": "/v2/channels/stable/release-set.v2.json",
+        "freshAuthorizationRequired": true,
+        "admittedClientStates": ["Ready", "UpdateRequired"],
+        "transportContract": "authenticated-dpop-transaction-v1",
+        "transactionClientLifetime": "single-check",
+        "unauthorizedBehavior": "clear-token-lock-session",
+        "forbiddenReadyBehavior": "continue-verified-stable",
+        "forbiddenUpdateRequiredBehavior": "remain-locked",
+        "bootstrapHealthBehavior": "restart-through-stable-bootstrapper",
+        "sideEffectContract": "no-secrets-no-network-no-mutation"
+      },
+      "sideEffects": {
+        "networkRequests": 0,
+        "filesWritten": 0,
+        "persistentStateChanged": false,
+        "secretsEmitted": false
+      },
+      "extraArgumentRejection": {
+        "arguments": [
+          "--authenticated-stable-update-capability-self-check",
+          "unexpected"
+        ],
+        "exitCodeNonZero": true,
+        "stdoutEmpty": true,
+        "stderrMaximumBytes": 256
+      }
+    },
+    "installedBeforePrivatePilot": true,
+    "healthState": "healthy",
+    "installedDeviceIdentitySha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "targetRelease": {
+    "releaseSetId": "stable-v2026.08.31.1",
+    "sequence": 10,
+    "manifest": {
+      "role": "release-manifest",
+      "fileName": "release-set.v2.json",
+      "uri": "https://updates.ensou.example/v2/channels/stable/release-set.v2.json",
+      "objectVersionId": "target-manifest-v10",
+      "etag": "\"target-manifest-v10\"",
+      "sizeBytes": 4608,
+      "sha256": "2020202020202020202020202020202020202020202020202020202020202020"
+    },
+    "artifacts": [
+      {
+        "role": "release-public-key",
+        "fileName": "release-public-key.json",
+        "uri": "https://updates.ensou.example/v2/releases/stable-v2026.08.31.1/release-public-key.json",
+        "objectVersionId": "target-release-key-v10",
+        "etag": "\"target-release-key-v10\"",
+        "sizeBytes": 1024,
+        "sha256": "2121212121212121212121212121212121212121212121212121212121212121"
+      },
+      {
+        "role": "launcher",
+        "fileName": "enterprise-launcher.zip",
+        "uri": "https://updates.ensou.example/v2/releases/stable-v2026.08.31.1/enterprise-launcher.zip",
+        "objectVersionId": "target-launcher-v10",
+        "etag": "\"target-launcher-v10\"",
+        "sizeBytes": 94371840,
+        "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+      },
+      {
+        "role": "runtime",
+        "fileName": "enterprise-runtime.zip",
+        "uri": "https://updates.ensou.example/v2/releases/stable-v2026.08.31.1/enterprise-runtime.zip",
+        "objectVersionId": "target-runtime-v10",
+        "etag": "\"target-runtime-v10\"",
+        "sizeBytes": 209715200,
+        "sha256": "2323232323232323232323232323232323232323232323232323232323232323"
+      }
+    ],
+    "signedInstaller": {
+      "fileName": "Ensou.Dsh.Enterprise.Installer.exe",
+      "relativePath": "imports/installer-signing.v1/signed/Ensou.Dsh.Enterprise.Installer.exe",
+      "sizeBytes": 104857600,
+      "sha256": "0303030303030303030303030303030303030303030303030303030303030303",
+      "peContentSha256": "0404040404040404040404040404040404040404040404040404040404040404",
+      "immutableInstallerIdentitySha256": "0505050505050505050505050505050505050505050505050505050505050505"
+    },
+    "candidateSetSha256": "2424242424242424242424242424242424242424242424242424242424242424",
+    "payloadSetSha256": "2525252525252525252525252525252525252525252525252525252525252525",
+    "releaseTrustProbeSha256": "2626262626262626262626262626262626262626262626262626262626262626",
+    "releaseManifestTrustSha256": "2727272727272727272727272727272727272727272727272727272727272727"
+  },
+  "privatePilot": {
+    "r8": {
+      "revision": 8,
+      "phase": "PILOT_EVIDENCE_BOUND",
+      "evidenceSha256": "3030303030303030303030303030303030303030303030303030303030303030"
+    },
+    "allowlist": {
+      "identityKind": "enterprise-device-authorization",
+      "policyId": "stable-private-pilot",
+      "policyVersion": "v1",
+      "policySha256": "3131313131313131313131313131313131313131313131313131313131313131",
+      "activeFromUtc": "2026-08-31T00:00:00Z",
+      "activeUntilUtc": "2026-08-31T06:00:00Z",
+      "authorizedDeviceIdentitySha256": [
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      ],
+      "defaultDecision": "prior-public-stable"
+    },
+    "devices": [
+      {
+        "deviceIdentitySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "installationId": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+        "machineIdentitySha256": "4141414141414141414141414141414141414141414141414141414141414141",
+        "inventorySha256": "4242424242424242424242424242424242424242424242424242424242424242",
+        "osFamily": "Windows",
+        "osArchitecture": "x64",
+        "osBuild": "26100.4946",
+        "launcherArchitecture": "x64",
+        "lane": "fresh-install",
+        "sourceReleaseSetId": null,
+        "sourceCapabilityProbeSha256": null,
+        "previousInstallAbsent": true,
+        "installerUsed": {
+          "fileName": "Ensou.Dsh.Enterprise.Installer.exe",
+          "relativePath": "imports/installer-signing.v1/signed/Ensou.Dsh.Enterprise.Installer.exe",
+          "sizeBytes": 104857600,
+          "sha256": "0303030303030303030303030303030303030303030303030303030303030303",
+          "peContentSha256": "0404040404040404040404040404040404040404040404040404040404040404",
+          "immutableInstallerIdentitySha256": "0505050505050505050505050505050505050505050505050505050505050505"
+        },
+        "actualArtifactDownload": true,
+        "sameVersionNoOp": false,
+        "targetReleaseSetId": "stable-v2026.08.31.1",
+        "canonicalManifestUri": "https://updates.ensou.example/v2/channels/stable/release-set.v2.json",
+        "observedObjects": [
+          {
+            "role": "release-manifest",
+            "fileName": "release-set.v2.json",
+            "uri": "https://updates.ensou.example/v2/channels/stable/release-set.v2.json",
+            "objectVersionId": "target-manifest-v10",
+            "etag": "\"target-manifest-v10\"",
+            "sizeBytes": 4608,
+            "sha256": "2020202020202020202020202020202020202020202020202020202020202020"
+          },
+          {
+            "role": "release-public-key",
+            "fileName": "release-public-key.json",
+            "uri": "https://updates.ensou.example/v2/releases/stable-v2026.08.31.1/release-public-key.json",
+            "objectVersionId": "target-release-key-v10",
+            "etag": "\"target-release-key-v10\"",
+            "sizeBytes": 1024,
+            "sha256": "2121212121212121212121212121212121212121212121212121212121212121"
+          },
+          {
+            "role": "launcher",
+            "fileName": "enterprise-launcher.zip",
+            "uri": "https://updates.ensou.example/v2/releases/stable-v2026.08.31.1/enterprise-launcher.zip",
+            "objectVersionId": "target-launcher-v10",
+            "etag": "\"target-launcher-v10\"",
+            "sizeBytes": 94371840,
+            "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          {
+            "role": "runtime",
+            "fileName": "enterprise-runtime.zip",
+            "uri": "https://updates.ensou.example/v2/releases/stable-v2026.08.31.1/enterprise-runtime.zip",
+            "objectVersionId": "target-runtime-v10",
+            "etag": "\"target-runtime-v10\"",
+            "sizeBytes": 209715200,
+            "sha256": "2323232323232323232323232323232323232323232323232323232323232323"
+          }
+        ],
+        "bootstrapperHealth": {
+          "completed": true,
+          "targetReleaseSetId": "stable-v2026.08.31.1",
+          "healthState": "healthy",
+          "healthTokenSha256": "4343434343434343434343434343434343434343434343434343434343434343",
+          "receiptSha256": "4444444444444444444444444444444444444444444444444444444444444444",
+          "completedAtUtc": "2026-08-31T02:00:00Z"
+        },
+        "updateReceipt": {
+          "completed": true,
+          "receiptId": "aaaaaaaa-1111-4111-8111-111111111111",
+          "sourceReleaseSetId": null,
+          "targetReleaseSetId": "stable-v2026.08.31.1",
+          "outcome": "INSTALLED",
+          "receiptSha256": "4545454545454545454545454545454545454545454545454545454545454545",
+          "serverAcknowledged": true,
+          "completedAtUtc": "2026-08-31T02:01:00Z"
+        },
+        "workspacePreserved": true,
+        "historyPreserved": true
+      },
+      {
+        "deviceIdentitySha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "installationId": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+        "machineIdentitySha256": "5151515151515151515151515151515151515151515151515151515151515151",
+        "inventorySha256": "5252525252525252525252525252525252525252525252525252525252525252",
+        "osFamily": "Windows",
+        "osArchitecture": "x64",
+        "osBuild": "26100.4946",
+        "launcherArchitecture": "x64",
+        "lane": "online-upgrade",
+        "sourceReleaseSetId": "stable-v2026.08.20.1",
+        "sourceCapabilityProbeSha256": "5216e34e0a76cc1c20a8d23dd24ea69a2186c58c3044c20b5f912a4e13bcf005",
+        "previousInstallAbsent": false,
+        "installerUsed": null,
+        "actualArtifactDownload": true,
+        "sameVersionNoOp": false,
+        "targetReleaseSetId": "stable-v2026.08.31.1",
+        "canonicalManifestUri": "https://updates.ensou.example/v2/channels/stable/release-set.v2.json",
+        "observedObjects": [
+          {
+            "role": "release-manifest",
+            "fileName": "release-set.v2.json",
+            "uri": "https://updates.ensou.example/v2/channels/stable/release-set.v2.json",
+            "objectVersionId": "target-manifest-v10",
+            "etag": "\"target-manifest-v10\"",
+            "sizeBytes": 4608,
+            "sha256": "2020202020202020202020202020202020202020202020202020202020202020"
+          },
+          {
+            "role": "release-public-key",
+            "fileName": "release-public-key.json",
+            "uri": "https://updates.ensou.example/v2/releases/stable-v2026.08.31.1/release-public-key.json",
+            "objectVersionId": "target-release-key-v10",
+            "etag": "\"target-release-key-v10\"",
+            "sizeBytes": 1024,
+            "sha256": "2121212121212121212121212121212121212121212121212121212121212121"
+          },
+          {
+            "role": "launcher",
+            "fileName": "enterprise-launcher.zip",
+            "uri": "https://updates.ensou.example/v2/releases/stable-v2026.08.31.1/enterprise-launcher.zip",
+            "objectVersionId": "target-launcher-v10",
+            "etag": "\"target-launcher-v10\"",
+            "sizeBytes": 94371840,
+            "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          {
+            "role": "runtime",
+            "fileName": "enterprise-runtime.zip",
+            "uri": "https://updates.ensou.example/v2/releases/stable-v2026.08.31.1/enterprise-runtime.zip",
+            "objectVersionId": "target-runtime-v10",
+            "etag": "\"target-runtime-v10\"",
+            "sizeBytes": 209715200,
+            "sha256": "2323232323232323232323232323232323232323232323232323232323232323"
+          }
+        ],
+        "bootstrapperHealth": {
+          "completed": true,
+          "targetReleaseSetId": "stable-v2026.08.31.1",
+          "healthState": "healthy",
+          "healthTokenSha256": "5353535353535353535353535353535353535353535353535353535353535353",
+          "receiptSha256": "5454545454545454545454545454545454545454545454545454545454545454",
+          "completedAtUtc": "2026-08-31T03:00:00Z"
+        },
+        "updateReceipt": {
+          "completed": true,
+          "receiptId": "bbbbbbbb-1111-4111-8111-111111111111",
+          "sourceReleaseSetId": "stable-v2026.08.20.1",
+          "targetReleaseSetId": "stable-v2026.08.31.1",
+          "outcome": "INSTALLED",
+          "receiptSha256": "5555555555555555555555555555555555555555555555555555555555555555",
+          "serverAcknowledged": true,
+          "completedAtUtc": "2026-08-31T03:01:00Z"
+        },
+        "workspacePreserved": true,
+        "historyPreserved": true
+      }
+    ],
+    "unauthorizedControl": {
+      "deviceIdentitySha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "inventorySha256": "6161616161616161616161616161616161616161616161616161616161616161",
+      "authorized": false,
+      "canonicalManifestUri": "https://updates.ensou.example/v2/channels/stable/release-set.v2.json",
+      "authorizationDecision": "prior-public-stable",
+      "httpStatus": 200,
+      "observedReleaseSetId": "stable-v2026.08.20.1",
+      "observedManifestSha256": "1010101010101010101010101010101010101010101010101010101010101010",
+      "candidateBytesDisclosed": false,
+      "cacheControl": "public, max-age=60",
+      "observations": [
+        {
+          "phase": "before",
+          "requestId": "third-device-before",
+          "observedAtUtc": "2026-08-31T00:30:00Z",
+          "releaseSetId": "stable-v2026.08.20.1",
+          "manifestSha256": "1010101010101010101010101010101010101010101010101010101010101010",
+          "etag": "\"source-manifest-v9\""
+        },
+        {
+          "phase": "after",
+          "requestId": "third-device-after",
+          "observedAtUtc": "2026-08-31T03:30:00Z",
+          "releaseSetId": "stable-v2026.08.20.1",
+          "manifestSha256": "1010101010101010101010101010101010101010101010101010101010101010",
+          "etag": "\"source-manifest-v9\""
+        }
+      ]
+    }
+  },
+  "publicPromotion": {
+    "r9": {
+      "revision": 9,
+      "phase": "STABLE_PROMOTION_REQUESTED",
+      "requestSha256": "7070707070707070707070707070707070707070707070707070707070707070"
+    },
+    "r10": {
+      "revision": 10,
+      "phase": "STABLE_FEED_PROMOTED",
+      "receiptSha256": "7171717171717171717171717171717171717171717171717171717171717171"
+    },
+    "canonicalManifestUri": "https://updates.ensou.example/v2/channels/stable/release-set.v2.json",
+    "compareAndSwapApplied": true,
+    "targetBytesUnchanged": true,
+    "publicHeadBefore": {
+      "headSha256": "7272727272727272727272727272727272727272727272727272727272727272",
+      "releaseSetId": "stable-v2026.08.20.1",
+      "manifestSha256": "1010101010101010101010101010101010101010101010101010101010101010",
+      "etag": "\"source-manifest-v9\"",
+      "observedAtUtc": "2026-08-31T00:15:00Z"
+    },
+    "publicHeadAfter": {
+      "headSha256": "7373737373737373737373737373737373737373737373737373737373737373",
+      "releaseSetId": "stable-v2026.08.31.1",
+      "manifestSha256": "2020202020202020202020202020202020202020202020202020202020202020",
+      "etag": "\"target-manifest-v10\"",
+      "observedAtUtc": "2026-08-31T05:00:00Z"
+    },
+    "promotedObjects": [
+      {
+        "role": "release-manifest",
+        "fileName": "release-set.v2.json",
+        "uri": "https://updates.ensou.example/v2/channels/stable/release-set.v2.json",
+        "objectVersionId": "target-manifest-v10",
+        "etag": "\"target-manifest-v10\"",
+        "sizeBytes": 4608,
+        "sha256": "2020202020202020202020202020202020202020202020202020202020202020"
+      },
+      {
+        "role": "release-public-key",
+        "fileName": "release-public-key.json",
+        "uri": "https://updates.ensou.example/v2/releases/stable-v2026.08.31.1/release-public-key.json",
+        "objectVersionId": "target-release-key-v10",
+        "etag": "\"target-release-key-v10\"",
+        "sizeBytes": 1024,
+        "sha256": "2121212121212121212121212121212121212121212121212121212121212121"
+      },
+      {
+        "role": "launcher",
+        "fileName": "enterprise-launcher.zip",
+        "uri": "https://updates.ensou.example/v2/releases/stable-v2026.08.31.1/enterprise-launcher.zip",
+        "objectVersionId": "target-launcher-v10",
+        "etag": "\"target-launcher-v10\"",
+        "sizeBytes": 94371840,
+        "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+      },
+      {
+        "role": "runtime",
+        "fileName": "enterprise-runtime.zip",
+        "uri": "https://updates.ensou.example/v2/releases/stable-v2026.08.31.1/enterprise-runtime.zip",
+        "objectVersionId": "target-runtime-v10",
+        "etag": "\"target-runtime-v10\"",
+        "sizeBytes": 209715200,
+        "sha256": "2323232323232323232323232323232323232323232323232323232323232323"
+      }
+    ]
+  },
+  "attestations": {
+    "server": {
+      "verificationStatus": "PENDING",
+      "algorithm": "ES256",
+      "encoding": "IEEE-P1363",
+      "canonicalization": "JCS-RFC8785",
+      "lowS": true,
+      "purpose": "stable-private-pilot-server-attestation",
+      "keyId": "server-attestation-v1",
+      "payloadSha256": "8181818181818181818181818181818181818181818181818181818181818181",
+      "signature": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    },
+    "devices": [
+      {
+        "verificationStatus": "PENDING",
+        "algorithm": "ES256",
+        "encoding": "IEEE-P1363",
+        "canonicalization": "JCS-RFC8785",
+        "lowS": true,
+        "purpose": "stable-private-pilot-device-attestation",
+        "keyId": "fresh-device-v1",
+        "payloadSha256": "8282828282828282828282828282828282828282828282828282828282828282",
+        "signature": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+      },
+      {
+        "verificationStatus": "PENDING",
+        "algorithm": "ES256",
+        "encoding": "IEEE-P1363",
+        "canonicalization": "JCS-RFC8785",
+        "lowS": true,
+        "purpose": "stable-private-pilot-device-attestation",
+        "keyId": "upgrade-device-v1",
+        "payloadSha256": "8383838383838383838383838383838383838383838383838383838383838383",
+        "signature": "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+      }
+    ],
+    "unauthorizedControl": {
+      "verificationStatus": "PENDING",
+      "algorithm": "ES256",
+      "encoding": "IEEE-P1363",
+      "canonicalization": "JCS-RFC8785",
+      "lowS": true,
+      "purpose": "stable-private-pilot-control-attestation",
+      "keyId": "control-device-v1",
+      "payloadSha256": "8484848484848484848484848484848484848484848484848484848484848484",
+      "signature": "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
+    },
+    "promotion": {
+      "verificationStatus": "PENDING",
+      "algorithm": "ES256",
+      "encoding": "IEEE-P1363",
+      "canonicalization": "JCS-RFC8785",
+      "lowS": true,
+      "purpose": "stable-public-promotion-attestation",
+      "keyId": "promotion-v1",
+      "payloadSha256": "8585858585858585858585858585858585858585858585858585858585858585",
+      "signature": "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
+    }
+  },
+  "verificationStatus": {
+    "authenticode": "PENDING",
+    "rfc3161Timestamp": "PENDING",
+    "baselineCapabilityProbe": "PENDING",
+    "twoWindowsDevices": "PENDING",
+    "authenticatedHttps": "PENDING",
+    "deviceAttestations": "PENDING",
+    "serverAttestation": "PENDING",
+    "publicPromotion": "PENDING"
+  },
+  "collectedAtUtc": "2026-08-31T05:10:00Z",
+  "productionAdmission": "NO_GO"
+}

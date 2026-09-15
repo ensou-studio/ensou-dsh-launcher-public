@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ensou.example/schemas/managed-plugin-generation-ledger-v2.schema.json",
+  "title": "Managed plugin promoted generation ledger v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "ledgerType",
+    "namespace",
+    "policyId",
+    "highestPromotedGeneration",
+    "highestPromotedCandidate"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 2 },
+    "ledgerType": { "const": "managed-plugin-policy-generation" },
+    "namespace": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$"
+    },
+    "policyId": { "$ref": "#/$defs/uuid" },
+    "highestPromotedGeneration": { "$ref": "#/$defs/nonNegativeSafeInteger" },
+    "highestPromotedCandidate": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/candidate" }
+      ]
+    }
+  },
+  "$defs": {
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "generation",
+        "pluginReleaseId",
+        "archiveSha256",
+        "metadataSha256",
+        "rawPolicySha256",
+        "promotionHandoffSha256",
+        "compatibilityReceiptSha256",
+        "reservationSha256",
+        "organizationAdmissionReceiptSha256",
+        "firstPublishedAtUtc"
+      ],
+      "properties": {
+        "generation": { "$ref": "#/$defs/positiveSafeInteger" },
+        "pluginReleaseId": { "$ref": "#/$defs/releaseId" },
+        "archiveSha256": { "$ref": "#/$defs/sha256" },
+        "metadataSha256": { "$ref": "#/$defs/sha256" },
+        "rawPolicySha256": { "$ref": "#/$defs/sha256" },
+        "promotionHandoffSha256": { "$ref": "#/$defs/sha256" },
+        "compatibilityReceiptSha256": { "$ref": "#/$defs/sha256" },
+        "reservationSha256": { "$ref": "#/$defs/sha256" },
+        "organizationAdmissionReceiptSha256": { "$ref": "#/$defs/sha256" },
+        "firstPublishedAtUtc": { "$ref": "#/$defs/wholeSecondUtc" }
+      }
+    },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "wholeSecondUtc": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "nonNegativeSafeInteger": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "positiveSafeInteger": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "releaseId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$"
+    }
+  }
+}

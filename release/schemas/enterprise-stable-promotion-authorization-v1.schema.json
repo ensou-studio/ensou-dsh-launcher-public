@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://updates.ensou.example/schemas/enterprise-stable-promotion-authorization-v1.schema.json",
+  "title": "Ensou DSH enterprise stable promotion authorization v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "product",
+    "channel",
+    "releaseSetId",
+    "manifestSha256",
+    "certificationReceiptSha256",
+    "installerFileName",
+    "installerSizeBytes",
+    "installerSha256",
+    "issuedAtUtc",
+    "expiresAtUtc",
+    "signature"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "product": { "const": "ensou-dsh-enterprise" },
+    "channel": { "const": "stable" },
+    "releaseSetId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"
+    },
+    "manifestSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "certificationReceiptSha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "installerFileName": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*[.]exe$"
+    },
+    "installerSizeBytes": { "type": "integer", "minimum": 1 },
+    "installerSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "issuedAtUtc": { "type": "string", "format": "date-time" },
+    "expiresAtUtc": { "type": "string", "format": "date-time" },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "keyId", "value"],
+      "properties": {
+        "algorithm": { "const": "ES256" },
+        "keyId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{86}$"
+        }
+      }
+    }
+  }
+}

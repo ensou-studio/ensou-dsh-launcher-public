@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RootNamespace>Ensou.Dsh.Personal.ReleasePublisher</RootNamespace>
+    <AssemblyName>Ensou.Dsh.Personal.ReleasePublisher</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ensou.Dsh.Contracts\Ensou.Dsh.Contracts.csproj" />
+    <ProjectReference Include="..\Ensou.Dsh.UpdateEngine\Ensou.Dsh.UpdateEngine.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Ensou.Dsh.Personal.UpdateTests" />
+  </ItemGroup>
+</Project>

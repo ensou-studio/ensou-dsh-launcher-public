@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ensou DSH Launcher external signing request v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "requestType",
+    "orchestrationId",
+    "edition",
+    "releaseSetId",
+    "planSha256",
+    "nonce",
+    "createdAtUtc",
+    "expiresAtUtc",
+    "responseAuthentication",
+    "authenticode",
+    "files"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "requestType": { "const": "ensou-dsh-launcher-client-authenticode-signing" },
+    "orchestrationId": { "type": "string", "format": "uuid" },
+    "edition": { "enum": ["Personal", "Enterprise"] },
+    "releaseSetId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "planSha256": { "$ref": "#/definitions/sha256" },
+    "nonce": { "type": "string", "pattern": "^[A-Za-z0-9_-]{43}$" },
+    "createdAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+    "expiresAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+    "responseAuthentication": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["algorithm", "keyId", "payloadType"],
+          "properties": {
+            "algorithm": { "const": "ES256" },
+            "keyId": { "type": "string", "minLength": 1, "maxLength": 128 },
+            "payloadType": { "const": "ensou-dsh-launcher-external-signing-response-authentication-v1" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["algorithm", "keyId", "purpose", "payloadType"],
+          "properties": {
+            "algorithm": { "const": "ES256" },
+            "keyId": { "type": "string", "minLength": 1, "maxLength": 128 },
+            "purpose": { "const": "client-signing-response" },
+            "payloadType": { "const": "ensou-dsh-launcher-external-signing-response-authentication-v2" }
+          }
+        }
+      ]
+    },
+    "authenticode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["signerSha256Thumbprint", "requireTrustedTimestamp"],
+      "properties": {
+        "signerSha256Thumbprint": { "$ref": "#/definitions/sha256" },
+        "requireTrustedTimestamp": { "const": true }
+      }
+    },
+    "files": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "fileName", "relativePath", "sizeBytes", "sha256", "peContentSha256"],
+        "properties": {
+          "role": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "fileName": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*\\.exe$" },
+          "relativePath": { "type": "string", "pattern": "^unsigned/[A-Za-z0-9][A-Za-z0-9._-]*\\.exe$" },
+          "sizeBytes": { "type": "integer", "minimum": 1, "maximum": 536870912 },
+          "sha256": { "$ref": "#/definitions/sha256" },
+          "peContentSha256": { "$ref": "#/definitions/sha256" }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "wholeSecondUtc": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$" }
+  }
+}

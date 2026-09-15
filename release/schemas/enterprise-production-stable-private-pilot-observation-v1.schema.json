@@ -1,0 +1,635 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ensou DSH Enterprise production Stable private Pilot observation v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "observationType",
+    "observationMode",
+    "orchestrationId",
+    "edition",
+    "product",
+    "targetChannel",
+    "exposureRing",
+    "canonicalStableManifestUri",
+    "r7",
+    "sourceBaseline",
+    "targetRelease",
+    "privatePilot",
+    "attestations",
+    "verificationStatus",
+    "collectedAtUtc",
+    "productionAdmission",
+    "nextRequiredGate"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "observationType": {
+      "const": "ensou-dsh-enterprise-stable-private-pilot-observation"
+    },
+    "observationMode": { "const": "real-device-observation" },
+    "orchestrationId": { "$ref": "#/definitions/uuid" },
+    "edition": { "const": "Enterprise" },
+    "product": { "const": "ensou-dsh-enterprise" },
+    "targetChannel": { "const": "stable" },
+    "exposureRing": { "const": "private-pilot" },
+    "canonicalStableManifestUri": { "$ref": "#/definitions/stableUri" },
+    "r7": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "revision",
+        "phase",
+        "headSha256",
+        "receiptRelativePath",
+        "receiptSha256",
+        "signedInstaller"
+      ],
+      "properties": {
+        "revision": { "const": 7 },
+        "phase": { "const": "INSTALLER_SIGNATURE_IMPORTED" },
+        "headSha256": { "$ref": "#/definitions/sha256" },
+        "receiptRelativePath": {
+          "const": "receipts/0007-installer-signature-imported.json"
+        },
+        "receiptSha256": { "$ref": "#/definitions/sha256" },
+        "signedInstaller": { "$ref": "#/definitions/installer" }
+      }
+    },
+    "sourceBaseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "releaseSetId",
+        "sequence",
+        "manifest",
+        "launcherBinary",
+        "authenticode",
+        "capabilityProbe",
+        "installedBeforePrivatePilot",
+        "healthState",
+        "installedDeviceIdentitySha256"
+      ],
+      "properties": {
+        "releaseSetId": { "$ref": "#/definitions/releaseSetId" },
+        "sequence": { "type": "integer", "minimum": 1 },
+        "manifest": { "$ref": "#/definitions/serverObject" },
+        "launcherBinary": { "$ref": "#/definitions/binaryIdentity" },
+        "authenticode": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "verificationStatus",
+            "status",
+            "digestAlgorithm",
+            "signerCertificateSha256",
+            "timestampProtocol",
+            "timestampUtc",
+            "timestampAuthorityCertificateSha256"
+          ],
+          "properties": {
+            "verificationStatus": { "const": "VERIFIED" },
+            "status": { "const": "Valid" },
+            "digestAlgorithm": { "const": "SHA256" },
+            "signerCertificateSha256": { "$ref": "#/definitions/sha256" },
+            "timestampProtocol": { "const": "RFC3161" },
+            "timestampUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+            "timestampAuthorityCertificateSha256": { "$ref": "#/definitions/sha256" }
+          }
+        },
+        "capabilityProbe": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "verificationStatus",
+            "command",
+            "arguments",
+            "exitCode",
+            "stdoutSizeBytes",
+            "stdoutSha256",
+            "sideEffectContract",
+            "networkRequests",
+            "filesWritten",
+            "persistentStateChanged",
+            "secretsEmitted",
+            "extraArgumentRejected"
+          ],
+          "properties": {
+            "verificationStatus": { "const": "VERIFIED" },
+            "command": {
+              "const": "--authenticated-stable-update-capability-self-check"
+            },
+            "arguments": {
+              "type": "array",
+              "items": [
+                {
+                  "const": "--authenticated-stable-update-capability-self-check"
+                }
+              ],
+              "additionalItems": false,
+              "minItems": 1,
+              "maxItems": 1
+            },
+            "exitCode": { "const": 0 },
+            "stdoutSizeBytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4096
+            },
+            "stdoutSha256": { "$ref": "#/definitions/sha256" },
+            "sideEffectContract": {
+              "const": "no-secrets-no-network-no-mutation"
+            },
+            "networkRequests": { "const": 0 },
+            "filesWritten": { "const": 0 },
+            "persistentStateChanged": { "const": false },
+            "secretsEmitted": { "const": false },
+            "extraArgumentRejected": { "const": true }
+          }
+        },
+        "installedBeforePrivatePilot": { "const": true },
+        "healthState": { "const": "healthy" },
+        "installedDeviceIdentitySha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "targetRelease": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "releaseSetId",
+        "sequence",
+        "manifest",
+        "artifacts",
+        "signedInstaller",
+        "candidateSetSha256",
+        "payloadSetSha256",
+        "releaseTrustProbeSha256",
+        "releaseManifestTrustSha256"
+      ],
+      "properties": {
+        "releaseSetId": { "$ref": "#/definitions/releaseSetId" },
+        "sequence": { "type": "integer", "minimum": 2 },
+        "manifest": { "$ref": "#/definitions/serverObject" },
+        "artifacts": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": { "$ref": "#/definitions/serverObject" }
+        },
+        "signedInstaller": { "$ref": "#/definitions/installer" },
+        "candidateSetSha256": { "$ref": "#/definitions/sha256" },
+        "payloadSetSha256": { "$ref": "#/definitions/sha256" },
+        "releaseTrustProbeSha256": { "$ref": "#/definitions/sha256" },
+        "releaseManifestTrustSha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "privatePilot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowlist", "devices", "unauthorizedControl"],
+      "properties": {
+        "allowlist": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "identityKind",
+            "policyId",
+            "policyVersion",
+            "policySha256",
+            "activeFromUtc",
+            "activeUntilUtc",
+            "authorizedDeviceIdentitySha256",
+            "defaultDecision"
+          ],
+          "properties": {
+            "identityKind": { "const": "enterprise-device-authorization" },
+            "policyId": { "$ref": "#/definitions/token" },
+            "policyVersion": { "$ref": "#/definitions/token" },
+            "policySha256": { "$ref": "#/definitions/sha256" },
+            "activeFromUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+            "activeUntilUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+            "authorizedDeviceIdentitySha256": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "uniqueItems": true,
+              "items": { "$ref": "#/definitions/sha256" }
+            },
+            "defaultDecision": { "const": "prior-public-stable" }
+          }
+        },
+        "devices": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "$ref": "#/definitions/device" }
+        },
+        "unauthorizedControl": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "deviceIdentitySha256",
+            "inventorySha256",
+            "authorized",
+            "canonicalManifestUri",
+            "authorizationDecision",
+            "httpStatus",
+            "observedReleaseSetId",
+            "observedManifestSha256",
+            "candidateBytesDisclosed",
+            "cacheControl",
+            "beforeObservedAtUtc",
+            "afterObservedAtUtc"
+          ],
+          "properties": {
+            "deviceIdentitySha256": { "$ref": "#/definitions/sha256" },
+            "inventorySha256": { "$ref": "#/definitions/sha256" },
+            "authorized": { "const": false },
+            "canonicalManifestUri": { "$ref": "#/definitions/stableUri" },
+            "authorizationDecision": { "const": "prior-public-stable" },
+            "httpStatus": { "const": 200 },
+            "observedReleaseSetId": { "$ref": "#/definitions/releaseSetId" },
+            "observedManifestSha256": { "$ref": "#/definitions/sha256" },
+            "candidateBytesDisclosed": { "const": false },
+            "cacheControl": { "const": "public, max-age=60" },
+            "beforeObservedAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+            "afterObservedAtUtc": { "$ref": "#/definitions/wholeSecondUtc" }
+          }
+        }
+      }
+    },
+    "attestations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["server", "devices", "unauthorizedControl"],
+      "properties": {
+        "server": {
+          "allOf": [
+            { "$ref": "#/definitions/attestation" },
+            {
+              "properties": {
+                "purpose": {
+                  "const": "stable-private-pilot-server-attestation"
+                }
+              }
+            }
+          ]
+        },
+        "devices": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "allOf": [
+              { "$ref": "#/definitions/attestation" },
+              {
+                "properties": {
+                  "purpose": {
+                    "const": "stable-private-pilot-device-attestation"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "unauthorizedControl": {
+          "allOf": [
+            { "$ref": "#/definitions/attestation" },
+            {
+              "properties": {
+                "purpose": {
+                  "const": "stable-private-pilot-control-attestation"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "verificationStatus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authenticode",
+        "rfc3161Timestamp",
+        "baselineCapabilityProbe",
+        "twoWindowsDevices",
+        "authenticatedHttps",
+        "deviceAttestations",
+        "serverAttestation",
+        "unauthorizedControl"
+      ],
+      "properties": {
+        "authenticode": { "const": "VERIFIED" },
+        "rfc3161Timestamp": { "const": "VERIFIED" },
+        "baselineCapabilityProbe": { "const": "VERIFIED" },
+        "twoWindowsDevices": { "const": "VERIFIED" },
+        "authenticatedHttps": { "const": "VERIFIED" },
+        "deviceAttestations": { "const": "VERIFIED" },
+        "serverAttestation": { "const": "VERIFIED" },
+        "unauthorizedControl": { "const": "VERIFIED" }
+      }
+    },
+    "collectedAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+    "productionAdmission": { "const": "NO_GO" },
+    "nextRequiredGate": { "const": "PILOT_EVIDENCE_BOUND" }
+  },
+  "definitions": {
+    "sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "uuid": {
+      "type": "string",
+      "minLength": 36,
+      "maxLength": 36,
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "releaseSetId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"
+    },
+    "token": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$"
+    },
+    "wholeSecondUtc": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 20,
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "stableUri": {
+      "type": "string",
+      "maxLength": 2048,
+      "pattern": "^https://[A-Za-z0-9.-]+(?::[0-9]{1,5})?/v2/channels/stable/release-set[.]v2[.]json$"
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)[.][.](?:/|$))[A-Za-z0-9._+/-]+$"
+    },
+    "serverObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "fileName",
+        "uri",
+        "objectVersionId",
+        "etag",
+        "sizeBytes",
+        "sha256"
+      ],
+      "properties": {
+        "role": {
+          "enum": [
+            "release-manifest",
+            "release-public-key",
+            "launcher",
+            "runtime",
+            "plugin-policy"
+          ]
+        },
+        "fileName": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,254}$"
+        },
+        "uri": {
+          "type": "string",
+          "maxLength": 2048,
+          "pattern": "^https://[^?#\\s]+$"
+        },
+        "objectVersionId": { "$ref": "#/definitions/token" },
+        "etag": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 128,
+          "pattern": "^\\\"[^\\\"]{1,126}\\\"$"
+        },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8589934592
+        },
+        "sha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "binaryIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fileName",
+        "relativePath",
+        "sizeBytes",
+        "sha256",
+        "peContentSha256"
+      ],
+      "properties": {
+        "fileName": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*[.]exe$"
+        },
+        "relativePath": { "$ref": "#/definitions/relativePath" },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1073741824
+        },
+        "sha256": { "$ref": "#/definitions/sha256" },
+        "peContentSha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "installer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fileName",
+        "relativePath",
+        "sizeBytes",
+        "sha256",
+        "peContentSha256"
+      ],
+      "properties": {
+        "fileName": { "const": "Ensou.Dsh.Enterprise.Installer.exe" },
+        "relativePath": {
+          "const": "imports/installer-signing.v1/signed/Ensou.Dsh.Enterprise.Installer.exe"
+        },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1073741824
+        },
+        "sha256": { "$ref": "#/definitions/sha256" },
+        "peContentSha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "device": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "deviceIdentitySha256",
+        "installationId",
+        "machineIdentitySha256",
+        "inventorySha256",
+        "osFamily",
+        "osArchitecture",
+        "osBuild",
+        "launcherArchitecture",
+        "lane",
+        "sourceReleaseSetId",
+        "sourceCapabilityProbeSha256",
+        "previousInstallAbsent",
+        "installerUsed",
+        "actualArtifactDownload",
+        "sameVersionNoOp",
+        "targetReleaseSetId",
+        "canonicalManifestUri",
+        "observedObjects",
+        "bootstrapperHealth",
+        "updateReceipt",
+        "workspacePreserved",
+        "historyPreserved"
+      ],
+      "properties": {
+        "deviceIdentitySha256": { "$ref": "#/definitions/sha256" },
+        "installationId": { "$ref": "#/definitions/uuid" },
+        "machineIdentitySha256": { "$ref": "#/definitions/sha256" },
+        "inventorySha256": { "$ref": "#/definitions/sha256" },
+        "osFamily": { "const": "Windows" },
+        "osArchitecture": { "const": "x64" },
+        "osBuild": {
+          "type": "string",
+          "pattern": "^[0-9]{5}[.][0-9]{1,6}$"
+        },
+        "launcherArchitecture": { "const": "x64" },
+        "lane": { "enum": ["fresh-install", "online-upgrade"] },
+        "sourceReleaseSetId": {
+          "oneOf": [
+            { "$ref": "#/definitions/releaseSetId" },
+            { "type": "null" }
+          ]
+        },
+        "sourceCapabilityProbeSha256": {
+          "oneOf": [
+            { "$ref": "#/definitions/sha256" },
+            { "type": "null" }
+          ]
+        },
+        "previousInstallAbsent": { "type": "boolean" },
+        "installerUsed": {
+          "oneOf": [
+            { "$ref": "#/definitions/installer" },
+            { "type": "null" }
+          ]
+        },
+        "actualArtifactDownload": { "const": true },
+        "sameVersionNoOp": { "const": false },
+        "targetReleaseSetId": { "$ref": "#/definitions/releaseSetId" },
+        "canonicalManifestUri": { "$ref": "#/definitions/stableUri" },
+        "observedObjects": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": { "$ref": "#/definitions/serverObject" }
+        },
+        "bootstrapperHealth": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "completed",
+            "targetReleaseSetId",
+            "healthState",
+            "healthTokenSha256",
+            "receiptSha256",
+            "completedAtUtc"
+          ],
+          "properties": {
+            "completed": { "const": true },
+            "targetReleaseSetId": { "$ref": "#/definitions/releaseSetId" },
+            "healthState": { "const": "healthy" },
+            "healthTokenSha256": { "$ref": "#/definitions/sha256" },
+            "receiptSha256": { "$ref": "#/definitions/sha256" },
+            "completedAtUtc": { "$ref": "#/definitions/wholeSecondUtc" }
+          }
+        },
+        "updateReceipt": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "completed",
+            "receiptId",
+            "sourceReleaseSetId",
+            "targetReleaseSetId",
+            "outcome",
+            "receiptSha256",
+            "serverAcknowledged",
+            "completedAtUtc"
+          ],
+          "properties": {
+            "completed": { "const": true },
+            "receiptId": { "$ref": "#/definitions/uuid" },
+            "sourceReleaseSetId": {
+              "oneOf": [
+                { "$ref": "#/definitions/releaseSetId" },
+                { "type": "null" }
+              ]
+            },
+            "targetReleaseSetId": { "$ref": "#/definitions/releaseSetId" },
+            "outcome": { "const": "INSTALLED" },
+            "receiptSha256": { "$ref": "#/definitions/sha256" },
+            "serverAcknowledged": { "const": true },
+            "completedAtUtc": { "$ref": "#/definitions/wholeSecondUtc" }
+          }
+        },
+        "workspacePreserved": { "const": true },
+        "historyPreserved": { "const": true }
+      }
+    },
+    "attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "verificationStatus",
+        "algorithm",
+        "encoding",
+        "canonicalization",
+        "lowS",
+        "purpose",
+        "keyId",
+        "payloadSha256",
+        "signature"
+      ],
+      "properties": {
+        "verificationStatus": { "const": "VERIFIED" },
+        "algorithm": { "const": "ES256" },
+        "encoding": { "const": "IEEE-P1363" },
+        "canonicalization": { "const": "ENSOU-R8-CANONICAL-JSON-V1" },
+        "lowS": { "const": true },
+        "purpose": {
+          "enum": [
+            "stable-private-pilot-server-attestation",
+            "stable-private-pilot-device-attestation",
+            "stable-private-pilot-control-attestation"
+          ]
+        },
+        "keyId": { "$ref": "#/definitions/token" },
+        "payloadSha256": { "$ref": "#/definitions/sha256" },
+        "signature": {
+          "type": "string",
+          "minLength": 86,
+          "maxLength": 86,
+          "pattern": "^[A-Za-z0-9_-]{86}$"
+        }
+      }
+    }
+  }
+}

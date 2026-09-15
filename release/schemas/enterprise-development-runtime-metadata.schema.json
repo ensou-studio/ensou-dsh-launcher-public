@@ -1,0 +1,278 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ensou.example/schemas/dsh/enterprise-development-runtime-metadata.schema.json",
+  "title": "Ensou Development-E2E managed source runtime metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "releaseId", "promotionEligible", "artifactType", "sourceBuilt", "platform",
+    "sourceIdentity", "sourceRepository", "sourceTag", "sourceCommit", "sourceTree",
+    "dshVersion", "baseLockfileSha256", "lockfileSha256", "runtimeWebAuthProtocol", "managedPatch",
+    "managedPolicy", "builtAtUtc", "toolchain", "verification", "artifact", "licensing"
+  ],
+  "oneOf": [
+    {
+      "properties": {
+        "promotionEligible": { "const": true },
+        "releaseId": {
+          "pattern": "^managed-v[0-9]{4}\\.[0-9]{2}\\.[0-9]{2}\\.[1-9][0-9]*$"
+        },
+        "lockfileSha256": { "const": "0cc4aba6915e0221cf65f806c5ab932849137d5aa4f8f8d129afd6501b8bef7f" },
+        "managedPatch": { "properties": { "id": { "pattern": "^dsh-v[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?-enterprise-managed-v[1-9][0-9]*$" } } }
+      }
+    },
+    {
+      "properties": {
+        "promotionEligible": { "const": false },
+        "releaseId": {
+          "pattern": "^lab-[A-Za-z0-9][A-Za-z0-9._-]{0,123}$"
+        }
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "lockfileSha256": { "const": "0cc4aba6915e0221cf65f806c5ab932849137d5aa4f8f8d129afd6501b8bef7f" },
+            "managedPatch": { "properties": { "id": { "pattern": "^dsh-v[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?-enterprise-managed-v[1-9][0-9]*$" } } }
+          }
+        },
+        {
+          "$comment": "Exact independently replayed initial local Candidate22 only. This branch cannot authorize production promotion or arbitrary patched runtimes.",
+          "properties": {
+            "releaseId": { "const": "lab-rc1-candidate22-20260911-13" },
+            "lockfileSha256": { "const": "8f7056e679f38165b9f48fc3a3ba31920ea1edca28e796a73327007737a7e3f5" },
+            "managedPatch": {
+              "properties": {
+                "id": { "const": "dsh-v0.1.2-rc.1-candidate22-local-lab" },
+                "manifestSchema": { "const": "ensou.dsh.upstream-patch-manifest.v3" },
+                "manifestSha256": { "const": "f83a73bbe7df7d5c218e3d26442a9f2dc84b5ea6f60a0131d078b2a20138b6d2" },
+                "patchSha256": { "const": "9d11c88037161763f81a69e7c05d411c3711b7b53395c5f537cb6de752795372" },
+                "patchBytes": { "const": 675934 },
+                "changedFileCount": { "const": 185 },
+                "modifiedPreimageCount": { "const": 153 }
+              }
+            },
+            "artifact": {
+              "properties": {
+                "fileName": { "const": "EnsouDshRuntime-lab-rc1-candidate22-20260911-13-win-x64.zip" },
+                "sizeBytes": { "const": 104413259 },
+                "sha256": { "const": "b2afef17bbbfe86225a4738e6adcf7b6085bf09a016446f15e4dce730c67ee78" }
+              }
+            }
+          }
+        },
+        {
+          "$comment": "Exact independently rebuilt Candidate22 update target only; same upstream source, distinct archive and internal build record. Lab admission is not production promotion.",
+          "properties": {
+            "releaseId": { "const": "lab-rc1-candidate22-20260911-15" },
+            "lockfileSha256": { "const": "8f7056e679f38165b9f48fc3a3ba31920ea1edca28e796a73327007737a7e3f5" },
+            "managedPatch": {
+              "properties": {
+                "id": { "const": "dsh-v0.1.2-rc.1-candidate22-local-lab" },
+                "manifestSchema": { "const": "ensou.dsh.upstream-patch-manifest.v3" },
+                "manifestSha256": { "const": "f83a73bbe7df7d5c218e3d26442a9f2dc84b5ea6f60a0131d078b2a20138b6d2" },
+                "patchSha256": { "const": "9d11c88037161763f81a69e7c05d411c3711b7b53395c5f537cb6de752795372" },
+                "patchBytes": { "const": 675934 },
+                "changedFileCount": { "const": 185 },
+                "modifiedPreimageCount": { "const": 153 }
+              }
+            },
+            "artifact": {
+              "properties": {
+                "fileName": { "const": "EnsouDshRuntime-lab-rc1-candidate22-20260911-15-win-x64.zip" },
+                "sizeBytes": { "const": 104413343 },
+                "sha256": { "const": "f93859a807c9858a0aa5c40375763548348cb180beeb3f83ebb1b8bc59f09f8f" }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "properties": {
+    "schemaVersion": { "const": 2 },
+    "releaseId": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^(?:managed-v[0-9]{4}\\.[0-9]{2}\\.[0-9]{2}\\.[1-9][0-9]*|lab-[A-Za-z0-9][A-Za-z0-9._-]{0,123})$"
+    },
+    "promotionEligible": { "type": "boolean" },
+    "artifactType": { "const": "ensou-dsh-enterprise-managed-source-runtime" },
+    "sourceBuilt": { "const": true },
+    "platform": { "const": "win32-x64" },
+    "sourceIdentity": { "const": "github-https-tag-plus-ensou-managed-patch" },
+    "sourceRepository": { "const": "https://github.com/deepseek-ai/deepseek-harness.git" },
+    "sourceTag": {
+      "const": "dsh-v0.1.2-rc.1"
+    },
+    "sourceCommit": { "const": "a66e4702047846cdaa10c66c9d3df3951f5ea70d" },
+    "sourceTree": { "const": "27ab636bb3d77e698f5637e518db44ae1f61e262" },
+    "dshVersion": {
+      "const": "0.1.2-rc.1"
+    },
+    "baseLockfileSha256": {
+      "const": "e12083149a77f790d39b64d018b6b8745c6a7aa95777ecb73e0a2f5ed5fdd0d9"
+    },
+    "lockfileSha256": {
+      "enum": ["0cc4aba6915e0221cf65f806c5ab932849137d5aa4f8f8d129afd6501b8bef7f", "8f7056e679f38165b9f48fc3a3ba31920ea1edca28e796a73327007737a7e3f5"]
+    },
+    "runtimeWebAuthProtocol": {
+      "const": "browser-launch-cookie-v1"
+    },
+    "managedPatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "manifestSchema", "manifestSha256", "patchSha256", "patchBytes",
+        "changedFileCount", "modifiedPreimageCount"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 192,
+          "anyOf": [
+            { "pattern": "^dsh-v[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?-enterprise-managed-v[1-9][0-9]*$" },
+            { "const": "dsh-v0.1.2-rc.1-candidate22-local-lab" }
+          ]
+        },
+        "manifestSchema": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^ensou\\.dsh\\.upstream-patch-manifest\\.v[1-9][0-9]*$"
+        },
+        "manifestSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "patchSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "patchBytes": { "type": "integer", "minimum": 1, "maximum": 67108864 },
+        "changedFileCount": { "type": "integer", "minimum": 1, "maximum": 100000 },
+        "modifiedPreimageCount": { "type": "integer", "minimum": 0, "maximum": 100000 }
+      }
+    },
+    "managedPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "signal", "profile", "webArguments", "model", "maxTokens",
+        "gatewayAllowedModel", "gatewayMaxTokens", "managedSkillsRootEnvironment",
+        "sandboxMode", "sandboxMaximumMode", "approvalPolicy", "permissionPresets",
+        "workspaceRootSource", "restoredSessionCwdPolicy", "hostCompositionCanonicalSha256",
+        "presetCompositionCanonicalSha256", "presetMetadataCanonicalSha256",
+        "loaderRootCanonicalSha256", "pluginResolutionPolicy"
+      ],
+      "properties": {
+        "signal": { "const": "DSH_ENTERPRISE_MANAGED_BOOT=ensou-dsh-launcher/v1" },
+        "profile": { "const": "enterprise-managed" },
+        "webArguments": { "const": "--host 127.0.0.1 --port <canonical 1..65535>" },
+        "model": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "maxTokens": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+        "gatewayAllowedModel": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "gatewayMaxTokens": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+        "managedSkillsRootEnvironment": { "const": "ENSOU_DSH_ENTERPRISE_SKILLS_ROOT" },
+        "sandboxMode": { "const": "workspace-write" },
+        "sandboxMaximumMode": { "const": "workspace-write" },
+        "approvalPolicy": { "const": "ask" },
+        "permissionPresets": {
+          "type": "array", "minItems": 1, "maxItems": 1,
+          "items": { "const": "workspace-write" }
+        },
+        "workspaceRootSource": { "const": "process.cwd()" },
+        "restoredSessionCwdPolicy": { "const": "must-equal-workspace-root" },
+        "hostCompositionCanonicalSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "presetCompositionCanonicalSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "presetMetadataCanonicalSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "loaderRootCanonicalSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "pluginResolutionPolicy": { "type": "string", "minLength": 1, "maxLength": 1024 }
+      }
+    },
+    "builtAtUtc": { "type": "string", "format": "date-time", "maxLength": 64 },
+    "toolchain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nodeVersion", "nodeSha256", "pnpmVersion", "npmVersion"],
+      "properties": {
+        "nodeVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "nodeSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "pnpmVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "npmVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cleanCheckout", "tagCommitMatch", "remoteTagCommitMatch", "tagSignatureVerified",
+        "officialCheckoutUnchanged", "patchManifestValidated", "patchPreimagesVerified",
+        "patchApplyCheck", "patchPostimagesVerified", "frozenLockfileInstall",
+        "managedFocusedTests", "managedWindowsExcludedFocusedTests", "managedChangedPackageTypeBuild",
+        "managedCliBundle", "managedSourceGates", "sourceBuild", "builtPackageInvariants",
+        "deploymentMode", "runtimeClosureAgainstPinnedSourceAndLock", "runtimeClosurePackageCount",
+        "portableCommandShimGate", "symlinkFreeRuntime", "bundledNodeVersionSmoke",
+        "nativeModuleSmoke", "webProfileDumpSmoke", "webHttpSmoke",
+        "managedExactEnvironmentSmoke", "managedWorkspaceCwdSmoke", "managedRefusalSmoke",
+        "extractedArtifactHashManifestVerified", "extractedArtifactSmoke", "buildToolingExcluded",
+        "webSmokeUrl", "externalNetworkIsolation"
+      ],
+      "properties": {
+        "cleanCheckout": { "const": true },
+        "tagCommitMatch": { "const": true },
+        "remoteTagCommitMatch": { "const": true },
+        "tagSignatureVerified": { "type": "boolean" },
+        "officialCheckoutUnchanged": { "const": true },
+        "patchManifestValidated": { "const": true },
+        "patchPreimagesVerified": { "const": true },
+        "patchApplyCheck": { "const": true },
+        "patchPostimagesVerified": { "const": true },
+        "frozenLockfileInstall": { "const": true },
+        "managedFocusedTests": { "const": true },
+        "managedWindowsExcludedFocusedTests": { "const": true },
+        "managedChangedPackageTypeBuild": { "const": true },
+        "managedCliBundle": { "const": true },
+        "managedSourceGates": { "const": true },
+        "sourceBuild": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "builtPackageInvariants": { "const": true },
+        "deploymentMode": { "const": "pnpm-dedicated-lockfile-offline-deploy" },
+        "runtimeClosureAgainstPinnedSourceAndLock": { "const": true },
+        "runtimeClosurePackageCount": { "type": "integer", "minimum": 1, "maximum": 100000 },
+        "portableCommandShimGate": { "const": true },
+        "symlinkFreeRuntime": { "const": true },
+        "bundledNodeVersionSmoke": { "const": true },
+        "nativeModuleSmoke": {
+          "type": "array", "minItems": 1, "maxItems": 32,
+          "items": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "uniqueItems": true
+        },
+        "webProfileDumpSmoke": { "const": true },
+        "webHttpSmoke": { "const": true },
+        "managedExactEnvironmentSmoke": { "const": true },
+        "managedWorkspaceCwdSmoke": { "const": true },
+        "managedRefusalSmoke": { "const": true },
+        "extractedArtifactHashManifestVerified": { "const": true },
+        "extractedArtifactSmoke": { "const": true },
+        "buildToolingExcluded": { "const": true },
+        "webSmokeUrl": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "externalNetworkIsolation": { "type": "boolean" }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fileName", "sizeBytes", "sha256"],
+      "properties": {
+        "fileName": {
+          "type": "string", "maxLength": 255,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*\\.zip$"
+        },
+        "sizeBytes": { "type": "integer", "minimum": 1, "maximum": 8589934592 },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "licensing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["harnessLicense", "noticesIncluded", "organizationReviewRequired"],
+      "properties": {
+        "harnessLicense": { "const": "MIT" },
+        "noticesIncluded": { "const": true },
+        "organizationReviewRequired": { "const": true }
+      }
+    }
+  }
+}

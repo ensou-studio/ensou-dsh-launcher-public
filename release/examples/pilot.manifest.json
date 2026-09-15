@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "releaseId": "managed-v2026.08.23.1",
+  "channel": "pilot",
+  "launcherVersion": "0.1.0-lab.1",
+  "dshVersion": "0.1.1-rc.2",
+  "publishedAtUtc": "2026-08-24T00:00:00.0000000Z",
+  "minimumBootstrapperVersion": "0.1.0",
+  "artifact": {
+    "url": "https://updates.example.com/releases/managed-v2026.08.23.1/EnsouDshRuntime-managed-v2026.08.23.1-win-x64.zip",
+    "fileName": "EnsouDshRuntime-managed-v2026.08.23.1-win-x64.zip",
+    "sizeBytes": 104729835,
+    "sha256": "baa69c5a534e2d53b73c8f3b5571e0ae0e73faa64b60d2a3b986439b6423d87f"
+  },
+  "signature": {
+    "algorithm": "ES256",
+    "keyId": "example-key-not-for-production",
+    "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+  }
+}

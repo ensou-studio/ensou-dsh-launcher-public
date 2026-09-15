@@ -1,0 +1,260 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ensou DSH Launcher Installer signature admission v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "admissionType",
+    "orchestrationId",
+    "edition",
+    "releaseSetId",
+    "channel",
+    "planSha256",
+    "sourceTree",
+    "sourceBuildInputSetSha256",
+    "r7Head",
+    "r7Receipt",
+    "request",
+    "response",
+    "candidateSetSha256",
+    "payloadSetSha256",
+    "r3SignedClientSetSha256",
+    "releaseManifestTrustSha256",
+    "releaseManifestTrustProbeSetSha256",
+    "toolchainLockSha256",
+    "targetBuildIdentitySha256",
+    "unsignedInstaller",
+    "signedInstaller",
+    "authenticodeEvidenceSha256",
+    "payloadSelfCheckResultSha256",
+    "verification",
+    "productionAdmission",
+    "nextRequiredGate"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "admissionType": {
+      "const": "ensou-dsh-launcher-installer-signature-admission"
+    },
+    "orchestrationId": { "$ref": "#/definitions/orchestrationId" },
+    "edition": { "enum": ["Personal", "Enterprise"] },
+    "releaseSetId": { "$ref": "#/definitions/releaseSetId" },
+    "channel": { "enum": ["pilot", "stable"] },
+    "planSha256": { "$ref": "#/definitions/sha256" },
+    "sourceTree": {
+      "type": "string",
+      "minLength": 40,
+      "maxLength": 64,
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "sourceBuildInputSetSha256": { "$ref": "#/definitions/sha256" },
+    "r7Head": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relativePath", "sha256", "revision", "phase", "receiptSha256"],
+      "properties": {
+        "relativePath": { "const": "head.json" },
+        "sha256": { "$ref": "#/definitions/sha256" },
+        "revision": { "const": 7 },
+        "phase": { "const": "INSTALLER_SIGNATURE_IMPORTED" },
+        "receiptSha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "r7Receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relativePath", "sha256"],
+      "properties": {
+        "relativePath": {
+          "const": "receipts/0007-installer-signature-imported.json"
+        },
+        "sha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relativePath",
+        "sha256",
+        "nonce",
+        "baseHeadSha256",
+        "r6HeadSha256",
+        "r6ReceiptSha256",
+        "createdAtUtc",
+        "expiresAtUtc"
+      ],
+      "properties": {
+        "relativePath": {
+          "const": "requests/installer-signing.v1/installer-signing-request.v1.json"
+        },
+        "sha256": { "$ref": "#/definitions/sha256" },
+        "nonce": { "$ref": "#/definitions/nonce" },
+        "baseHeadSha256": { "$ref": "#/definitions/sha256" },
+        "r6HeadSha256": { "$ref": "#/definitions/sha256" },
+        "r6ReceiptSha256": { "$ref": "#/definitions/sha256" },
+        "createdAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "expiresAtUtc": { "$ref": "#/definitions/wholeSecondUtc" }
+      }
+    },
+    "response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relativePath", "sha256", "completedAtUtc"],
+      "properties": {
+        "relativePath": {
+          "const": "imports/installer-signing.v1/installer-signing-response.v1.json"
+        },
+        "sha256": { "$ref": "#/definitions/sha256" },
+        "completedAtUtc": { "$ref": "#/definitions/wholeSecondUtc" }
+      }
+    },
+    "candidateSetSha256": { "$ref": "#/definitions/sha256" },
+    "payloadSetSha256": { "$ref": "#/definitions/sha256" },
+    "r3SignedClientSetSha256": { "$ref": "#/definitions/sha256" },
+    "releaseManifestTrustSha256": { "$ref": "#/definitions/sha256" },
+    "releaseManifestTrustProbeSetSha256": {
+      "$ref": "#/definitions/sha256"
+    },
+    "toolchainLockSha256": { "$ref": "#/definitions/sha256" },
+    "targetBuildIdentitySha256": { "$ref": "#/definitions/sha256" },
+    "unsignedInstaller": { "$ref": "#/definitions/installerIdentity" },
+    "signedInstaller": { "$ref": "#/definitions/installerIdentity" },
+    "authenticodeEvidenceSha256": { "$ref": "#/definitions/sha256" },
+    "payloadSelfCheckResultSha256": { "$ref": "#/definitions/sha256" },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requestSchema",
+        "responseSchema",
+        "outerEs256P1363LowS",
+        "exactRequestNonceAndWindow",
+        "exactR5R6HeadsAndReceipts",
+        "exactReplay",
+        "unsignedFullSha256",
+        "signedFullSha256",
+        "peContentPreserved",
+        "authenticodeStatusValid",
+        "primarySignedCmsSha256",
+        "spcIndirectDataPeDigest",
+        "rfc3161PrimarySignerBinding",
+        "payloadSelfCheck",
+        "releaseManifestTrustProbe"
+      ],
+      "properties": {
+        "requestSchema": { "const": "VERIFIED" },
+        "responseSchema": { "const": "VERIFIED" },
+        "outerEs256P1363LowS": { "const": "VERIFIED" },
+        "exactRequestNonceAndWindow": { "const": "VERIFIED" },
+        "exactR5R6HeadsAndReceipts": { "const": "VERIFIED" },
+        "exactReplay": { "const": "VERIFIED" },
+        "unsignedFullSha256": { "const": "VERIFIED" },
+        "signedFullSha256": { "const": "VERIFIED" },
+        "peContentPreserved": { "const": "VERIFIED" },
+        "authenticodeStatusValid": { "const": "VERIFIED" },
+        "primarySignedCmsSha256": { "const": "VERIFIED" },
+        "spcIndirectDataPeDigest": { "const": "VERIFIED" },
+        "rfc3161PrimarySignerBinding": { "const": "VERIFIED" },
+        "payloadSelfCheck": { "const": "VERIFIED" },
+        "releaseManifestTrustProbe": { "const": "VERIFIED" }
+      }
+    },
+    "productionAdmission": { "const": "NO_GO" },
+    "nextRequiredGate": {
+      "enum": ["PILOT_PROMOTION_REQUESTED", "PILOT_EVIDENCE_BOUND"]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "channel": { "const": "pilot" } },
+        "required": ["channel"]
+      },
+      "then": {
+        "properties": {
+          "nextRequiredGate": { "const": "PILOT_PROMOTION_REQUESTED" }
+        }
+      },
+      "else": {
+        "properties": {
+          "nextRequiredGate": { "const": "PILOT_EVIDENCE_BOUND" }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "edition": { "const": "Enterprise" } },
+        "required": ["edition"]
+      },
+      "then": { "properties": { "channel": { "const": "stable" } } }
+    }
+  ],
+  "definitions": {
+    "sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "orchestrationId": {
+      "type": "string",
+      "minLength": 36,
+      "maxLength": 36,
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "nonce": {
+      "type": "string",
+      "minLength": 43,
+      "maxLength": 43,
+      "pattern": "^[A-Za-z0-9_-]{43}$"
+    },
+    "token": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "releaseSetId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"
+    },
+    "wholeSecondUtc": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 20,
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "installerIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fileName",
+        "relativePath",
+        "sizeBytes",
+        "sha256",
+        "peContentSha256"
+      ],
+      "properties": {
+        "fileName": {
+          "type": "string",
+          "pattern": "^Ensou[.]Dsh[.](?:Personal|Enterprise)[.]Installer[.]exe$"
+        },
+        "relativePath": {
+          "type": "string",
+          "pattern": "^(?:requests|imports)/installer-signing[.]v1/(?:unsigned|signed)/Ensou[.]Dsh[.](?:Personal|Enterprise)[.]Installer[.]exe$"
+        },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1073741824
+        },
+        "sha256": { "$ref": "#/definitions/sha256" },
+        "peContentSha256": { "$ref": "#/definitions/sha256" }
+      }
+    }
+  }
+}

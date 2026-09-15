@@ -1,0 +1,26 @@
+{
+  "contract": "ensou-dsh-lease+jwt",
+  "warning": "PUBLIC TEST MATERIAL ONLY. Never use this signing key in a deployed control plane.",
+  "lease_signing_jwk": {
+    "kty": "EC",
+    "crv": "P-256",
+    "kid": "lease-test-2026-01",
+    "x": "2N_Gf2Sd2psMzflS-3tMN3Zj5p1AScLHHVblKgA9GzQ",
+    "y": "T86eGwq3Hm-vFYCErjH-5xaReKY1dYL7mm2KYS93iWc",
+    "d": "AuuVW5E6Rvs3d021A1_kavYr9-TbWQSThZa0E9_PEY0"
+  },
+  "protected_header_json": "{\"alg\":\"ES256\",\"kid\":\"lease-test-2026-01\",\"typ\":\"ensou-dsh-lease+jwt\"}",
+  "payload_json": "{\"schema_version\":1,\"jti\":\"bbbbbbbb-0000-4000-8000-000000000001\",\"iss\":\"https://control.example.com/\",\"aud\":\"ensou-dsh-enterprise-launcher\",\"sub\":\"aaaaaaaa-0000-4000-8000-000000000001\",\"binding_id\":\"22222222-2222-4222-8222-222222222222\",\"installation_id\":\"aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee\",\"device_key_thumbprint\":\"ayY_DdALxkWIDe83lcomEHWhq_hAcYZvRn2peZf5MmM\",\"employee_state\":\"ACTIVE\",\"device_state\":\"ACTIVE\",\"api_allocation_state\":\"ACTIVE\",\"auth_epoch\":1,\"entitlement_epoch\":1,\"binding_epoch\":1,\"api_allocation_id\":\"33333333-3333-4333-8333-333333333333\",\"allocation_epoch\":1,\"api_profile_id\":\"44444444-4444-4444-8444-444444444444\",\"api_profile_version\":1,\"plugin_policy_id\":\"55555555-5555-4555-8555-555555555555\",\"plugin_policy_generation\":7,\"plugin_policy_sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"rollout_channel\":\"PILOT\",\"gateway_origin\":\"https://gateway.example.com/\",\"artifact_origin\":\"https://artifacts.example.com/\",\"support_display\":\"ENSOU IT\",\"iat\":1787551200,\"nbf\":1787551200,\"exp\":1787552100}",
+  "protected_header_base64url": "eyJhbGciOiJFUzI1NiIsImtpZCI6ImxlYXNlLXRlc3QtMjAyNi0wMSIsInR5cCI6ImVuc291LWRzaC1sZWFzZStqd3QifQ",
+  "payload_base64url": "eyJzY2hlbWFfdmVyc2lvbiI6MSwianRpIjoiYmJiYmJiYmItMDAwMC00MDAwLTgwMDAtMDAwMDAwMDAwMDAxIiwiaXNzIjoiaHR0cHM6Ly9jb250cm9sLmV4YW1wbGUuY29tLyIsImF1ZCI6ImVuc291LWRzaC1lbnRlcnByaXNlLWxhdW5jaGVyIiwic3ViIjoiYWFhYWFhYWEtMDAwMC00MDAwLTgwMDAtMDAwMDAwMDAwMDAxIiwiYmluZGluZ19pZCI6IjIyMjIyMjIyLTIyMjItNDIyMi04MjIyLTIyMjIyMjIyMjIyMiIsImluc3RhbGxhdGlvbl9pZCI6ImFhYWFhYWFhLWJiYmItNGNjYy04ZGRkLWVlZWVlZWVlZWVlZSIsImRldmljZV9rZXlfdGh1bWJwcmludCI6ImF5WV9EZEFMeGtXSURlODNsY29tRUhXaHFfaEFjWVp2Um4ycGVaZjVNbU0iLCJlbXBsb3llZV9zdGF0ZSI6IkFDVElWRSIsImRldmljZV9zdGF0ZSI6IkFDVElWRSIsImFwaV9hbGxvY2F0aW9uX3N0YXRlIjoiQUNUSVZFIiwiYXV0aF9lcG9jaCI6MSwiZW50aXRsZW1lbnRfZXBvY2giOjEsImJpbmRpbmdfZXBvY2giOjEsImFwaV9hbGxvY2F0aW9uX2lkIjoiMzMzMzMzMzMtMzMzMy00MzMzLTgzMzMtMzMzMzMzMzMzMzMzIiwiYWxsb2NhdGlvbl9lcG9jaCI6MSwiYXBpX3Byb2ZpbGVfaWQiOiI0NDQ0NDQ0NC00NDQ0LTQ0NDQtODQ0NC00NDQ0NDQ0NDQ0NDQiLCJhcGlfcHJvZmlsZV92ZXJzaW9uIjoxLCJwbHVnaW5fcG9saWN5X2lkIjoiNTU1NTU1NTUtNTU1NS00NTU1LTg1NTUtNTU1NTU1NTU1NTU1IiwicGx1Z2luX3BvbGljeV9nZW5lcmF0aW9uIjo3LCJwbHVnaW5fcG9saWN5X3NoYTI1NiI6ImFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWEiLCJyb2xsb3V0X2NoYW5uZWwiOiJQSUxPVCIsImdhdGV3YXlfb3JpZ2luIjoiaHR0cHM6Ly9nYXRld2F5LmV4YW1wbGUuY29tLyIsImFydGlmYWN0X29yaWdpbiI6Imh0dHBzOi8vYXJ0aWZhY3RzLmV4YW1wbGUuY29tLyIsInN1cHBvcnRfZGlzcGxheSI6IkVOU09VIElUIiwiaWF0IjoxNzg3NTUxMjAwLCJuYmYiOjE3ODc1NTEyMDAsImV4cCI6MTc4NzU1MjEwMH0",
+  "signing_input_sha256_base64url": "BivQvz62Sr3bMEBR_rbo9jB__qn4x2GhyondYpYvjPc",
+  "signature_p1363_base64url": "K3LWLrW_R9EX9FySSnco8ChjfbTc9rrW6BfvIOw95GlnzvtxX0DlOGvrdB8RzVEmKf5Jq2Hb1hQUeVbem88sCA",
+  "compact_jws": "eyJhbGciOiJFUzI1NiIsImtpZCI6ImxlYXNlLXRlc3QtMjAyNi0wMSIsInR5cCI6ImVuc291LWRzaC1sZWFzZStqd3QifQ.eyJzY2hlbWFfdmVyc2lvbiI6MSwianRpIjoiYmJiYmJiYmItMDAwMC00MDAwLTgwMDAtMDAwMDAwMDAwMDAxIiwiaXNzIjoiaHR0cHM6Ly9jb250cm9sLmV4YW1wbGUuY29tLyIsImF1ZCI6ImVuc291LWRzaC1lbnRlcnByaXNlLWxhdW5jaGVyIiwic3ViIjoiYWFhYWFhYWEtMDAwMC00MDAwLTgwMDAtMDAwMDAwMDAwMDAxIiwiYmluZGluZ19pZCI6IjIyMjIyMjIyLTIyMjItNDIyMi04MjIyLTIyMjIyMjIyMjIyMiIsImluc3RhbGxhdGlvbl9pZCI6ImFhYWFhYWFhLWJiYmItNGNjYy04ZGRkLWVlZWVlZWVlZWVlZSIsImRldmljZV9rZXlfdGh1bWJwcmludCI6ImF5WV9EZEFMeGtXSURlODNsY29tRUhXaHFfaEFjWVp2Um4ycGVaZjVNbU0iLCJlbXBsb3llZV9zdGF0ZSI6IkFDVElWRSIsImRldmljZV9zdGF0ZSI6IkFDVElWRSIsImFwaV9hbGxvY2F0aW9uX3N0YXRlIjoiQUNUSVZFIiwiYXV0aF9lcG9jaCI6MSwiZW50aXRsZW1lbnRfZXBvY2giOjEsImJpbmRpbmdfZXBvY2giOjEsImFwaV9hbGxvY2F0aW9uX2lkIjoiMzMzMzMzMzMtMzMzMy00MzMzLTgzMzMtMzMzMzMzMzMzMzMzIiwiYWxsb2NhdGlvbl9lcG9jaCI6MSwiYXBpX3Byb2ZpbGVfaWQiOiI0NDQ0NDQ0NC00NDQ0LTQ0NDQtODQ0NC00NDQ0NDQ0NDQ0NDQiLCJhcGlfcHJvZmlsZV92ZXJzaW9uIjoxLCJwbHVnaW5fcG9saWN5X2lkIjoiNTU1NTU1NTUtNTU1NS00NTU1LTg1NTUtNTU1NTU1NTU1NTU1IiwicGx1Z2luX3BvbGljeV9nZW5lcmF0aW9uIjo3LCJwbHVnaW5fcG9saWN5X3NoYTI1NiI6ImFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWEiLCJyb2xsb3V0X2NoYW5uZWwiOiJQSUxPVCIsImdhdGV3YXlfb3JpZ2luIjoiaHR0cHM6Ly9nYXRld2F5LmV4YW1wbGUuY29tLyIsImFydGlmYWN0X29yaWdpbiI6Imh0dHBzOi8vYXJ0aWZhY3RzLmV4YW1wbGUuY29tLyIsInN1cHBvcnRfZGlzcGxheSI6IkVOU09VIElUIiwiaWF0IjoxNzg3NTUxMjAwLCJuYmYiOjE3ODc1NTEyMDAsImV4cCI6MTc4NzU1MjEwMH0.K3LWLrW_R9EX9FySSnco8ChjfbTc9rrW6BfvIOw95GlnzvtxX0DlOGvrdB8RzVEmKf5Jq2Hb1hQUeVbem88sCA",
+  "expected_verification": true,
+  "response_consistency": {
+    "binding_id": "22222222-2222-4222-8222-222222222222",
+    "access_token_expires_at": "2026-08-24T06:10:00Z",
+    "lease_expires_at": "2026-08-24T06:15:00Z",
+    "server_time": "2026-08-24T06:00:00Z"
+  }
+}

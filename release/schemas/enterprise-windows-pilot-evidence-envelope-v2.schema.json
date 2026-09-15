@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.ensou.example/enterprise-windows-pilot-evidence-envelope-v2.schema.json",
+  "title": "Ensou DSH Enterprise Windows Pilot evidence envelope v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "evidenceType", "body", "attestation"],
+  "properties": {
+    "schemaVersion": { "const": 2 },
+    "evidenceType": {
+      "const": "ensou-dsh-enterprise-windows-pilot-evidence-envelope"
+    },
+    "body": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "evidenceType", "sizeBytes", "sha256"],
+      "properties": {
+        "schemaVersion": { "const": 2 },
+        "evidenceType": {
+          "const": "ensou-dsh-enterprise-windows-pilot-evidence-body"
+        },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16777216
+        },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "keyId", "value"],
+      "properties": {
+        "algorithm": { "const": "ES256" },
+        "keyId": { "$ref": "#/$defs/keyId" },
+        "value": {
+          "type": "string",
+          "minLength": 86,
+          "maxLength": 86,
+          "pattern": "^[A-Za-z0-9_-]{86}$"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "keyId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+    }
+  }
+}

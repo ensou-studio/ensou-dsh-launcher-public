@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "policyType": "ensou-dsh-windows-pilot-signing-execution-policy",
+  "executionAdmission": "NO_GO_EXAMPLE",
+  "profile": "EnterpriseTwoDevice",
+  "signTool": {
+    "path": "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.26100.0\\x64\\signtool.exe",
+    "fileVersion": "10.0.26100.2454",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "authenticode": {
+    "storeLocation": "CurrentUser/My",
+    "certificateThumbprintSha1": "0000000000000000000000000000000000000000",
+    "certificateSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "provider": "Microsoft Software Key Storage Provider",
+    "algorithmGroup": "RSA",
+    "keySizeBits": 3072,
+    "pilotRootCertificatePath": "C:\\EnsouSigning\\enterprise\\policy\\enterprise-pilot-root-public.cer",
+    "pilotRootCertificateSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "minimumValidityDays": 7
+  },
+  "tsa": {
+    "uri": "http://timestamp.digicert.com/",
+    "canonicalUriSha256": "9a44be2d0f498a8bfd2dd1a5e5cced2135e9c4ada9bb5a04eed4c6c5beba1a33",
+    "trustedSignerChains": [
+      {
+        "chainId": "replace-with-approved-tsa-chain-id",
+        "validFromUtc": "2026-01-01T00:00:00Z",
+        "validUntilUtc": "2027-01-01T00:00:00Z",
+        "leafCertificateSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "intermediateCertificateSha256s": [
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        "rootCertificateSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    ]
+  },
+  "responseKeys": {
+    "clientSigning": {
+      "algorithm": "ES256",
+      "provider": "Microsoft Software Key Storage Provider",
+      "keyName": "ensou-dsh-enterprise-pilot-client-response",
+      "keyId": "replace-with-approved-client-response-key-id",
+      "purpose": "client-signing-response",
+      "x": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "y": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    },
+    "enterpriseInstallerSigning": {
+      "algorithm": "ES256",
+      "provider": "Microsoft Software Key Storage Provider",
+      "keyName": "ensou-dsh-enterprise-pilot-installer-response",
+      "keyId": "replace-with-approved-installer-response-key-id",
+      "purpose": "installer-signing-response",
+      "x": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "y": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    }
+  },
+  "roots": {
+    "requestRoot": "C:\\EnsouSigning\\enterprise\\requests",
+    "transactionRoot": "C:\\EnsouSigning\\enterprise\\transactions",
+    "outputRoot": "C:\\EnsouSigning\\enterprise\\responses"
+  },
+  "limits": {
+    "signToolTimeoutSeconds": 120,
+    "maximumProcessOutputBytes": 65536
+  }
+}

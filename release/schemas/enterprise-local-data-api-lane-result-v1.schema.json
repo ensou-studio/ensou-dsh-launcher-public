@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ensou.example/schemas/enterprise-local-data-api-lane-result-v1.schema.json",
+  "title": "Ensou DSH cross-runtime local-data API lane result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "resultType", "phase", "decision", "runtimeArchiveSha256",
+    "runtimeBootPassed", "priorStateExpectationPassed", "sessionCreate",
+    "sessionApiResumeAppend", "conversationProviderRoundTrip",
+    "sessionQuerySemanticParity", "attachment", "provider", "recordedAtUtc"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "resultType": { "const": "ensou-dsh-cross-runtime-api-lane-result" },
+    "phase": { "enum": ["source-seed", "target-forward", "source-restored"] },
+    "decision": { "const": "PASS" },
+    "runtimeArchiveSha256": { "$ref": "#/$defs/sha256" },
+    "runtimeBootPassed": { "const": true },
+    "priorStateExpectationPassed": { "const": true },
+    "sourceMarkersPreserved": { "const": true },
+    "targetOnlyMarkerAbsentAfterRestore": { "const": true },
+    "sessionCreate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["passed", "sessionId", "agentPreset"],
+      "properties": {
+        "passed": { "const": true },
+        "sessionId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "agentPreset": { "const": "enterprise" }
+      }
+    },
+    "sessionApiResumeAppend": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "passed", "priorStateExpectationPassed", "eventCountBefore", "eventCountAfter",
+        "priorMarkersPreserved", "appendedPromptMarker", "appendedProviderMarker"
+      ],
+      "properties": {
+        "passed": { "const": true },
+        "priorStateExpectationPassed": { "const": true },
+        "eventCountBefore": { "type": "integer", "minimum": 0 },
+        "eventCountAfter": { "type": "integer", "minimum": 1 },
+        "priorMarkersPreserved": {
+          "type": "array", "maxItems": 32, "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 4096 }
+        },
+        "appendedPromptMarker": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "appendedProviderMarker": { "type": "string", "minLength": 1, "maxLength": 4096 }
+      }
+    },
+    "conversationProviderRoundTrip": {
+      "type": "object", "additionalProperties": false,
+      "required": ["passed", "promptMarker", "responseMarker"],
+      "properties": {
+        "passed": { "const": true },
+        "promptMarker": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "responseMarker": { "type": "string", "minLength": 1, "maxLength": 4096 }
+      }
+    },
+    "sessionQuerySemanticParity": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "passed", "queryAttempted", "mode", "errorCode", "diagnosticClass",
+        "messageSha256", "sessionId"
+      ],
+      "properties": {
+        "passed": { "const": true },
+        "queryAttempted": { "const": true },
+        "mode": { "const": "managed-disabled-public-api-policy" },
+        "errorCode": { "const": "internal" },
+        "diagnosticClass": { "const": "session-query-open-at-never" },
+        "messageSha256": { "$ref": "#/$defs/sha256" },
+        "sessionId": { "type": "string", "minLength": 1, "maxLength": 256 }
+      }
+    },
+    "attachment": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "publicApiRoundTripPassed", "attachmentId", "returnedBytes", "returnedSha256",
+        "metadata", "requestImageNormalization"
+      ],
+      "properties": {
+        "publicApiRoundTripPassed": { "const": true },
+        "attachmentId": { "type": "string", "minLength": 8, "maxLength": 256 },
+        "returnedBytes": { "type": "integer", "minimum": 1 },
+        "returnedSha256": { "$ref": "#/$defs/sha256" },
+        "metadata": {
+          "type": "object", "additionalProperties": false,
+          "required": ["attachmentId", "mediaType", "bytes", "width", "height", "name"],
+          "properties": {
+            "attachmentId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+            "mediaType": { "const": "image/png" },
+            "bytes": { "type": "integer", "minimum": 1 },
+            "width": { "type": "integer", "minimum": 1 },
+            "height": { "type": "integer", "minimum": 1 },
+            "name": { "type": "string", "minLength": 1, "maxLength": 1024 }
+          }
+        },
+        "requestImageNormalization": {
+          "type": "object", "additionalProperties": false,
+          "required": ["status", "publicPolicyRefusal", "requestImageFiles"],
+          "properties": {
+            "status": { "const": "not-applicable-managed-text-only-policy" },
+            "publicPolicyRefusal": {
+              "type": "object", "additionalProperties": false,
+              "required": [
+                "stage", "code", "diagnosticClass", "messageSha256", "provider", "model"
+              ],
+              "properties": {
+                "stage": { "enum": ["select-model", "image-prompt"] },
+                "code": { "enum": ["model-unavailable", "attachment-error"] },
+                "diagnosticClass": {
+                  "enum": [
+                    "managed-text-only-model-selection-refusal",
+                    "managed-text-only-image-prompt-refusal"
+                  ]
+                },
+                "messageSha256": { "$ref": "#/$defs/sha256" },
+                "provider": { "const": "deepseek-official" },
+                "model": { "const": "deepseek-v4-flash-vision-exp" }
+              },
+              "oneOf": [
+                {
+                  "properties": {
+                    "stage": { "const": "select-model" },
+                    "code": { "const": "model-unavailable" },
+                    "diagnosticClass": {
+                      "const": "managed-text-only-model-selection-refusal"
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "stage": { "const": "image-prompt" },
+                    "code": { "const": "attachment-error" },
+                    "diagnosticClass": {
+                      "const": "managed-text-only-image-prompt-refusal"
+                    }
+                  }
+                }
+              ]
+            },
+            "requestImageFiles": {
+              "type": "array", "maxItems": 0,
+              "items": { "type": "string", "minLength": 1, "maxLength": 1024 }
+            }
+          }
+        }
+      }
+    },
+    "provider": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "loopbackOnly", "requestCount", "chatCompletionCount", "fileRequestCount", "requests"
+      ],
+      "properties": {
+        "loopbackOnly": { "const": true },
+        "requestCount": { "type": "integer", "minimum": 1, "maximum": 10000 },
+        "chatCompletionCount": { "type": "integer", "minimum": 1, "maximum": 10000 },
+        "fileRequestCount": { "type": "integer", "minimum": 0, "maximum": 10000 },
+        "requests": {
+          "type": "array", "minItems": 1, "maxItems": 10000,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": [
+              "method", "path", "kind", "model", "stream", "responseMarker",
+              "requestSha256", "imageProjectionCount", "imageProjections"
+            ],
+            "properties": {
+              "method": { "const": "POST" },
+              "path": { "const": "/v1/chat/completions" },
+              "kind": { "const": "chat-completions" },
+              "model": { "const": "deepseek-v4-flash" },
+              "stream": { "const": true },
+              "responseMarker": { "type": "string", "minLength": 1, "maxLength": 4096 },
+              "requestSha256": { "$ref": "#/$defs/sha256" },
+              "imageProjectionCount": { "const": 0 },
+              "imageProjections": { "type": "array", "maxItems": 0 }
+            }
+          }
+        }
+      }
+    },
+    "recordedAtUtc": { "type": "string", "format": "date-time" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "phase": { "const": "source-seed" } }, "required": ["phase"] },
+      "then": {
+        "properties": {
+          "sessionApiResumeAppend": {
+            "properties": { "priorMarkersPreserved": { "maxItems": 0 } }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "phase": { "const": "target-forward" } }, "required": ["phase"] },
+      "then": {
+        "required": ["sourceMarkersPreserved"],
+        "properties": {
+          "sessionApiResumeAppend": {
+            "properties": { "priorMarkersPreserved": { "minItems": 2 } }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "phase": { "const": "source-restored" } }, "required": ["phase"] },
+      "then": {
+        "required": ["targetOnlyMarkerAbsentAfterRestore"],
+        "properties": {
+          "sessionApiResumeAppend": {
+            "properties": { "priorMarkersPreserved": { "minItems": 2 } }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}

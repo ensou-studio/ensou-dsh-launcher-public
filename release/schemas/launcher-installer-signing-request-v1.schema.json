@@ -1,0 +1,1112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ensou DSH Launcher Installer signing request v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "requestType",
+    "orchestrationId",
+    "edition",
+    "releaseSetId",
+    "channel",
+    "planSha256",
+    "sourceCommit",
+    "sourceTree",
+    "sourceBuildInputSetSha256",
+    "sourceBuildInputs",
+    "baseHeadSha256",
+    "baseRevision",
+    "basePhase",
+    "requestedRevision",
+    "requestNonce",
+    "createdAtUtc",
+    "expiresAtUtc",
+    "r5Evidence",
+    "candidate",
+    "r3Evidence",
+    "installerPayload",
+    "toolchainLock",
+    "toolchainLockSha256",
+    "buildExecution",
+    "unsignedInstaller",
+    "payloadSelfCheck",
+    "responseAuthentication"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "requestType": {
+      "const": "ensou-dsh-launcher-installer-signing-request"
+    },
+    "orchestrationId": { "$ref": "#/definitions/orchestrationId" },
+    "edition": { "enum": ["Personal", "Enterprise"] },
+    "releaseSetId": { "$ref": "#/definitions/releaseSetId" },
+    "channel": { "enum": ["pilot", "stable"] },
+    "planSha256": { "$ref": "#/definitions/sha256" },
+    "sourceCommit": { "$ref": "#/definitions/sourceCommit" },
+    "sourceTree": { "$ref": "#/definitions/sourceCommit" },
+    "sourceBuildInputSetSha256": { "$ref": "#/definitions/sha256" },
+    "sourceBuildInputs": { "$ref": "#/definitions/sourceBuildInputs" },
+    "baseHeadSha256": { "$ref": "#/definitions/sha256" },
+    "baseRevision": { "const": 5 },
+    "basePhase": {
+      "enum": [
+        "PILOT_SIGNED_CANDIDATE_IMPORTED",
+        "STABLE_SIGNED_CANDIDATE_IMPORTED"
+      ]
+    },
+    "requestedRevision": { "const": 6 },
+    "requestNonce": { "$ref": "#/definitions/nonce" },
+    "createdAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+    "expiresAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+    "r5Evidence": { "$ref": "#/definitions/r5Evidence" },
+    "candidate": { "$ref": "#/definitions/candidate" },
+    "r3Evidence": { "$ref": "#/definitions/r3Evidence" },
+    "installerPayload": { "$ref": "#/definitions/installerPayload" },
+    "toolchainLock": { "$ref": "#/definitions/toolchainLock" },
+    "toolchainLockSha256": { "$ref": "#/definitions/sha256" },
+    "buildExecution": { "$ref": "#/definitions/buildExecution" },
+    "unsignedInstaller": { "$ref": "#/definitions/unsignedInstaller" },
+    "payloadSelfCheck": { "$ref": "#/definitions/payloadSelfCheck" },
+    "responseAuthentication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "keyId",
+        "purpose",
+        "payloadType",
+        "trustSha256",
+        "maximumResponseAgeMinutes"
+      ],
+      "properties": {
+        "algorithm": { "const": "ES256" },
+        "keyId": { "$ref": "#/definitions/token" },
+        "purpose": { "const": "installer-signing-response" },
+        "payloadType": {
+          "const": "ensou-dsh-launcher-installer-signing-response-authentication-v1"
+        },
+        "trustSha256": { "$ref": "#/definitions/sha256" },
+        "maximumResponseAgeMinutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1440
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "edition": { "const": "Personal" } },
+        "required": ["edition"]
+      },
+      "then": {
+        "properties": {
+          "candidate": { "$ref": "#/definitions/personalCandidate" },
+          "r3Evidence": { "$ref": "#/definitions/personalR3Evidence" },
+          "installerPayload": {
+            "$ref": "#/definitions/personalInstallerPayload"
+          },
+          "unsignedInstaller": {
+            "allOf": [
+              { "$ref": "#/definitions/unsignedInstaller" },
+              {
+                "properties": {
+                  "fileName": { "const": "Ensou.Dsh.Personal.Installer.exe" },
+                  "relativePath": {
+                    "const": "unsigned/Ensou.Dsh.Personal.Installer.exe"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "channel": { "const": "stable" },
+          "candidate": { "$ref": "#/definitions/enterpriseCandidate" },
+          "r3Evidence": { "$ref": "#/definitions/enterpriseR3Evidence" },
+          "installerPayload": {
+            "$ref": "#/definitions/enterpriseInstallerPayload"
+          },
+          "unsignedInstaller": {
+            "allOf": [
+              { "$ref": "#/definitions/unsignedInstaller" },
+              {
+                "properties": {
+                  "fileName": {
+                    "const": "Ensou.Dsh.Enterprise.Installer.exe"
+                  },
+                  "relativePath": {
+                    "const": "unsigned/Ensou.Dsh.Enterprise.Installer.exe"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "sourceCommit": {
+      "type": "string",
+      "minLength": 40,
+      "maxLength": 64,
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "orchestrationId": {
+      "type": "string",
+      "minLength": 36,
+      "maxLength": 36,
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "nonce": {
+      "type": "string",
+      "minLength": 43,
+      "maxLength": 43,
+      "pattern": "^[A-Za-z0-9_-]{43}$"
+    },
+    "token": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "releaseSetId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"
+    },
+    "fileName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "wholeSecondUtc": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 20,
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "fileSize": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 8589934592
+    },
+    "installerFileSize": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1073741824
+    },
+    "sourceBuildInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "identityPath"],
+      "properties": {
+        "kind": {
+          "enum": [
+            "source",
+            "project",
+            "directory-build-props",
+            "directory-build-targets",
+            "directory-build-targets-absent",
+            "global-json",
+            "packages-lock",
+            "restore-graph",
+            "runtime-pack",
+            "generated-input"
+          ]
+        },
+        "identityPath": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 1024,
+          "pattern": "^(?:repo|generated|runtime-pack|payload)/(?!(?:[.][.]|[.])(?:/|$))[A-Za-z0-9._+-]+(?:/(?!(?:[.][.]|[.])(?:/|$))[A-Za-z0-9._+-]+)*$"
+        },
+        "snapshotRelativePath": {
+          "type": "string",
+          "minLength": 21,
+          "maxLength": 1200,
+          "pattern": "^build-inputs/(?!(?:[.][.]|[.])(?:/|$))[A-Za-z0-9._+-]+(?:/(?!(?:[.][.]|[.])(?:/|$))[A-Za-z0-9._+-]+)*$"
+        },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1073741824
+        },
+        "sha256": { "$ref": "#/definitions/sha256" },
+        "absenceStatus": { "const": "VERIFIED_ABSENT" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": { "const": "directory-build-targets-absent" }
+            },
+            "required": ["kind"]
+          },
+          "then": {
+            "required": ["absenceStatus"],
+            "properties": {
+              "identityPath": { "const": "repo/Directory.Build.targets" }
+            },
+            "not": {
+              "anyOf": [
+                { "required": ["snapshotRelativePath"] },
+                { "required": ["sizeBytes"] },
+                { "required": ["sha256"] }
+              ]
+            }
+          },
+          "else": {
+            "required": ["snapshotRelativePath", "sizeBytes", "sha256"],
+            "not": { "required": ["absenceStatus"] }
+          }
+        }
+      ]
+    },
+    "sourceBuildInputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract",
+        "sourceTree",
+        "rootProjectIdentityPath",
+        "inventorySha256",
+        "preBuildInventorySha256",
+        "postBuildInventorySha256",
+        "totalSizeBytes",
+        "trackedClean",
+        "dirtyPathCount",
+        "untrackedPathCount",
+        "linkedInputCount",
+        "raceCheckStatus",
+        "files"
+      ],
+      "properties": {
+        "contract": {
+          "const": "tracked-clean-ordinary-single-link-exact-msbuild-graph-v1"
+        },
+        "sourceTree": { "$ref": "#/definitions/sourceCommit" },
+        "rootProjectIdentityPath": {
+          "type": "string",
+          "pattern": "^repo/src/Ensou[.]Dsh[.](?:Personal|Enterprise)[.]Installer/Ensou[.]Dsh[.](?:Personal|Enterprise)[.]Installer[.]csproj$"
+        },
+        "inventorySha256": { "$ref": "#/definitions/sha256" },
+        "preBuildInventorySha256": { "$ref": "#/definitions/sha256" },
+        "postBuildInventorySha256": { "$ref": "#/definitions/sha256" },
+        "totalSizeBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1073741824
+        },
+        "trackedClean": { "const": true },
+        "dirtyPathCount": { "const": 0 },
+        "untrackedPathCount": { "const": 0 },
+        "linkedInputCount": { "const": 0 },
+        "raceCheckStatus": { "const": "VERIFIED_UNCHANGED" },
+        "files": {
+          "type": "array",
+          "minItems": 8,
+          "maxItems": 4096,
+          "items": { "$ref": "#/definitions/sourceBuildInput" }
+        }
+      }
+    },
+    "r5Evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "headRelativePath",
+        "headSha256",
+        "receiptRelativePath",
+        "receiptSha256",
+        "manifestPublishingRequestSha256",
+        "manifestPublishingResponseSha256",
+        "manifestRelativePath",
+        "manifestSha256",
+        "releaseManifestTrustSha256",
+        "releaseCompatibilitySha256",
+        "productionAdmission"
+      ],
+      "properties": {
+        "headRelativePath": { "const": "head.json" },
+        "headSha256": { "$ref": "#/definitions/sha256" },
+        "receiptRelativePath": {
+          "enum": [
+            "receipts/0005-pilot-signed-candidate-imported.json",
+            "receipts/0005-stable-signed-candidate-imported.json"
+          ]
+        },
+        "receiptSha256": { "$ref": "#/definitions/sha256" },
+        "manifestPublishingRequestSha256": {
+          "$ref": "#/definitions/sha256"
+        },
+        "manifestPublishingResponseSha256": {
+          "$ref": "#/definitions/sha256"
+        },
+        "manifestRelativePath": {
+          "type": "string",
+          "pattern": "^imports/(?:pilot|stable)-signed-candidate[.]v1/candidate/release-set[.]v2[.]json$"
+        },
+        "manifestSha256": { "$ref": "#/definitions/sha256" },
+        "releaseManifestTrustSha256": { "$ref": "#/definitions/sha256" },
+        "releaseCompatibilitySha256": { "$ref": "#/definitions/sha256" },
+        "productionAdmission": { "const": "NO_GO" }
+      }
+    },
+    "candidateFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "fileName",
+        "relativePath",
+        "sizeBytes",
+        "sha256"
+      ],
+      "properties": {
+        "role": {
+          "enum": [
+            "release-manifest",
+            "release-public-key",
+            "client-bundle",
+            "launcher",
+            "runtime",
+            "plugin-policy"
+          ]
+        },
+        "fileName": { "$ref": "#/definitions/fileName" },
+        "relativePath": {
+          "type": "string",
+          "minLength": 40,
+          "maxLength": 350,
+          "pattern": "^imports/(?:pilot|stable)-signed-candidate[.]v1/candidate/[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "sizeBytes": { "$ref": "#/definitions/fileSize" },
+        "sha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["inventorySha256", "files"],
+      "properties": {
+        "inventorySha256": { "$ref": "#/definitions/sha256" },
+        "files": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 5,
+          "items": { "$ref": "#/definitions/candidateFile" }
+        }
+      }
+    },
+    "personalCandidate": {
+      "allOf": [
+        { "$ref": "#/definitions/candidate" },
+        {
+          "properties": {
+            "files": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "additionalItems": false,
+              "items": [
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/candidateFile" },
+                    {
+                      "properties": {
+                        "role": { "const": "release-manifest" },
+                        "fileName": { "const": "release-set.v2.json" }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/candidateFile" },
+                    { "properties": { "role": { "const": "client-bundle" } } }
+                  ]
+                },
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/candidateFile" },
+                    { "properties": { "role": { "const": "runtime" } } }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "enterpriseCandidate": {
+      "allOf": [
+        { "$ref": "#/definitions/candidate" },
+        {
+          "properties": {
+            "files": {
+              "type": "array",
+              "minItems": 5,
+              "maxItems": 5,
+              "additionalItems": false,
+              "items": [
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/candidateFile" },
+                    {
+                      "properties": {
+                        "role": { "const": "release-manifest" },
+                        "fileName": { "const": "release-set.v2.json" }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/candidateFile" },
+                    {
+                      "properties": {
+                        "role": { "const": "release-public-key" },
+                        "fileName": { "const": "release-public-key.v2.json" }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/candidateFile" },
+                    { "properties": { "role": { "const": "launcher" } } }
+                  ]
+                },
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/candidateFile" },
+                    { "properties": { "role": { "const": "runtime" } } }
+                  ]
+                },
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/candidateFile" },
+                    { "properties": { "role": { "const": "plugin-policy" } } }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "signedClient": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "fileName",
+        "relativePath",
+        "sizeBytes",
+        "sha256",
+        "peContentSha256"
+      ],
+      "properties": {
+        "role": {
+          "enum": [
+            "startup-stub",
+            "bootstrapper",
+            "client-bootstrapper",
+            "launcher",
+            "maintenance"
+          ]
+        },
+        "fileName": { "$ref": "#/definitions/fileName" },
+        "relativePath": {
+          "type": "string",
+          "pattern": "^imports/client-signing[.]v1/signed/[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "sizeBytes": { "$ref": "#/definitions/fileSize" },
+        "sha256": { "$ref": "#/definitions/sha256" },
+        "peContentSha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "trustProbe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "fileName", "probeSha256"],
+      "properties": {
+        "role": {
+          "enum": [
+            "startup-stub",
+            "bootstrapper",
+            "client-bootstrapper",
+            "launcher",
+            "maintenance"
+          ]
+        },
+        "fileName": { "$ref": "#/definitions/fileName" },
+        "probeSha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "r3Evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "receiptRelativePath",
+        "receiptSha256",
+        "signedClientSetSha256",
+        "signedClients",
+        "releaseManifestTrustSha256",
+        "releaseManifestTrustProbeSetSha256",
+        "releaseManifestTrustProbes"
+      ],
+      "properties": {
+        "receiptRelativePath": {
+          "const": "receipts/0003-client-signatures-imported.json"
+        },
+        "receiptSha256": { "$ref": "#/definitions/sha256" },
+        "signedClientSetSha256": { "$ref": "#/definitions/sha256" },
+        "signedClients": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": { "$ref": "#/definitions/signedClient" }
+        },
+        "releaseManifestTrustSha256": { "$ref": "#/definitions/sha256" },
+        "releaseManifestTrustProbeSetSha256": {
+          "$ref": "#/definitions/sha256"
+        },
+        "releaseManifestTrustProbes": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 4,
+          "items": { "$ref": "#/definitions/trustProbe" }
+        }
+      }
+    },
+    "personalR3Evidence": {
+      "allOf": [
+        { "$ref": "#/definitions/r3Evidence" },
+        {
+          "properties": {
+            "signedClients": {
+              "items": [
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/signedClient" },
+                    { "properties": { "role": { "const": "startup-stub" } } }
+                  ]
+                },
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/signedClient" },
+                    { "properties": { "role": { "const": "client-bootstrapper" } } }
+                  ]
+                },
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/signedClient" },
+                    { "properties": { "role": { "const": "launcher" } } }
+                  ]
+                },
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/signedClient" },
+                    { "properties": { "role": { "const": "maintenance" } } }
+                  ]
+                }
+              ],
+              "additionalItems": false
+            },
+            "releaseManifestTrustProbes": {
+              "type": "array",
+              "minItems": 4,
+              "maxItems": 4,
+              "additionalItems": false,
+              "items": [
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/trustProbe" },
+                    { "properties": { "role": { "const": "startup-stub" } } }
+                  ]
+                },
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/trustProbe" },
+                    { "properties": { "role": { "const": "client-bootstrapper" } } }
+                  ]
+                },
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/trustProbe" },
+                    { "properties": { "role": { "const": "launcher" } } }
+                  ]
+                },
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/trustProbe" },
+                    { "properties": { "role": { "const": "maintenance" } } }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "enterpriseR3Evidence": {
+      "allOf": [
+        { "$ref": "#/definitions/r3Evidence" },
+        {
+          "properties": {
+            "signedClients": {
+              "items": [
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/signedClient" },
+                    { "properties": { "role": { "const": "bootstrapper" } } }
+                  ]
+                },
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/signedClient" },
+                    { "properties": { "role": { "const": "launcher" } } }
+                  ]
+                },
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/signedClient" },
+                    { "properties": { "role": { "const": "client-bootstrapper" } } }
+                  ]
+                },
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/signedClient" },
+                    { "properties": { "role": { "const": "maintenance" } } }
+                  ]
+                }
+              ],
+              "additionalItems": false
+            },
+            "releaseManifestTrustProbes": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "additionalItems": false,
+              "items": [
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/trustProbe" },
+                    { "properties": { "role": { "const": "bootstrapper" } } }
+                  ]
+                },
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/trustProbe" },
+                    { "properties": { "role": { "const": "launcher" } } }
+                  ]
+                },
+                {
+                  "allOf": [
+                    { "$ref": "#/definitions/trustProbe" },
+                    { "properties": { "role": { "const": "client-bootstrapper" } } }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "payloadFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "fileName",
+        "embeddedLogicalName",
+        "sourceKind",
+        "sourceRole",
+        "sourceSha256",
+        "sizeBytes",
+        "sha256"
+      ],
+      "properties": {
+        "role": {
+          "enum": [
+            "release-manifest",
+            "install-manifest",
+            "startup-stub",
+            "bootstrapper",
+            "client-bundle",
+            "launcher",
+            "runtime"
+          ]
+        },
+        "fileName": { "$ref": "#/definitions/fileName" },
+        "embeddedLogicalName": {
+          "type": "string",
+          "minLength": 16,
+          "maxLength": 512,
+          "pattern": "^Ensou[.]Dsh[.](?:Personal|Enterprise)[.]Installer[.]Payload[.][A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "sourceKind": {
+          "enum": ["r5-candidate", "r3-signed-client", "generated-descriptor"]
+        },
+        "sourceRole": {
+          "enum": [
+            "release-manifest",
+            "install-manifest",
+            "startup-stub",
+            "bootstrapper",
+            "client-bundle",
+            "launcher",
+            "runtime"
+          ]
+        },
+        "sourceSha256": { "$ref": "#/definitions/sha256" },
+        "sizeBytes": { "$ref": "#/definitions/fileSize" },
+        "sha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "installerPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["inventorySha256", "files"],
+      "properties": {
+        "inventorySha256": { "$ref": "#/definitions/sha256" },
+        "files": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": { "$ref": "#/definitions/payloadFile" }
+        }
+      }
+    },
+    "personalInstallerPayload": {
+      "allOf": [
+        { "$ref": "#/definitions/installerPayload" },
+        {
+          "properties": {
+            "files": {
+              "additionalItems": false,
+              "items": [
+                { "$ref": "#/definitions/personalManifestPayload" },
+                { "$ref": "#/definitions/personalStartupPayload" },
+                { "$ref": "#/definitions/personalClientPayload" },
+                { "$ref": "#/definitions/personalRuntimePayload" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "enterpriseInstallerPayload": {
+      "allOf": [
+        { "$ref": "#/definitions/installerPayload" },
+        {
+          "properties": {
+            "files": {
+              "additionalItems": false,
+              "items": [
+                { "$ref": "#/definitions/enterpriseManifestPayload" },
+                { "$ref": "#/definitions/enterpriseLauncherPayload" },
+                { "$ref": "#/definitions/enterpriseRuntimePayload" },
+                { "$ref": "#/definitions/enterpriseBootstrapperPayload" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "personalManifestPayload": {
+      "allOf": [
+        { "$ref": "#/definitions/payloadFile" },
+        {
+          "properties": {
+            "role": { "const": "release-manifest" },
+            "fileName": { "const": "release-set.v2.json" },
+            "embeddedLogicalName": {
+              "const": "Ensou.Dsh.Personal.Installer.Payload.release-set.v2.json"
+            },
+            "sourceKind": { "const": "r5-candidate" },
+            "sourceRole": { "const": "release-manifest" }
+          }
+        }
+      ]
+    },
+    "personalStartupPayload": {
+      "allOf": [
+        { "$ref": "#/definitions/payloadFile" },
+        {
+          "properties": {
+            "role": { "const": "startup-stub" },
+            "fileName": { "const": "Ensou.Dsh.Bootstrapper.exe" },
+            "embeddedLogicalName": {
+              "const": "Ensou.Dsh.Personal.Installer.Payload.Ensou.Dsh.Bootstrapper.exe"
+            },
+            "sourceKind": { "const": "r3-signed-client" },
+            "sourceRole": { "const": "startup-stub" }
+          }
+        }
+      ]
+    },
+    "personalClientPayload": {
+      "allOf": [
+        { "$ref": "#/definitions/payloadFile" },
+        {
+          "properties": {
+            "role": { "const": "client-bundle" },
+            "fileName": { "const": "client-bundle.zip" },
+            "embeddedLogicalName": {
+              "const": "Ensou.Dsh.Personal.Installer.Payload.client-bundle.zip"
+            },
+            "sourceKind": { "const": "r5-candidate" },
+            "sourceRole": { "const": "client-bundle" }
+          }
+        }
+      ]
+    },
+    "personalRuntimePayload": {
+      "allOf": [
+        { "$ref": "#/definitions/payloadFile" },
+        {
+          "properties": {
+            "role": { "const": "runtime" },
+            "fileName": { "const": "runtime.zip" },
+            "embeddedLogicalName": {
+              "const": "Ensou.Dsh.Personal.Installer.Payload.runtime.zip"
+            },
+            "sourceKind": { "const": "r5-candidate" },
+            "sourceRole": { "const": "runtime" }
+          }
+        }
+      ]
+    },
+    "enterpriseManifestPayload": {
+      "allOf": [
+        { "$ref": "#/definitions/payloadFile" },
+        {
+          "properties": {
+            "role": { "const": "install-manifest" },
+            "fileName": { "const": "enterprise-install-manifest.json" },
+            "embeddedLogicalName": {
+              "const": "Ensou.Dsh.Enterprise.Installer.Payload.enterprise-install-manifest.json"
+            },
+            "sourceKind": { "const": "generated-descriptor" },
+            "sourceRole": { "const": "install-manifest" }
+          }
+        }
+      ]
+    },
+    "enterpriseLauncherPayload": {
+      "allOf": [
+        { "$ref": "#/definitions/payloadFile" },
+        {
+          "properties": {
+            "role": { "const": "launcher" },
+            "fileName": { "const": "launcher.zip" },
+            "embeddedLogicalName": {
+              "const": "Ensou.Dsh.Enterprise.Installer.Payload.launcher.zip"
+            },
+            "sourceKind": { "const": "r5-candidate" },
+            "sourceRole": { "const": "launcher" }
+          }
+        }
+      ]
+    },
+    "enterpriseRuntimePayload": {
+      "allOf": [
+        { "$ref": "#/definitions/payloadFile" },
+        {
+          "properties": {
+            "role": { "const": "runtime" },
+            "fileName": { "const": "runtime.zip" },
+            "embeddedLogicalName": {
+              "const": "Ensou.Dsh.Enterprise.Installer.Payload.runtime.zip"
+            },
+            "sourceKind": { "const": "r5-candidate" },
+            "sourceRole": { "const": "runtime" }
+          }
+        }
+      ]
+    },
+    "enterpriseBootstrapperPayload": {
+      "allOf": [
+        { "$ref": "#/definitions/payloadFile" },
+        {
+          "properties": {
+            "role": { "const": "bootstrapper" },
+            "fileName": { "const": "Ensou.Dsh.Enterprise.Bootstrapper.exe" },
+            "embeddedLogicalName": {
+              "const": "Ensou.Dsh.Enterprise.Installer.Payload.Ensou.Dsh.Enterprise.Bootstrapper.exe"
+            },
+            "sourceKind": { "const": "r3-signed-client" },
+            "sourceRole": { "const": "bootstrapper" }
+          }
+        }
+      ]
+    },
+    "toolchainLock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sdkVersion",
+        "globalJsonRelativePath",
+        "globalJsonSha256",
+        "projectFileName",
+        "projectRelativePath",
+        "projectSha256",
+        "restoreGraphRelativePath",
+        "restoreGraphSha256",
+        "packagesLockRelativePath",
+        "packagesLockSha256",
+        "packagesLockStatus",
+        "dependencyClosureSha256",
+        "runtimePackSetSha256",
+        "sdkInfoRelativePath",
+        "sdkInfoSha256",
+        "configuration",
+        "runtimeIdentifier",
+        "selfContained",
+        "publishSingleFile",
+        "deterministic",
+        "continuousIntegrationBuild",
+        "restoreMode",
+        "networkAccess",
+        "publishArgumentsSha256"
+      ],
+      "properties": {
+        "sdkVersion": { "const": "10.0.302" },
+        "globalJsonRelativePath": { "const": "toolchain/global.json" },
+        "globalJsonSha256": { "$ref": "#/definitions/sha256" },
+        "projectFileName": {
+          "enum": [
+            "Ensou.Dsh.Personal.Installer.csproj",
+            "Ensou.Dsh.Enterprise.Installer.csproj"
+          ]
+        },
+        "projectRelativePath": {
+          "type": "string",
+          "pattern": "^toolchain/Ensou[.]Dsh[.](?:Personal|Enterprise)[.]Installer[.]csproj$"
+        },
+        "projectSha256": { "$ref": "#/definitions/sha256" },
+        "restoreGraphRelativePath": {
+          "const": "toolchain/project.assets.json"
+        },
+        "restoreGraphSha256": { "$ref": "#/definitions/sha256" },
+        "packagesLockRelativePath": { "const": "toolchain/packages.lock.json" },
+        "packagesLockSha256": { "$ref": "#/definitions/sha256" },
+        "packagesLockStatus": { "const": "VERIFIED" },
+        "dependencyClosureSha256": { "$ref": "#/definitions/sha256" },
+        "runtimePackSetSha256": { "$ref": "#/definitions/sha256" },
+        "sdkInfoRelativePath": { "const": "toolchain/dotnet-sdk-info.v1.json" },
+        "sdkInfoSha256": { "$ref": "#/definitions/sha256" },
+        "configuration": { "const": "Release" },
+        "runtimeIdentifier": { "const": "win-x64" },
+        "selfContained": { "const": true },
+        "publishSingleFile": { "const": true },
+        "deterministic": { "const": true },
+        "continuousIntegrationBuild": { "const": true },
+        "restoreMode": { "const": "packages-lock-locked-offline" },
+        "networkAccess": { "const": "disabled" },
+        "publishArgumentsSha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "buildExecution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "buildId",
+        "targetBuildIdentitySha256",
+        "reservationSha256",
+        "buildOrdinal",
+        "buildCountForTarget",
+        "outputCreationMode",
+        "rebuildPolicy",
+        "startedAtUtc",
+        "completedAtUtc",
+        "exitCode"
+      ],
+      "properties": {
+        "buildId": { "$ref": "#/definitions/orchestrationId" },
+        "targetBuildIdentitySha256": { "$ref": "#/definitions/sha256" },
+        "reservationSha256": { "$ref": "#/definitions/sha256" },
+        "buildOrdinal": { "const": 1 },
+        "buildCountForTarget": { "const": 1 },
+        "outputCreationMode": { "const": "create-new" },
+        "rebuildPolicy": {
+          "const": "rebuild-forbidden-exact-reserved-unsigned-bytes-replay-only"
+        },
+        "startedAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "completedAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "exitCode": { "const": 0 }
+      }
+    },
+    "unsignedInstaller": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "fileName",
+        "relativePath",
+        "sizeBytes",
+        "sha256",
+        "peContentSha256"
+      ],
+      "properties": {
+        "role": { "const": "installer" },
+        "fileName": { "$ref": "#/definitions/fileName" },
+        "relativePath": {
+          "type": "string",
+          "pattern": "^unsigned/Ensou[.]Dsh[.](?:Personal|Enterprise)[.]Installer[.]exe$"
+        },
+        "sizeBytes": { "$ref": "#/definitions/installerFileSize" },
+        "sha256": { "$ref": "#/definitions/sha256" },
+        "peContentSha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "payloadSelfCheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "command",
+        "status",
+        "exitCode",
+        "inspectedInstallerSha256",
+        "resultSha256",
+        "candidateSetSha256",
+        "payloadSetSha256",
+        "r3SignedClientSetSha256",
+        "releaseManifestTrustSha256",
+        "releaseManifestTrustProbeSetSha256",
+        "completedAtUtc"
+      ],
+      "properties": {
+        "command": { "const": "--production-payload-self-check" },
+        "status": { "const": "VERIFIED" },
+        "exitCode": { "const": 0 },
+        "inspectedInstallerSha256": { "$ref": "#/definitions/sha256" },
+        "resultSha256": { "$ref": "#/definitions/sha256" },
+        "candidateSetSha256": { "$ref": "#/definitions/sha256" },
+        "payloadSetSha256": { "$ref": "#/definitions/sha256" },
+        "r3SignedClientSetSha256": { "$ref": "#/definitions/sha256" },
+        "releaseManifestTrustSha256": { "$ref": "#/definitions/sha256" },
+        "releaseManifestTrustProbeSetSha256": {
+          "$ref": "#/definitions/sha256"
+        },
+        "completedAtUtc": { "$ref": "#/definitions/wholeSecondUtc" }
+      }
+    }
+  }
+}

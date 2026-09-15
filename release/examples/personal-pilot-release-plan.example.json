@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 2,
+  "planType": "ensou-dsh-launcher-production-release",
+  "orchestrationId": "11111111-2222-4222-8222-111111111111",
+  "edition": "Personal",
+  "releaseSetId": "personal-pilot-2026.09.04.2",
+  "targetChannel": "pilot",
+  "sourceCommit": "0000000000000000000000000000000000000000",
+  "manifestUri": "https://updates.dsh.example.invalid/v2/channels/pilot/release-set.v2.json",
+  "artifactBaseUri": "https://updates.dsh.example.invalid/",
+  "personalAccountOrigin": "https://accounts.example.invalid/",
+  "personalPilotTemplateStatus": "NO_GO_TEMPLATE_PENDING_REAL_DEVICE_EVIDENCE",
+  "personalPilotDevices": [
+    {
+      "deviceId": "pilot-desktop-desktop",
+      "hostLabel": "PILOT-DESKTOP",
+      "architecture": "win-x64",
+      "lane": "existing-install-upgrade",
+      "installationIdentity": "separate-device-identity",
+      "tokenOrSecretIncluded": false,
+      "roleAcceptance": "existing-version-upgrade",
+      "perDeviceAcceptance": ["startup-update-detection", "runtime-only-update", "launcher-only-update", "failed-update-rollback", "offline-last-known-good", "local-chat-and-workspace-unchanged", "no-command-window"]
+    },
+    {
+      "deviceId": "pilot-notebook",
+      "hostLabel": "PilotNotebook notebook",
+      "architecture": "win-x64",
+      "lane": "clean-first-install",
+      "installationIdentity": "separate-device-identity",
+      "tokenOrSecretIncluded": false,
+      "roleAcceptance": "first-install",
+      "perDeviceAcceptance": ["startup-update-detection", "runtime-only-update", "launcher-only-update", "failed-update-rollback", "offline-last-known-good", "local-chat-and-workspace-unchanged", "no-command-window"]
+    }
+  ],
+  "runtimeCandidate": {
+    "releaseId": "managed-v2026.09.04.2",
+    "githubReleaseTag": "managed-v2026.09.04.2",
+    "archive": {
+      "fileName": "EnsouDshRuntime-managed-v2026.09.04.2-win-x64.zip",
+      "path": "C:\\controlled\\release-input\\EnsouDshRuntime-managed-v2026.09.04.2-win-x64.zip",
+      "sizeBytes": 1,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "metadata": {
+      "fileName": "EnsouDshRuntime-managed-v2026.09.04.2-win-x64.metadata.json",
+      "path": "C:\\controlled\\release-input\\EnsouDshRuntime-managed-v2026.09.04.2-win-x64.metadata.json",
+      "sizeBytes": 1,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "hashEvidence": {
+      "fileName": "EnsouDshRuntime-managed-v2026.09.04.2-win-x64.zip.sha256",
+      "path": "C:\\controlled\\release-input\\EnsouDshRuntime-managed-v2026.09.04.2-win-x64.zip.sha256",
+      "sizeBytes": 1,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "authenticodePolicy": {
+    "signerSha256Thumbprint": "0000000000000000000000000000000000000000000000000000000000000000",
+    "requireTrustedTimestamp": true,
+    "maximumResponseAgeMinutes": 1440
+  },
+  "releaseManifestTrust": {
+    "algorithm": "ES256",
+    "keyId": "example-personal-release-key",
+    "purpose": "release-manifest-signing",
+    "x": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "y": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+  },
+  "releaseCompatibility": {
+    "startupStubVersion": "1.2.0",
+    "canonicalLowSFromSequence": 1
+  },
+  "externalResponseTrusts": {
+    "clientSigning": {
+      "algorithm": "ES256",
+      "keyId": "example-client-signing-response-key",
+      "purpose": "client-signing-response",
+      "x": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "y": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+    },
+    "manifestPublishing": {
+      "algorithm": "ES256",
+      "keyId": "example-manifest-publishing-response-key",
+      "purpose": "manifest-publishing-response",
+      "x": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "y": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+    },
+    "installerSigning": {
+      "algorithm": "ES256",
+      "keyId": "example-personal-installer-signing-response-key",
+      "purpose": "personal-installer-signing-response",
+      "x": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "y": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+    },
+    "feedPromotion": {
+      "algorithm": "ES256",
+      "keyId": "example-feed-promotion-response-key",
+      "purpose": "feed-promotion-response",
+      "x": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "y": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+    }
+  },
+  "clientSigningInputs": [
+    { "role": "startup-stub", "fileName": "Ensou.Dsh.Bootstrapper.exe", "path": "C:\\controlled\\signed-input\\Ensou.Dsh.Bootstrapper.exe", "sizeBytes": 1, "sha256": "0000000000000000000000000000000000000000000000000000000000000000", "peContentSha256": "0000000000000000000000000000000000000000000000000000000000000000" },
+    { "role": "client-bootstrapper", "fileName": "Ensou.Dsh.ClientBootstrapper.exe", "path": "C:\\controlled\\signed-input\\Ensou.Dsh.ClientBootstrapper.exe", "sizeBytes": 1, "sha256": "0000000000000000000000000000000000000000000000000000000000000000", "peContentSha256": "0000000000000000000000000000000000000000000000000000000000000000" },
+    { "role": "launcher", "fileName": "Ensou.Dsh.Launcher.exe", "path": "C:\\controlled\\signed-input\\Ensou.Dsh.Launcher.exe", "sizeBytes": 1, "sha256": "0000000000000000000000000000000000000000000000000000000000000000", "peContentSha256": "0000000000000000000000000000000000000000000000000000000000000000" },
+    { "role": "maintenance", "fileName": "Ensou.Dsh.Personal.Maintenance.exe", "path": "C:\\controlled\\signed-input\\Ensou.Dsh.Personal.Maintenance.exe", "sizeBytes": 1, "sha256": "0000000000000000000000000000000000000000000000000000000000000000", "peContentSha256": "0000000000000000000000000000000000000000000000000000000000000000" }
+  ]
+}

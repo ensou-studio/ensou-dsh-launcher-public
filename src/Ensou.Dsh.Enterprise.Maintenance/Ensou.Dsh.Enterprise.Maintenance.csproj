@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>Ensou.Dsh.Enterprise.Maintenance</RootNamespace>
+    <AssemblyName>Ensou.Dsh.Enterprise.Maintenance</AssemblyName>
+    <Product>Ensou DSH Enterprise Versioned Maintenance</Product>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>..\..\assets\branding\dsh-official-whale.ico</ApplicationIcon>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <PublishTrimmed>false</PublishTrimmed>
+    <EnterpriseDevelopmentE2E Condition="'$(EnterpriseDevelopmentE2E)' == ''">false</EnterpriseDevelopmentE2E>
+    <DefineConstants Condition="'$(EnterpriseDevelopmentE2E)' == 'true'">$(DefineConstants);ENTERPRISE_DEVELOPMENT_E2E</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ensou.Dsh.Enterprise.Installation\Ensou.Dsh.Enterprise.Installation.csproj"
+      GlobalPropertiesToRemove="RuntimeIdentifier;SelfContained;PublishSingleFile" />
+  </ItemGroup>
+  <Target Name="ValidateEnterpriseMaintenancePublish" BeforeTargets="PrepareForPublish">
+    <Error Condition="'$(RuntimeIdentifier)' != 'win-x64' or '$(SelfContained)' != 'true' or '$(PublishSingleFile)' != 'true'"
+      Text="Enterprise Maintenance must publish self-contained single-file win-x64." />
+    <Error Condition="'$(EnterpriseDevelopmentE2E)' != 'true' and '$(EnterpriseAuthenticodeSignerSha256Thumbprint)' == ''"
+      Text="Production Enterprise Maintenance requires the pinned Authenticode signer." />
+  </Target>
+</Project>

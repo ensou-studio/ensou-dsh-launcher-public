@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.WindowsDesktop.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ensou.Dsh.Contracts\Ensou.Dsh.Contracts.csproj" />
+    <ProjectReference Include="..\Ensou.Dsh.Personal.Client\Ensou.Dsh.Personal.Client.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Ensou.Dsh.Personal.WindowsTests" />
+  </ItemGroup>
+</Project>

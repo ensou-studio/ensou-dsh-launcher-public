@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Ensou.Dsh.Personal.FeedPromoter</RootNamespace>
+    <AssemblyName>Ensou.Dsh.Personal.FeedPromoter</AssemblyName>
+    <Product>Ensou DSH Personal Feed Promoter</Product>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ensou.Dsh.Contracts\Ensou.Dsh.Contracts.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Ensou.Dsh.Personal.FeedPromoterTests" />
+  </ItemGroup>
+  <Target Name="ValidatePersonalFeedPromoterPublish" BeforeTargets="PrepareForPublish">
+    <Error Condition="'$(RuntimeIdentifier)' != 'linux-x64'"
+      Text="Production Personal FeedPromoter must publish for linux-x64." />
+    <Error Condition="'$(SelfContained)' != 'true' or '$(PublishSingleFile)' != 'true'"
+      Text="Production Personal FeedPromoter must be a self-contained single-file executable." />
+  </Target>
+</Project>

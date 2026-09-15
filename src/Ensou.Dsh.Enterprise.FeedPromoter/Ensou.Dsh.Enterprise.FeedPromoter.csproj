@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Ensou.Dsh.Enterprise.FeedPromoter</RootNamespace>
+    <AssemblyName>Ensou.Dsh.Enterprise.FeedPromoter</AssemblyName>
+    <Product>Ensou DSH Enterprise Feed Promoter</Product>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <EnterpriseFeedPromoterProductionBuild Condition="'$(EnterpriseFeedPromoterProductionBuild)' == ''">false</EnterpriseFeedPromoterProductionBuild>
+    <RuntimeIdentifier Condition="'$(EnterpriseFeedPromoterProductionBuild)' == 'true'">linux-x64</RuntimeIdentifier>
+    <SelfContained Condition="'$(EnterpriseFeedPromoterProductionBuild)' == 'true'">true</SelfContained>
+    <PublishSingleFile Condition="'$(EnterpriseFeedPromoterProductionBuild)' == 'true'">true</PublishSingleFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ensou.Dsh.Enterprise.ReleaseContracts\Ensou.Dsh.Enterprise.ReleaseContracts.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Ensou.Dsh.Enterprise.FeedPromoterTests" />
+    <InternalsVisibleTo Include="Ensou.Dsh.Enterprise.DevelopmentE2ETests" />
+  </ItemGroup>
+  <Target Name="ValidateEnterpriseFeedPromoterPublish" BeforeTargets="PrepareForPublish">
+    <Error Condition="'$(EnterpriseFeedPromoterProductionBuild)' != 'true'"
+      Text="Production Enterprise FeedPromoter publish must select the explicit production profile." />
+    <Error Condition="'$(RuntimeIdentifier)' != 'linux-x64'"
+      Text="Production Enterprise FeedPromoter must publish for linux-x64." />
+    <Error Condition="'$(SelfContained)' != 'true' or '$(PublishSingleFile)' != 'true'"
+      Text="Production Enterprise FeedPromoter must be a self-contained single-file executable." />
+  </Target>
+</Project>

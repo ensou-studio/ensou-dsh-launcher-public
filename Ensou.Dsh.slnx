@@ -1,0 +1,53 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Ensou.Dsh.Bootstrapper/Ensou.Dsh.Bootstrapper.csproj" />
+    <Project Path="src/Ensou.Dsh.ClientBootstrapper/Ensou.Dsh.ClientBootstrapper.csproj" />
+    <Project Path="src/Ensou.Dsh.Contracts/Ensou.Dsh.Contracts.csproj" />
+    <Project Path="src/Ensou.Dsh.Enterprise.Client/Ensou.Dsh.Enterprise.Client.csproj" />
+    <Project Path="src/Ensou.Dsh.Enterprise.Contracts/Ensou.Dsh.Enterprise.Contracts.csproj" />
+    <Project Path="src/Ensou.Dsh.Enterprise.FeedPromoter/Ensou.Dsh.Enterprise.FeedPromoter.csproj" />
+    <Project Path="src/Ensou.Dsh.Enterprise.Bootstrapper/Ensou.Dsh.Enterprise.Bootstrapper.csproj" />
+    <Project Path="src/Ensou.Dsh.Enterprise.ClientBootstrapper/Ensou.Dsh.Enterprise.ClientBootstrapper.csproj" />
+    <Project Path="src/Ensou.Dsh.Enterprise.Installation/Ensou.Dsh.Enterprise.Installation.csproj" />
+    <Project Path="src/Ensou.Dsh.Enterprise.Installer/Ensou.Dsh.Enterprise.Installer.csproj" />
+    <Project Path="src/Ensou.Dsh.Enterprise.Launcher/Ensou.Dsh.Enterprise.Launcher.csproj" />
+    <Project Path="src/Ensou.Dsh.Enterprise.Maintenance/Ensou.Dsh.Enterprise.Maintenance.csproj" />
+    <Project Path="src/Ensou.Dsh.Enterprise.ReleaseContracts/Ensou.Dsh.Enterprise.ReleaseContracts.csproj" />
+    <Project Path="src/Ensou.Dsh.Enterprise.ReleasePublisher/Ensou.Dsh.Enterprise.ReleasePublisher.csproj" />
+    <Project Path="src/Ensou.Dsh.EnterprisePluginCompatibilityRunner/Ensou.Dsh.EnterprisePluginCompatibilityRunner.csproj" />
+    <Project Path="src/Ensou.Dsh.Host/Ensou.Dsh.Host.csproj" />
+    <Project Path="src/Ensou.Dsh.Launcher/Ensou.Dsh.Launcher.csproj" />
+    <Project Path="src/Ensou.Dsh.Personal.Client/Ensou.Dsh.Personal.Client.csproj" />
+    <Project Path="src/Ensou.Dsh.Personal.Windows/Ensou.Dsh.Personal.Windows.csproj" />
+    <Project Path="src/Ensou.Dsh.Personal.FeedPromoter/Ensou.Dsh.Personal.FeedPromoter.csproj" />
+    <Project Path="src/Ensou.Dsh.Personal.Installer/Ensou.Dsh.Personal.Installer.csproj" />
+    <Project Path="src/Ensou.Dsh.Personal.Maintenance/Ensou.Dsh.Personal.Maintenance.csproj" />
+    <Project Path="src/Ensou.Dsh.Personal.ReleasePublisher/Ensou.Dsh.Personal.ReleasePublisher.csproj" />
+    <Project Path="src/Ensou.Dsh.UpdateEngine/Ensou.Dsh.UpdateEngine.csproj" />
+    <Project Path="src/Ensou.Dsh.WindowsPilotObserver/Ensou.Dsh.WindowsPilotObserver.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Ensou.Dsh.CoreTests/Ensou.Dsh.CoreTests.csproj" />
+    <Project Path="tests/Ensou.Dsh.Enterprise.InstallationTests/Ensou.Dsh.Enterprise.InstallationTests.csproj" />
+    <Project Path="tests/Ensou.Dsh.Enterprise.DirectLocalTrustTests/Ensou.Dsh.Enterprise.DirectLocalTrustTests.csproj" />
+    <Project Path="tests/Ensou.Dsh.Enterprise.ClientUpdateGateTests/Ensou.Dsh.Enterprise.ClientUpdateGateTests.csproj" />
+    <Project Path="tests/Ensou.Dsh.Enterprise.DevelopmentE2ETests/Ensou.Dsh.Enterprise.DevelopmentE2ETests.csproj" />
+    <Project Path="tests/Ensou.Dsh.Enterprise.UpdateTests/Ensou.Dsh.Enterprise.UpdateTests.csproj" />
+    <Project Path="tests/Ensou.Dsh.Enterprise.HomeRecoveryTests/Ensou.Dsh.Enterprise.HomeRecoveryTests.csproj" />
+    <Project Path="tests/Ensou.Dsh.Enterprise.FeedPromoterTests/Ensou.Dsh.Enterprise.FeedPromoterTests.csproj" />
+    <Project Path="tests/Ensou.Dsh.Enterprise.ReleasePublisherTests/Ensou.Dsh.Enterprise.ReleasePublisherTests.csproj" />
+    <Project Path="tests/Ensou.Dsh.EnterprisePluginCompatibilityRunnerTests/Ensou.Dsh.EnterprisePluginCompatibilityRunnerTests.csproj" />
+    <Project Path="tests/Ensou.Dsh.Enterprise.BrandAuthorizationTests/Ensou.Dsh.Enterprise.BrandAuthorizationTests.csproj" />
+    <Project Path="tests/Ensou.Dsh.Enterprise.LocalDataCertificationTests/Ensou.Dsh.Enterprise.LocalDataCertificationTests.csproj" />
+    <Project Path="tests/Ensou.Dsh.Enterprise.LegacyMigrationTests/Ensou.Dsh.Enterprise.LegacyMigrationTests.csproj" />
+    <Project Path="tests/Ensou.Dsh.Personal.FeedPromoterTests/Ensou.Dsh.Personal.FeedPromoterTests.csproj" />
+    <Project Path="tests/Ensou.Dsh.Personal.InstallerTests/Ensou.Dsh.Personal.InstallerTests.csproj" />
+    <Project Path="tests/Ensou.Dsh.Personal.MaintenanceTests/Ensou.Dsh.Personal.MaintenanceTests.csproj" />
+    <Project Path="tests/Ensou.Dsh.Personal.UpdateTests/Ensou.Dsh.Personal.UpdateTests.csproj" />
+    <Project Path="tests/Ensou.Dsh.Personal.ClientTests/Ensou.Dsh.Personal.ClientTests.csproj" />
+    <Project Path="tests/Ensou.Dsh.Personal.WindowsTests/Ensou.Dsh.Personal.WindowsTests.csproj" />
+    <Project Path="tests/Ensou.Dsh.ManagedArtifactGcTests/Ensou.Dsh.ManagedArtifactGcTests.csproj" />
+    <Project Path="tests/Ensou.Dsh.WindowsPilotObserverFixture/Ensou.Dsh.WindowsPilotObserverFixture.csproj" />
+    <Project Path="tests/Ensou.Dsh.WindowsPilotObserverTests/Ensou.Dsh.WindowsPilotObserverTests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,204 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://updates.ensou.example/schemas/personal-certified-distribution-receipt-v1.schema.json",
+  "title": "Ensou DSH Personal certified distribution receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "product",
+    "sourceChannel",
+    "targetChannel",
+    "releaseSetId",
+    "pilotManifestSha256",
+    "stableManifestSha256",
+    "artifacts",
+    "installer",
+    "feed",
+    "certification",
+    "approvedAtUtc",
+    "distributionAuthorized"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "product": { "const": "ensou-dsh-personal" },
+    "sourceChannel": { "const": "pilot" },
+    "targetChannel": { "const": "stable" },
+    "releaseSetId": { "$ref": "#/$defs/releaseSetId" },
+    "pilotManifestSha256": { "$ref": "#/$defs/sha256" },
+    "stableManifestSha256": { "$ref": "#/$defs/sha256" },
+    "artifacts": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "prefixItems": [
+        {
+          "allOf": [
+            { "$ref": "#/$defs/artifact" },
+            { "properties": { "component": { "const": "client-bundle" } } }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/$defs/artifact" },
+            { "properties": { "component": { "const": "runtime" } } }
+          ]
+        }
+      ],
+      "items": false
+    },
+    "installer": { "$ref": "#/$defs/installer" },
+    "feed": { "$ref": "#/$defs/feed" },
+    "certification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cleanDeviceLifecycle",
+        "twoUpdateUpgradeLifecycle",
+        "failureRecoveryLifecycle"
+      ],
+      "properties": {
+        "cleanDeviceLifecycle": {
+          "allOf": [
+            { "$ref": "#/$defs/lifecycleReference" },
+            { "properties": { "kind": { "const": "clean-device-lifecycle" } } }
+          ]
+        },
+        "twoUpdateUpgradeLifecycle": {
+          "allOf": [
+            { "$ref": "#/$defs/lifecycleReference" },
+            { "properties": { "kind": { "const": "two-update-upgrade-lifecycle" } } }
+          ]
+        },
+        "failureRecoveryLifecycle": {
+          "allOf": [
+            { "$ref": "#/$defs/lifecycleReference" },
+            { "properties": { "kind": { "const": "failure-recovery-lifecycle" } } }
+          ]
+        }
+      }
+    },
+    "approvedAtUtc": { "$ref": "#/$defs/utcTimestamp" },
+    "distributionAuthorized": { "const": true }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "releaseSetId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"
+    },
+    "safePositiveInteger": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "utcTimestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[.][0-9]{7}Z$"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "releaseId",
+        "fileName",
+        "sizeBytes",
+        "sha256",
+        "completeTreeSha256"
+      ],
+      "properties": {
+        "component": { "enum": ["client-bundle", "runtime"] },
+        "releaseId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "fileName": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,254}$"
+        },
+        "sizeBytes": { "$ref": "#/$defs/safePositiveInteger" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "completeTreeSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "installer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fileName",
+        "sizeBytes",
+        "sha256",
+        "authenticodeStatus",
+        "signerSha256Thumbprint",
+        "timestamped"
+      ],
+      "properties": {
+        "fileName": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*[.]exe$"
+        },
+        "sizeBytes": { "$ref": "#/$defs/safePositiveInteger" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "authenticodeStatus": { "const": "Valid" },
+        "signerSha256Thumbprint": { "$ref": "#/$defs/sha256" },
+        "timestamped": { "const": true }
+      }
+    },
+    "feed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pilotManifestUri",
+        "externalPilotManifestSha256",
+        "verifiedArtifactCount",
+        "allArtifactSignaturesValid",
+        "allArtifactHashesValid",
+        "immutablePublication",
+        "atomicChannelHead",
+        "verifiedAtUtc"
+      ],
+      "properties": {
+        "pilotManifestUri": {
+          "type": "string",
+          "pattern": "^https://[^?#[:space:]]+/v2/channels/pilot/release-set[.]v2[.]json$"
+        },
+        "externalPilotManifestSha256": { "$ref": "#/$defs/sha256" },
+        "verifiedArtifactCount": { "const": 2 },
+        "allArtifactSignaturesValid": { "const": true },
+        "allArtifactHashesValid": { "const": true },
+        "immutablePublication": { "const": true },
+        "atomicChannelHead": { "const": true },
+        "verifiedAtUtc": { "$ref": "#/$defs/utcTimestamp" }
+      }
+    },
+    "lifecycleReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "testRunId",
+        "receiptSizeBytes",
+        "receiptSha256",
+        "completedAtUtc"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "clean-device-lifecycle",
+            "two-update-upgrade-lifecycle",
+            "failure-recovery-lifecycle"
+          ]
+        },
+        "testRunId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "receiptSizeBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 524288
+        },
+        "receiptSha256": { "$ref": "#/$defs/sha256" },
+        "completedAtUtc": { "$ref": "#/$defs/utcTimestamp" }
+      }
+    }
+  }
+}

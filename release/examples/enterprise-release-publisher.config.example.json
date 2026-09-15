@@ -1,0 +1,47 @@
+{
+  "environment": "production",
+  "channel": "pilot",
+  "releaseSetId": "enterprise-2026.08.24.1",
+  "keyId": "release-2026-01",
+  "generation": 1,
+  "sequence": 1,
+  "minAcceptedSequence": 0,
+  "expiresAtUtc": "2026-08-31T00:00:00+00:00",
+  "startupStub": {
+    "minimumProtocol": 1,
+    "maximumProtocol": 1
+  },
+  "manifestOrigin": "https://updates.example.com/",
+  "artifactOrigin": "https://artifacts.example.com/",
+  "revokedReleaseSetIds": [],
+  "artifacts": [
+    {
+      "component": "launcher",
+      "releaseId": "launcher-2026.08.24.1",
+      "filePath": "C:\\release-input\\launcher-2026.08.24.1.zip",
+      "uri": "https://artifacts.example.com/enterprise-2026.08.24.1/launcher-2026.08.24.1.zip"
+    },
+    {
+      "component": "runtime",
+      "releaseId": "managed-v2026.08.25.3",
+      "filePath": "C:\\release-input\\EnsouDshRuntime-managed-v2026.08.25.3-win-x64.zip",
+      "uri": "https://artifacts.example.com/enterprise-2026.08.24.1/EnsouDshRuntime-managed-v2026.08.25.3-win-x64.zip",
+      "sourceRuntimeMetadataPath": "C:\\release-input\\EnsouDshRuntime-managed-v2026.08.25.3-win-x64.metadata.json",
+      "organizationAdmissionReceiptPath": "C:\\release-input\\EnsouDshRuntime-managed-v2026.08.25.3-win-x64.organization-admission.v1.json"
+    },
+    {
+      "component": "plugin-policy",
+      "releaseId": "plugins-2026.08.24.1",
+      "filePath": "C:\\release-input\\managed-plugin-policy-70000000-0000-4000-8000-000000000003-g3.zip",
+      "uri": "https://artifacts.example.com/enterprise-2026.08.24.1/managed-plugin-policy-70000000-0000-4000-8000-000000000003-g3.zip",
+      "policyMetadataPath": "C:\\release-input\\managed-plugin-policy-70000000-0000-4000-8000-000000000003-g3.artifact.json",
+      "pluginPromotionHandoffPath": "C:\\release-input\\managed-plugin-policy-70000000-0000-4000-8000-000000000003-g3.promotion-handoff.json",
+      "pluginHarnessCompatibilityReceiptPath": "C:\\release-input\\managed-plugin-harness-compatibility-g3.json",
+      "pluginGenerationReservationPath": "C:\\secure\\plugin-generation.v2.json.reservations.v1\\managed-plugin-policy-70000000-0000-4000-8000-000000000003-g3.reservation.json",
+      "pluginGenerationLedgerPath": "C:\\secure\\plugin-generation.v2.json",
+      "pluginGenerationLedgerNamespace": "pilot-tenant-plugin-policy",
+      "pluginOrganizationAdmissionReceiptPath": "C:\\release-input\\managed-plugin-policy-70000000-0000-4000-8000-000000000003-g3.organization-admission.v1.json",
+      "pluginPromotionJournalAuthorizationPath": "C:\\release-input\\managed-plugin-policy-70000000-0000-4000-8000-000000000003-g3.journal-authorization.v1.json"
+    }
+  ]
+}

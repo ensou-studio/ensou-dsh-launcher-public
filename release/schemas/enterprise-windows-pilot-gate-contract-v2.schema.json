@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.ensou.example/enterprise-windows-pilot-gate-contract-v2.schema.json",
+  "title": "Ensou DSH Enterprise Windows Pilot gate contract v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "contractType", "gates"],
+  "properties": {
+    "schemaVersion": { "const": 2 },
+    "contractType": { "const": "ensou-dsh-enterprise-windows-pilot-gate-contract" },
+    "gates": {
+      "type": "array",
+      "minItems": 21,
+      "maxItems": 21,
+      "items": { "$ref": "#/$defs/gateExpectation" }
+    }
+  },
+  "$defs": {
+    "nullableReleaseIndex": {
+      "oneOf": [
+        { "type": "integer", "minimum": 0, "maximum": 4 },
+        { "type": "null" }
+      ]
+    },
+    "gateExpectation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sequenceNumber", "gate", "role", "state", "networkMode",
+        "resultCode", "deviceLane", "activeReleaseIndex",
+        "rollbackReleaseIndex", "attemptedReleaseIndex"
+      ],
+      "properties": {
+        "sequenceNumber": { "type": "integer", "minimum": 1, "maximum": 21 },
+        "gate": { "type": "string", "pattern": "^[a-z0-9-]{1,128}$" },
+        "role": {
+          "enum": ["installer", "bootstrapper", "launcher", "maintenance", "runtime", "previous-runtime", "pilot-observer"]
+        },
+        "state": {
+          "enum": ["completed", "started-and-healthy", "denied-as-expected", "locked-as-expected"]
+        },
+        "networkMode": { "enum": ["controlled", "offline"] },
+        "resultCode": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,127}$" },
+        "deviceLane": { "enum": ["clean-install", "legacy-migration"] },
+        "activeReleaseIndex": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "rollbackReleaseIndex": { "$ref": "#/$defs/nullableReleaseIndex" },
+        "attemptedReleaseIndex": { "$ref": "#/$defs/nullableReleaseIndex" }
+      }
+    }
+  }
+}

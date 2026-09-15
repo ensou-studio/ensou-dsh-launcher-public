@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0-windows7.0": {
+      "ensou.dsh.contracts": {
+        "type": "Project"
+      },
+      "ensou.dsh.enterprise.releasecontracts": {
+        "type": "Project"
+      }
+    }
+  }
+}

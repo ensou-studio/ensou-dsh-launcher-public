@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.ensou.example/release/enterprise-stable-publication-statement-v1.schema.json",
+  "title": "Ensou DSH Enterprise stable publication attestation statement v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "resultType", "contextSha256", "operationId", "feedOperationRequestSha256", "observedAtUtc", "expiresAtUtc", "files", "publishedArtifacts"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "resultType": { "const": "ensou-dsh-enterprise-stable-publication-result" },
+    "contextSha256": { "$ref": "#/definitions/sha256" },
+    "operationId": { "$ref": "#/definitions/operationId" },
+    "feedOperationRequestSha256": { "$ref": "#/definitions/sha256" },
+    "observedAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+    "expiresAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+    "files": {
+      "type": "array", "minItems": 8, "maxItems": 8,
+      "items": [
+        { "allOf": [{ "$ref": "#/definitions/file" }, { "properties": { "role": { "const": "context.json" } } }] },
+        { "allOf": [{ "$ref": "#/definitions/file" }, { "properties": { "role": { "const": "feed-identity.json" } } }] },
+        { "allOf": [{ "$ref": "#/definitions/file" }, { "properties": { "role": { "const": "operation-request.json" } } }] },
+        { "allOf": [{ "$ref": "#/definitions/file" }, { "properties": { "role": { "const": "operation-result.json" } } }] },
+        { "allOf": [{ "$ref": "#/definitions/file" }, { "properties": { "role": { "const": "trust-configuration.json" } } }] },
+        { "allOf": [{ "$ref": "#/definitions/file" }, { "properties": { "role": { "const": "channel-head.json" } } }] },
+        { "allOf": [{ "$ref": "#/definitions/file" }, { "properties": { "role": { "const": "journal-head.json" } } }] },
+        { "allOf": [{ "$ref": "#/definitions/file" }, { "properties": { "role": { "const": "journal-entry.json" } } }] }
+      ],
+      "additionalItems": false
+    },
+    "publishedArtifacts": { "type": "array", "minItems": 1, "maxItems": 64, "items": { "$ref": "#/definitions/artifactReceipt" } }
+  },
+  "definitions": {
+    "sha256": { "type": "string", "minLength": 64, "maxLength": 64, "pattern": "^[0-9a-f]{64}$" },
+    "operationId": { "type": "string", "minLength": 32, "maxLength": 32, "pattern": "^[0-9a-f]{32}$" },
+    "wholeSecondUtc": { "type": "string", "minLength": 20, "maxLength": 20, "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$" },
+    "file": { "type": "object", "additionalProperties": false, "required": ["role", "sizeBytes", "sha256"], "properties": { "role": { "type": "string", "minLength": 1, "maxLength": 128 }, "sizeBytes": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "sha256": { "$ref": "#/definitions/sha256" } } },
+    "token": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$" },
+    "fileName": { "type": "string", "minLength": 1, "maxLength": 255, "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$" },
+    "artifactReceipt": { "type": "object", "additionalProperties": false, "required": ["component", "releaseId", "fileName", "sizeBytes", "sha256"], "properties": { "component": { "$ref": "#/definitions/token" }, "releaseId": { "$ref": "#/definitions/token" }, "fileName": { "$ref": "#/definitions/fileName" }, "sizeBytes": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "sha256": { "$ref": "#/definitions/sha256" } } }
+  }
+}

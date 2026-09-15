@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.ensou.example/enterprise-windows-pilot-attestation-request-v1.schema.json",
+  "title": "Ensou DSH Enterprise Windows Pilot detached attestation request v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "requestType",
+    "algorithm",
+    "standaloneAdmissionEvidence",
+    "privateKeyUsed",
+    "body",
+    "signingPayload"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "requestType": {
+      "const": "ensou-dsh-enterprise-windows-pilot-attestation-request"
+    },
+    "algorithm": { "const": "ES256" },
+    "standaloneAdmissionEvidence": { "const": false },
+    "privateKeyUsed": { "const": false },
+    "body": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "evidenceType", "sizeBytes", "sha256"],
+      "properties": {
+        "schemaVersion": { "const": 2 },
+        "evidenceType": {
+          "const": "ensou-dsh-enterprise-windows-pilot-evidence-body"
+        },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16777216
+        },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "signingPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["domain", "encoding", "lineEnding", "sizeBytes", "sha256", "base64Url"],
+      "properties": {
+        "domain": {
+          "const": "ensou-dsh-enterprise-windows-pilot-evidence-attestation-v2"
+        },
+        "encoding": { "const": "utf-8" },
+        "lineEnding": { "const": "LF" },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4096
+        },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "base64Url": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}

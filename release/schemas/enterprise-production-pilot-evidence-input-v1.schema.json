@@ -1,0 +1,301 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ensou DSH Enterprise production Pilot evidence import input v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "inputType",
+    "orchestrationId",
+    "edition",
+    "targetChannel",
+    "releaseSetId",
+    "createdAtUtc",
+    "expiresAtUtc",
+    "planAnchor",
+    "r7",
+    "trustPolicy",
+    "windowsOperationalPilot",
+    "stablePrivatePilot",
+    "localDataCertification",
+    "verification",
+    "productionAdmission",
+    "nextRequiredGate"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "inputType": {
+      "const": "ensou-dsh-enterprise-production-pilot-evidence-import-input"
+    },
+    "orchestrationId": { "$ref": "#/definitions/uuid" },
+    "edition": { "const": "Enterprise" },
+    "targetChannel": { "const": "stable" },
+    "releaseSetId": { "$ref": "#/definitions/releaseSetId" },
+    "createdAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+    "expiresAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+    "planAnchor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "planSha256",
+        "pilotEvidenceTrustPolicySha256"
+      ],
+      "properties": {
+        "planSha256": { "$ref": "#/definitions/sha256" },
+        "pilotEvidenceTrustPolicySha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "r7": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "revision",
+        "phase",
+        "headSha256",
+        "planSha256",
+        "receiptRelativePath",
+        "receiptSha256",
+        "productionAdmission",
+        "signingResponseSha256",
+        "signingResponseAuthenticationKeyId",
+        "signingResponseAuthenticationPurpose",
+        "signerCertificateSha256",
+        "timestampSignerCertificateSha256",
+        "timestampUtc",
+        "signedInstaller"
+      ],
+      "properties": {
+        "revision": { "const": 7 },
+        "phase": { "const": "INSTALLER_SIGNATURE_IMPORTED" },
+        "headSha256": { "$ref": "#/definitions/sha256" },
+        "planSha256": { "$ref": "#/definitions/sha256" },
+        "receiptRelativePath": {
+          "const": "receipts/0007-installer-signature-imported.json"
+        },
+        "receiptSha256": { "$ref": "#/definitions/sha256" },
+        "productionAdmission": { "const": "NO_GO" },
+        "signingResponseSha256": { "$ref": "#/definitions/sha256" },
+        "signingResponseAuthenticationKeyId": { "$ref": "#/definitions/keyId" },
+        "signingResponseAuthenticationPurpose": {
+          "const": "installer-signing-response"
+        },
+        "signerCertificateSha256": { "$ref": "#/definitions/sha256" },
+        "timestampSignerCertificateSha256": { "$ref": "#/definitions/sha256" },
+        "timestampUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "signedInstaller": { "$ref": "#/definitions/installerIdentity" }
+      }
+    },
+    "trustPolicy": { "$ref": "#/definitions/fileBinding" },
+    "windowsOperationalPilot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "envelope",
+        "body",
+        "verificationReport",
+        "readinessConfig",
+        "storedReadinessReport",
+        "replayedReadinessReport",
+        "testRunId",
+        "customerAudienceId",
+        "completedAtUtc",
+        "evidenceKeyId",
+        "installerSha256",
+        "gateCount"
+      ],
+      "properties": {
+        "envelope": { "$ref": "#/definitions/fileBinding" },
+        "body": { "$ref": "#/definitions/fileBinding" },
+        "verificationReport": { "$ref": "#/definitions/fileBinding" },
+        "readinessConfig": { "$ref": "#/definitions/fileBinding" },
+        "storedReadinessReport": { "$ref": "#/definitions/fileBinding" },
+        "replayedReadinessReport": { "$ref": "#/definitions/fileBinding" },
+        "testRunId": { "$ref": "#/definitions/uuidAnyVersion" },
+        "customerAudienceId": { "$ref": "#/definitions/uuidAnyVersion" },
+        "completedAtUtc": { "$ref": "#/definitions/fractionalUtc" },
+        "evidenceKeyId": { "$ref": "#/definitions/keyId" },
+        "installerSha256": { "$ref": "#/definitions/sha256" },
+        "gateCount": { "const": 21 }
+      }
+    },
+    "stablePrivatePilot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceEvidence",
+        "r8SubsetSha256",
+        "collectedAtUtc",
+        "allowlistExpiresAtUtc",
+        "freshInstallDeviceIdentitySha256",
+        "onlineUpgradeDeviceIdentitySha256",
+        "freshInstallInventorySha256",
+        "onlineUpgradeInventorySha256",
+        "targetManifestSha256",
+        "targetObjectSetSha256",
+        "installerSha256"
+      ],
+      "properties": {
+        "sourceEvidence": { "$ref": "#/definitions/fileBinding" },
+        "r8SubsetSha256": { "$ref": "#/definitions/sha256" },
+        "collectedAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "allowlistExpiresAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "freshInstallDeviceIdentitySha256": { "$ref": "#/definitions/sha256" },
+        "onlineUpgradeDeviceIdentitySha256": { "$ref": "#/definitions/sha256" },
+        "freshInstallInventorySha256": { "$ref": "#/definitions/sha256" },
+        "onlineUpgradeInventorySha256": { "$ref": "#/definitions/sha256" },
+        "targetManifestSha256": { "$ref": "#/definitions/sha256" },
+        "targetObjectSetSha256": { "$ref": "#/definitions/sha256" },
+        "installerSha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "localDataCertification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "receipt",
+        "certificationId",
+        "certificationAudienceId",
+        "keyId",
+        "evidenceReportSha256",
+        "targetRuntimeSha256",
+        "expiresAtUtc"
+      ],
+      "properties": {
+        "receipt": { "$ref": "#/definitions/fileBinding" },
+        "certificationId": { "$ref": "#/definitions/uuidAnyVersion" },
+        "certificationAudienceId": { "$ref": "#/definitions/uuidAnyVersion" },
+        "keyId": { "$ref": "#/definitions/keyId" },
+        "evidenceReportSha256": { "$ref": "#/definitions/sha256" },
+        "targetRuntimeSha256": { "$ref": "#/definitions/sha256" },
+        "expiresAtUtc": { "$ref": "#/definitions/wholeSecondUtc" }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "r7ReceiptAuthoritative",
+        "exactSignedInstallerBytes",
+        "exactSigningResponse",
+        "productionWindowsPilotVerifierReport",
+        "independentEvidenceTrustPolicy",
+        "twentyOneOperationalGates",
+        "noVisibleConsoleGate",
+        "rollbackAndRecoveryGates",
+        "revocationGates",
+        "localDataCertification",
+        "twoDistinctWindowsDevices",
+        "freshInstallLane",
+        "onlineUpgradeLane",
+        "stableTargetObjects",
+        "freshEvidence",
+        "purposeSeparatedKeys"
+      ],
+      "properties": {
+        "r7ReceiptAuthoritative": { "const": "VERIFIED" },
+        "exactSignedInstallerBytes": { "const": "VERIFIED" },
+        "exactSigningResponse": { "const": "VERIFIED" },
+        "productionWindowsPilotVerifierReport": { "const": "VERIFIED" },
+        "independentEvidenceTrustPolicy": { "const": "VERIFIED" },
+        "twentyOneOperationalGates": { "const": "VERIFIED" },
+        "noVisibleConsoleGate": { "const": "VERIFIED" },
+        "rollbackAndRecoveryGates": { "const": "VERIFIED" },
+        "revocationGates": { "const": "VERIFIED" },
+        "localDataCertification": { "const": "VERIFIED" },
+        "twoDistinctWindowsDevices": { "const": "VERIFIED" },
+        "freshInstallLane": { "const": "VERIFIED" },
+        "onlineUpgradeLane": { "const": "VERIFIED" },
+        "stableTargetObjects": { "const": "VERIFIED" },
+        "freshEvidence": { "const": "VERIFIED" },
+        "purposeSeparatedKeys": { "const": "VERIFIED" }
+      }
+    },
+    "productionAdmission": { "const": "NO_GO" },
+    "nextRequiredGate": { "const": "PILOT_EVIDENCE_BOUND" }
+  },
+  "definitions": {
+    "sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "uuid": {
+      "type": "string",
+      "minLength": 36,
+      "maxLength": 36,
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "uuidAnyVersion": {
+      "type": "string",
+      "minLength": 36,
+      "maxLength": 36,
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "releaseSetId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"
+    },
+    "keyId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "wholeSecondUtc": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 20,
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "fractionalUtc": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[.][0-9]{7}Z$"
+    },
+    "fileBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fileName", "sizeBytes", "sha256"],
+      "properties": {
+        "fileName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1073741824
+        },
+        "sha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "installerIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fileName",
+        "relativePath",
+        "sizeBytes",
+        "sha256",
+        "peContentSha256"
+      ],
+      "properties": {
+        "fileName": { "const": "Ensou.Dsh.Enterprise.Installer.exe" },
+        "relativePath": {
+          "const": "imports/installer-signing.v1/signed/Ensou.Dsh.Enterprise.Installer.exe"
+        },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1073741824
+        },
+        "sha256": { "$ref": "#/definitions/sha256" },
+        "peContentSha256": { "$ref": "#/definitions/sha256" }
+      }
+    }
+  }
+}

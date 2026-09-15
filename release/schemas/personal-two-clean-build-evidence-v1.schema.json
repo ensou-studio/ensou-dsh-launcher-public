@@ -1,0 +1,318 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://updates.dsh.example.invalid/schemas/personal-two-clean-build-evidence-v1.schema.json",
+  "title": "Ensou DSH Personal two-clean production build evidence v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "evidenceType",
+    "unsignedProductionCandidate",
+    "productionAdmission",
+    "producerScriptSha256",
+    "buildIntent",
+    "sourceCommit",
+    "sourceTree",
+    "sourceInventorySha256",
+    "dependencyClosureSha256",
+    "sdk",
+    "commandContractSha256",
+    "runs",
+    "restoreClosureSha256",
+    "outputsByteIdentical",
+    "combinedOutputClosureSha256",
+    "result"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "evidenceType": {
+      "const": "ensou-dsh-personal-two-clean-production-build-evidence"
+    },
+    "unsignedProductionCandidate": { "const": true },
+    "productionAdmission": { "const": "NO_GO" },
+    "producerScriptSha256": { "$ref": "#/definitions/sha256" },
+    "buildIntent": {
+      "allOf": [
+        { "$ref": "#/definitions/fileDescriptor" },
+        {
+          "properties": {
+            "relativePath": { "const": "builds/build-intent.v1.json" }
+          }
+        }
+      ]
+    },
+    "sourceCommit": { "$ref": "#/definitions/gitObject" },
+    "sourceTree": { "$ref": "#/definitions/gitObject" },
+    "sourceInventorySha256": { "$ref": "#/definitions/sha256" },
+    "dependencyClosureSha256": { "$ref": "#/definitions/sha256" },
+    "sdk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "version", "sizeBytes", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 3, "maxLength": 1024 },
+        "version": { "const": "10.0.302" },
+        "sizeBytes": { "type": "integer", "minimum": 1 },
+        "sha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "commandContractSha256": { "$ref": "#/definitions/sha256" },
+    "restoreClosureSha256": { "$ref": "#/definitions/sha256" },
+    "runs": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": [
+        {
+          "allOf": [
+            { "$ref": "#/definitions/run" },
+            { "properties": { "runLabel": { "const": "isolated-a" } } }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/definitions/run" },
+            { "properties": { "runLabel": { "const": "isolated-b" } } }
+          ]
+        }
+      ],
+      "additionalItems": false
+    },
+    "outputsByteIdentical": { "const": true },
+    "combinedOutputClosureSha256": { "$ref": "#/definitions/sha256" },
+    "result": { "const": "PASS" }
+  },
+  "definitions": {
+    "uuidV4": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "gitObject": {
+      "type": "string",
+      "minLength": 40,
+      "maxLength": 64,
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "utc": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-([0-2][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]Z$"
+    },
+    "fileDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relativePath", "sizeBytes", "sha256"],
+      "properties": {
+        "relativePath": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "sizeBytes": { "type": "integer", "minimum": 1, "maximum": 8589934592 },
+        "sha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "fileName",
+        "relativePath",
+        "sizeBytes",
+        "sha256",
+        "peContentSha256",
+        "authenticodeStatus"
+      ],
+      "properties": {
+        "role": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "fileName": { "type": "string", "minLength": 5, "maxLength": 128 },
+        "relativePath": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "sizeBytes": { "type": "integer", "minimum": 256, "maximum": 1073741824 },
+        "sha256": { "$ref": "#/definitions/sha256" },
+        "peContentSha256": { "$ref": "#/definitions/sha256" },
+        "authenticodeStatus": { "const": "NotSigned" }
+      }
+    },
+    "invocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ordinal",
+        "role",
+        "projectRelativePath",
+        "arguments",
+        "startedAtUtc",
+        "completedAtUtc",
+        "exitCode",
+        "stdoutBytes",
+        "stdoutSha256",
+        "stderrBytes",
+        "stderrSha256",
+        "output"
+      ],
+      "properties": {
+        "ordinal": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "role": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "projectRelativePath": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "arguments": {
+          "type": "array",
+          "minItems": 20,
+          "maxItems": 64,
+          "items": { "type": "string", "minLength": 1, "maxLength": 2048 }
+        },
+        "startedAtUtc": { "$ref": "#/definitions/utc" },
+        "completedAtUtc": { "$ref": "#/definitions/utc" },
+        "exitCode": { "const": 0 },
+        "stdoutBytes": { "type": "integer", "minimum": 0, "maximum": 8388608 },
+        "stdoutSha256": { "$ref": "#/definitions/sha256" },
+        "stderrBytes": { "type": "integer", "minimum": 0, "maximum": 8388608 },
+        "stderrSha256": { "$ref": "#/definitions/sha256" },
+        "output": { "$ref": "#/definitions/output" }
+      }
+    },
+    "restoreCommand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ordinal",
+        "role",
+        "projectRelativePath",
+        "arguments",
+        "startedAtUtc",
+        "completedAtUtc",
+        "exitCode",
+        "stdoutBytes",
+        "stdoutSha256",
+        "stderrBytes",
+        "stderrSha256"
+      ],
+      "properties": {
+        "ordinal": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "role": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "projectRelativePath": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "arguments": {
+          "type": "array",
+          "minItems": 29,
+          "maxItems": 29,
+          "items": { "type": "string", "minLength": 1, "maxLength": 2048 }
+        },
+        "startedAtUtc": { "$ref": "#/definitions/utc" },
+        "completedAtUtc": { "$ref": "#/definitions/utc" },
+        "exitCode": { "const": 0 },
+        "stdoutBytes": { "type": "integer", "minimum": 0, "maximum": 8388608 },
+        "stdoutSha256": { "$ref": "#/definitions/sha256" },
+        "stderrBytes": { "type": "integer", "minimum": 0, "maximum": 8388608 },
+        "stderrSha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "restore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "packageCacheRootPath",
+        "packageCacheRootPhysicalIdentitySha256",
+        "commands",
+        "commandContractSha256",
+        "assets",
+        "assetsClosureSha256"
+      ],
+      "properties": {
+        "packageCacheRootPath": { "type": "string", "minLength": 3, "maxLength": 1024 },
+        "packageCacheRootPhysicalIdentitySha256": { "$ref": "#/definitions/sha256" },
+        "commands": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": { "$ref": "#/definitions/restoreCommand" }
+        },
+        "commandContractSha256": { "$ref": "#/definitions/sha256" },
+        "assets": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/fileDescriptor" }
+        },
+        "assetsClosureSha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "personalAccountSelfCheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "command", "executableSha256", "startedAtUtc", "completedAtUtc",
+        "exitCode", "stdout", "stderrBytes", "stderrSha256"
+      ],
+      "properties": {
+        "command": { "const": "--personal-account-self-check" },
+        "executableSha256": { "$ref": "#/definitions/sha256" },
+        "startedAtUtc": { "$ref": "#/definitions/utc" },
+        "completedAtUtc": { "$ref": "#/definitions/utc" },
+        "exitCode": { "const": 0 },
+        "stdout": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["relativePath", "sizeBytes", "sha256"],
+          "properties": {
+            "relativePath": { "type": "string", "pattern": "^builds/isolated-[ab]-personal-account-self-check[.]json$" },
+            "sizeBytes": { "type": "integer", "minimum": 1, "maximum": 16384 },
+            "sha256": { "$ref": "#/definitions/sha256" }
+          }
+        },
+        "stderrBytes": { "const": 0 },
+        "stderrSha256": { "const": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" }
+      }
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "runLabel",
+        "buildId",
+        "checkoutPath",
+        "checkoutPhysicalIdentitySha256",
+        "materializedCheckoutPath",
+        "materializedCheckoutPhysicalIdentitySha256",
+        "intermediateRootPath",
+        "intermediateRootPhysicalIdentitySha256",
+        "outputRootPath",
+        "outputRootPhysicalIdentitySha256",
+        "sourceStatusBefore",
+        "sourceStatusAfter",
+        "startedAtUtc",
+        "completedAtUtc",
+        "sourceDateEpoch",
+        "restore",
+        "invocations",
+        "personalAccountSelfCheck",
+        "outputClosureSha256"
+      ],
+      "properties": {
+        "runLabel": { "enum": ["isolated-a", "isolated-b"] },
+        "buildId": { "$ref": "#/definitions/uuidV4" },
+        "checkoutPath": { "type": "string", "minLength": 3, "maxLength": 1024 },
+        "checkoutPhysicalIdentitySha256": { "$ref": "#/definitions/sha256" },
+        "materializedCheckoutPath": { "type": "string", "minLength": 3, "maxLength": 1024 },
+        "materializedCheckoutPhysicalIdentitySha256": { "$ref": "#/definitions/sha256" },
+        "intermediateRootPath": { "type": "string", "minLength": 3, "maxLength": 1024 },
+        "intermediateRootPhysicalIdentitySha256": { "$ref": "#/definitions/sha256" },
+        "outputRootPath": { "type": "string", "minLength": 3, "maxLength": 1024 },
+        "outputRootPhysicalIdentitySha256": { "$ref": "#/definitions/sha256" },
+        "sourceStatusBefore": { "const": "CLEAN_TRACKED_HEAD" },
+        "sourceStatusAfter": { "const": "CLEAN_TRACKED_HEAD" },
+        "startedAtUtc": { "$ref": "#/definitions/utc" },
+        "completedAtUtc": { "$ref": "#/definitions/utc" },
+        "sourceDateEpoch": { "type": "integer", "minimum": 1 },
+        "restore": { "$ref": "#/definitions/restore" },
+        "invocations": {
+          "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+          "items": { "$ref": "#/definitions/invocation" }
+        },
+        "personalAccountSelfCheck": { "$ref": "#/definitions/personalAccountSelfCheck" },
+        "outputClosureSha256": { "$ref": "#/definitions/sha256" }
+      }
+    }
+  }
+}

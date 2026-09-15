@@ -1,0 +1,13 @@
+{
+  "fixture": true,
+  "expectedVerdict": "NO_GO",
+  "observation": {
+    "networkPolicy": { "offlineOnly": true, "certificateDownloadsDisabled": true, "revocationMode": "NoCheck", "authenticodeInspection": "offline-pe-security-directory-v1", "winVerifyTrustUsed": false },
+    "environment": { "isWindows": true, "osArchitecture": "X64", "processArchitecture": "X64" },
+    "signTool": { "exists": "false", "absoluteSafePath": true, "fileNameExact": true, "versionMatches": true, "sha256Matches": true },
+    "certificate": { "present": true, "hasPrivateKey": true, "codeSigningEku": true, "currentlyValid": true, "validityBufferSatisfied": true, "sha256Matches": true, "chainTrusted": true, "pilotRootPresent": true, "pilotRootSafePath": true, "pilotRootSha256Matches": true, "privateKeyExportability": "NonExportable", "revocationStatus": "Good" },
+    "tsa": { "absoluteHttps": true, "componentsClean": true, "canonicalInput": true, "hostShapeAllowed": true, "expectedSha256Valid": true, "sha256Matches": true },
+    "targetBinding": { "bindingMode": "ordered-target-path-sha256-pairs-v1", "nonEmpty": true, "countWithinLimit": true, "countMatches": true, "orderedIndexBinding": true, "pathsUnique": true, "expectedSha256Unique": true },
+    "targets": [{ "path": "C:\\release\\app.exe", "expectedSha256Valid": true, "sha256Matches": true, "exists": true, "absoluteSafePath": true, "insideAllowedRoot": true, "isLeafFile": true, "isReparsePoint": false, "allowedExtension": true, "isPortableExecutable": true, "isUnsigned": true }]
+  }
+}

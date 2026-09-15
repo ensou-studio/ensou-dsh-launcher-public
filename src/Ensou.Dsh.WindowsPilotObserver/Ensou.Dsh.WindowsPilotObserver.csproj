@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>Ensou.Dsh.WindowsPilotObserver</RootNamespace>
+    <AssemblyName>Ensou.Dsh.WindowsPilotObserver</AssemblyName>
+    <Product>Ensou DSH Windows Pilot Observer</Product>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <PublishTrimmed>false</PublishTrimmed>
+  </PropertyGroup>
+  <Target Name="ValidateWindowsPilotObserverPublish" BeforeTargets="PrepareForPublish">
+    <Error Condition="'$(RuntimeIdentifier)' != 'win-x64' or '$(SelfContained)' != 'true' or '$(PublishSingleFile)' != 'true'"
+      Text="Windows Pilot Observer must be win-x64, self-contained, and single-file." />
+  </Target>
+  <Target Name="RejectLooseWindowsPilotObserverAssemblies" AfterTargets="Publish">
+    <ItemGroup>
+      <_ObserverLooseManaged Include="$(PublishDir)Ensou.Dsh.*.dll" />
+    </ItemGroup>
+    <Error Condition="'@(_ObserverLooseManaged)' != ''"
+      Text="Windows Pilot Observer publish contains replaceable Ensou managed DLLs: @(_ObserverLooseManaged)" />
+  </Target>
+</Project>

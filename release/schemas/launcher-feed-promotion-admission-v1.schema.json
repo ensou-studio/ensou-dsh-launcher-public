@@ -1,0 +1,231 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ensou DSH Launcher stable feed-promotion state admission v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "evidenceType",
+    "orchestrationId",
+    "edition",
+    "targetChannel",
+    "exposureRing",
+    "feedChannel",
+    "publishScope",
+    "releaseSetId",
+    "sourceState",
+    "operationId",
+    "feedFoundation",
+    "payloadSetSha256",
+    "request",
+    "response",
+    "promotionHead",
+    "bundleHead",
+    "files",
+    "productionAdmission",
+    "networkPublishPerformed"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "evidenceType": { "const": "STABLE_PROMOTION_REQUESTED" },
+    "orchestrationId": { "$ref": "#/definitions/orchestrationId" },
+    "edition": { "const": "Enterprise" },
+    "targetChannel": { "const": "stable" },
+    "exposureRing": { "const": "stable" },
+    "feedChannel": { "const": "stable" },
+    "publishScope": { "const": "public-stable" },
+    "releaseSetId": { "$ref": "#/definitions/token" },
+    "sourceState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "revision",
+        "phase",
+        "planSha256",
+        "identitySha256",
+        "headSha256",
+        "r8ReceiptSha256",
+        "receiptChainSha256",
+        "candidateReceiptSha256"
+      ],
+      "properties": {
+        "revision": { "const": 8 },
+        "phase": { "const": "PILOT_EVIDENCE_BOUND" },
+        "planSha256": { "$ref": "#/definitions/sha256" },
+        "identitySha256": { "$ref": "#/definitions/sha256" },
+        "headSha256": { "$ref": "#/definitions/sha256" },
+        "r8ReceiptSha256": { "$ref": "#/definitions/sha256" },
+        "receiptChainSha256": { "$ref": "#/definitions/sha256" },
+        "candidateReceiptSha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "operationId": { "type": "string", "pattern": "^[0-9a-f]{32}$" },
+    "feedFoundation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expectedFeedIdentitySha256",
+        "expectedChannelHead",
+        "expectedJournalHead",
+        "feedCasSha256"
+      ],
+      "properties": {
+        "expectedFeedIdentitySha256": { "$ref": "#/definitions/sha256" },
+        "expectedChannelHead": { "$ref": "#/definitions/rawStateExpectation" },
+        "expectedJournalHead": { "$ref": "#/definitions/rawStateExpectation" },
+        "feedCasSha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "payloadSetSha256": { "$ref": "#/definitions/sha256" },
+    "request": {
+      "allOf": [
+        { "$ref": "#/definitions/fileDescriptor" },
+        { "properties": { "fileName": { "const": "request.v1.json" } } }
+      ]
+    },
+    "response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fileName",
+        "sizeBytes",
+        "sha256",
+        "keyId",
+        "purpose",
+        "payloadType",
+        "decision",
+        "completedAtUtc",
+        "requestExpiresAtUtc"
+      ],
+      "properties": {
+        "fileName": { "const": "response.v1.json" },
+        "sizeBytes": { "$ref": "#/definitions/positiveSize" },
+        "sha256": { "$ref": "#/definitions/sha256" },
+        "keyId": { "$ref": "#/definitions/keyId" },
+        "purpose": { "const": "feed-promotion-response" },
+        "payloadType": {
+          "const": "ensou-dsh-launcher-feed-promotion-response-authentication-v1"
+        },
+        "decision": { "const": "AUTHORIZE_OFFLINE_BUNDLE" },
+        "completedAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "requestExpiresAtUtc": { "$ref": "#/definitions/wholeSecondUtc" }
+      }
+    },
+    "promotionHead": {
+      "allOf": [
+        { "$ref": "#/definitions/fileDescriptor" },
+        { "properties": { "fileName": { "const": "promotion-head.v1.json" } } }
+      ]
+    },
+    "bundleHead": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fileName",
+        "sizeBytes",
+        "sha256",
+        "bundleSetSha256",
+        "status"
+      ],
+      "properties": {
+        "fileName": { "const": "bundle-head.v1.json" },
+        "sizeBytes": { "$ref": "#/definitions/positiveSize" },
+        "sha256": { "$ref": "#/definitions/sha256" },
+        "bundleSetSha256": { "$ref": "#/definitions/sha256" },
+        "status": { "const": "EXTERNAL_PUBLISH_BUNDLE_READY" }
+      }
+    },
+    "files": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": { "$ref": "#/definitions/payloadFileDescriptor" }
+    },
+    "productionAdmission": { "const": "NO_GO" },
+    "networkPublishPerformed": { "const": false }
+  },
+  "definitions": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "positiveSize": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 8589934592
+    },
+    "wholeSecondUtc": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "orchestrationId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "token": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$"
+    },
+    "keyId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "rawStateExpectation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state"],
+          "properties": { "state": { "const": "missing" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "sizeBytes", "sha256"],
+          "properties": {
+            "state": { "const": "present" },
+            "sizeBytes": { "$ref": "#/definitions/positiveSize" },
+            "sha256": { "$ref": "#/definitions/sha256" }
+          }
+        }
+      ]
+    },
+    "fileDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fileName", "sizeBytes", "sha256"],
+      "properties": {
+        "fileName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "sizeBytes": { "$ref": "#/definitions/positiveSize" },
+        "sha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "payloadFileDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "fileName", "sizeBytes", "sha256"],
+      "properties": {
+        "role": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 96,
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "fileName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "sizeBytes": { "$ref": "#/definitions/positiveSize" },
+        "sha256": { "$ref": "#/definitions/sha256" }
+      }
+    }
+  }
+}

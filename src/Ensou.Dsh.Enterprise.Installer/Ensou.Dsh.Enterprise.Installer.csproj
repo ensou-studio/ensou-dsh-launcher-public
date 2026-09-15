@@ -1,0 +1,71 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>Ensou.Dsh.Enterprise.Installer</RootNamespace>
+    <AssemblyName>Ensou.Dsh.Enterprise.Installer</AssemblyName>
+    <Product>Ensou DSH Enterprise Installer</Product>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>..\..\assets\branding\dsh-official-whale.ico</ApplicationIcon>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <PublishTrimmed>false</PublishTrimmed>
+    <EnterpriseDevelopmentE2E Condition="'$(EnterpriseDevelopmentE2E)' == ''">false</EnterpriseDevelopmentE2E>
+    <DefineConstants Condition="'$(EnterpriseDevelopmentE2E)' == 'true'">$(DefineConstants);ENTERPRISE_DEVELOPMENT_E2E</DefineConstants>
+    <EnterprisePayloadDirectory Condition="'$(EnterprisePayloadDirectory)' != ''">$([System.IO.Path]::GetFullPath('$(EnterprisePayloadDirectory)'))</EnterprisePayloadDirectory>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ensou.Dsh.Enterprise.Installation\Ensou.Dsh.Enterprise.Installation.csproj"
+      GlobalPropertiesToRemove="RuntimeIdentifier;SelfContained;PublishSingleFile" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\assets\branding\dsh-official-whale.svg"
+      LogicalName="Ensou.Dsh.Enterprise.Brand.dsh-official-whale.svg" />
+    <EmbeddedResource Include="..\..\assets\branding\dsh-official-whale.png"
+      LogicalName="Ensou.Dsh.Enterprise.Brand.dsh-official-whale.png" />
+    <EmbeddedResource Include="..\..\assets\branding\dsh-official-whale.ico"
+      LogicalName="Ensou.Dsh.Enterprise.Brand.dsh-official-whale.ico" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(EnterprisePayloadDirectory)' != ''">
+    <EmbeddedResource Include="$(EnterprisePayloadDirectory)\enterprise-install-manifest.json"
+      LogicalName="Ensou.Dsh.Enterprise.Installer.Payload.enterprise-install-manifest.json" />
+    <EmbeddedResource Include="$(EnterprisePayloadDirectory)\launcher.zip"
+      LogicalName="Ensou.Dsh.Enterprise.Installer.Payload.launcher.zip" />
+    <EmbeddedResource Include="$(EnterprisePayloadDirectory)\runtime.zip"
+      LogicalName="Ensou.Dsh.Enterprise.Installer.Payload.runtime.zip" />
+    <EmbeddedResource Include="$(EnterprisePayloadDirectory)\Ensou.Dsh.Enterprise.Bootstrapper.exe"
+      LogicalName="Ensou.Dsh.Enterprise.Installer.Payload.Ensou.Dsh.Enterprise.Bootstrapper.exe" />
+  </ItemGroup>
+  <Target Name="ValidateEnterpriseInstallerPublish" BeforeTargets="PrepareForPublish">
+    <ItemGroup Condition="'$(EnterpriseDevelopmentE2E)' != 'true' and '$(EnterprisePayloadDirectory)' != ''">
+      <_EnterpriseProductionPayloadInventory Include="$(EnterprisePayloadDirectory)\**\*" />
+    </ItemGroup>
+    <Error Condition="'$(RuntimeIdentifier)' != 'win-x64'"
+      Text="Enterprise Installer must publish for win-x64." />
+    <Error Condition="'$(SelfContained)' != 'true'"
+      Text="Enterprise Installer must be self-contained." />
+    <Error Condition="'$(PublishSingleFile)' != 'true'"
+      Text="Enterprise Installer must publish as one executable." />
+    <Error Condition="'$(EnterpriseDevelopmentE2E)' != 'true' and '$(EnterpriseAuthenticodeSignerSha256Thumbprint)' == ''"
+      Text="Production Enterprise Installer publish requires the pinned Authenticode signer SHA-256 thumbprint." />
+    <Error Condition="'$(EnterpriseDevelopmentE2E)' != 'true' and '$(EnterprisePayloadDirectory)' == ''"
+      Text="Production Enterprise Installer publish requires EnterprisePayloadDirectory." />
+    <Error Condition="'$(EnterpriseDevelopmentE2E)' != 'true' and '$(EnterprisePayloadDirectory)' != '' and !Exists('$(EnterprisePayloadDirectory)\enterprise-install-manifest.json')"
+      Text="Production Enterprise Installer payload is missing enterprise-install-manifest.json." />
+    <Error Condition="'$(EnterpriseDevelopmentE2E)' != 'true' and '$(EnterprisePayloadDirectory)' != '' and !Exists('$(EnterprisePayloadDirectory)\launcher.zip')"
+      Text="Production Enterprise Installer payload is missing launcher.zip." />
+    <Error Condition="'$(EnterpriseDevelopmentE2E)' != 'true' and '$(EnterprisePayloadDirectory)' != '' and !Exists('$(EnterprisePayloadDirectory)\runtime.zip')"
+      Text="Production Enterprise Installer payload is missing runtime.zip." />
+    <Error Condition="'$(EnterpriseDevelopmentE2E)' != 'true' and '$(EnterprisePayloadDirectory)' != '' and !Exists('$(EnterprisePayloadDirectory)\Ensou.Dsh.Enterprise.Bootstrapper.exe')"
+      Text="Production Enterprise Installer payload is missing Ensou.Dsh.Enterprise.Bootstrapper.exe." />
+    <Error Condition="'$(EnterpriseDevelopmentE2E)' != 'true' and '$(EnterprisePayloadDirectory)' != '' and '@(_EnterpriseProductionPayloadInventory->Count())' != '4'"
+      Text="Production Enterprise Installer payload directory must contain exactly its four fixed files." />
+    <Error Condition="'$(EnterpriseDevelopmentE2E)' != 'true' and '$(EnterprisePayloadDirectory)' != '' and '$([System.IO.Directory]::GetDirectories(&quot;$(EnterprisePayloadDirectory)&quot;).Length)' != '0'"
+      Text="Production Enterprise Installer payload directory must not contain subdirectories." />
+    <Error Condition="'$(EnterpriseDevelopmentE2E)' != 'true' and '$(EnterprisePayloadDirectory)' != '' and '%(_EnterpriseProductionPayloadInventory.RecursiveDir)' != ''"
+      Text="Production Enterprise Installer payload directory must not contain nested entries." />
+  </Target>
+</Project>

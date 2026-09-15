@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ensou.example/schemas/enterprise-local-data-compatibility-evidence-v1.schema.json",
+  "title": "Ensou DSH enterprise local-data compatibility evidence v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "evidenceType",
+    "decision",
+    "startedUtc",
+    "completedUtc",
+    "fromUpstreamTag",
+    "toUpstreamTag",
+    "sourceRuntimeArchiveSha256",
+    "targetRuntimeArchiveSha256",
+    "testRunner",
+    "historicalFixture",
+    "preUpgradeBackup",
+    "forwardResult",
+    "rollbackResult",
+    "transcript",
+    "apiLanes",
+    "artifacts",
+    "coverage"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "evidenceType": { "const": "ensou-dsh-enterprise-local-data-compatibility" },
+    "decision": { "const": "PASS" },
+    "startedUtc": { "type": "string", "format": "date-time" },
+    "completedUtc": { "type": "string", "format": "date-time" },
+    "fromUpstreamTag": { "$ref": "#/$defs/upstreamTag" },
+    "toUpstreamTag": { "$ref": "#/$defs/upstreamTag" },
+    "sourceRuntimeArchiveSha256": { "$ref": "#/$defs/sha256" },
+    "targetRuntimeArchiveSha256": { "$ref": "#/$defs/sha256" },
+    "testRunner": { "$ref": "#/$defs/evidenceFile" },
+    "historicalFixture": { "$ref": "#/$defs/evidenceFile" },
+    "preUpgradeBackup": { "$ref": "#/$defs/evidenceFile" },
+    "forwardResult": { "$ref": "#/$defs/evidenceFile" },
+    "rollbackResult": { "$ref": "#/$defs/evidenceFile" },
+    "transcript": { "$ref": "#/$defs/evidenceFile" },
+    "apiLanes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceSeed", "targetForward", "sourceRestored"],
+      "properties": {
+        "sourceSeed": { "$ref": "#/$defs/evidenceFile" },
+        "targetForward": { "$ref": "#/$defs/evidenceFile" },
+        "sourceRestored": { "$ref": "#/$defs/evidenceFile" }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 512,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/evidenceFile" }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "credentialsP0",
+        "canonicalWholeHomeBackupRestore",
+        "workspaceTreeBackupRestore",
+        "sameTreeOldRuntimeRefusal",
+        "headerOnlySessionArtifact",
+        "fullSessionApiRoundTrip",
+        "conversationProviderRoundTrip",
+        "attachmentPublicApiRoundTrip",
+        "sessionQuerySemanticParity",
+        "requestImageNormalization",
+        "sqliteLocalDataGate"
+      ],
+      "properties": {
+        "credentialsP0": { "const": "covered" },
+        "canonicalWholeHomeBackupRestore": { "const": "covered" },
+        "workspaceTreeBackupRestore": { "const": "covered" },
+        "sameTreeOldRuntimeRefusal": { "const": "covered" },
+        "headerOnlySessionArtifact": { "const": "preserved-and-discovered-at-boot" },
+        "fullSessionApiRoundTrip": { "const": "covered" },
+        "conversationProviderRoundTrip": { "const": "covered" },
+        "attachmentPublicApiRoundTrip": { "const": "covered" },
+        "sessionQuerySemanticParity": { "const": "covered" },
+        "requestImageNormalization": {
+          "const": "not-applicable-managed-text-only-policy-public-refusal-proven"
+        },
+        "sqliteLocalDataGate": {
+          "const": "not-applicable-memory-only-derived-and-no-artifacts-observed"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "upstreamTag": {
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 128,
+      "pattern": "^dsh-v[A-Za-z0-9][A-Za-z0-9._+-]*$"
+    },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.?(?:/|$))[^\\r\\n\\t]+$"
+    },
+    "evidenceFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "bytes", "sha256"],
+      "properties": {
+        "path": { "$ref": "#/$defs/relativePath" },
+        "bytes": { "type": "integer", "minimum": 0, "maximum": 8589934592 },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  }
+}

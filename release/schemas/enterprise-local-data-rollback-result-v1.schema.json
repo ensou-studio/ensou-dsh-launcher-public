@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ensou.example/schemas/enterprise-local-data-rollback-result-v1.schema.json",
+  "title": "Ensou DSH enterprise whole-home rollback result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "resultType", "fromUpstreamTag", "toUpstreamTag", "decision",
+    "inPlaceRollbackRefusedAsExpected", "refusalClass", "historicalFixtureSha256",
+    "backupArchiveSha256", "preUpgradeTreeSha256", "restoredTreeSha256",
+    "preUpgradeWorkspaceTreeSha256", "restoredWorkspaceTreeSha256",
+    "backupRestoreByteExactPassed", "sourceRuntimeBootAfterRestorePassed",
+    "sourceRuntimeAuthoritativeFilesPreservedAfterBoot",
+    "sqliteArtifactsAfterRestoreAndBoot", "recordedAtUtc"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "resultType": { "const": "ensou-dsh-local-data-rollback-result" },
+    "fromUpstreamTag": { "$ref": "#/$defs/upstreamTag" },
+    "toUpstreamTag": { "$ref": "#/$defs/upstreamTag" },
+    "decision": { "const": "PASS" },
+    "inPlaceRollbackRefusedAsExpected": { "const": true },
+    "refusalClass": { "const": "credentials-layout-refusal" },
+    "historicalFixtureSha256": { "$ref": "#/$defs/sha256" },
+    "backupArchiveSha256": { "$ref": "#/$defs/sha256" },
+    "preUpgradeTreeSha256": { "$ref": "#/$defs/sha256" },
+    "restoredTreeSha256": { "$ref": "#/$defs/sha256" },
+    "preUpgradeWorkspaceTreeSha256": { "$ref": "#/$defs/sha256" },
+    "restoredWorkspaceTreeSha256": { "$ref": "#/$defs/sha256" },
+    "backupRestoreByteExactPassed": { "const": true },
+    "sourceRuntimeBootAfterRestorePassed": { "const": true },
+    "sourceRuntimeAuthoritativeFilesPreservedAfterBoot": {
+      "type": "array", "minItems": 4, "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 1024 }
+    },
+    "sqliteArtifactsAfterRestoreAndBoot": { "type": "array", "maxItems": 0 },
+    "recordedAtUtc": { "type": "string", "format": "date-time" }
+  },
+  "$defs": {
+    "upstreamTag": { "type": "string", "pattern": "^dsh-v[A-Za-z0-9][A-Za-z0-9._+-]{0,122}$" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}

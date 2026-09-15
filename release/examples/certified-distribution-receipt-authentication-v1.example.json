@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "authenticationType": "ensou-dsh-certified-distribution-receipt-authentication",
+  "product": "ensou-dsh-enterprise",
+  "releaseSetId": "managed-v2026.08.27.1",
+  "receiptSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "signature": {
+    "algorithm": "ES256",
+    "keyId": "independent-distribution-certification-2026-01",
+    "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+  }
+}

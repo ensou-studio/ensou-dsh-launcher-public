@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DefineConstants Condition="'$(EnterpriseDevelopmentE2E)' == 'true'">$(DefineConstants);ENTERPRISE_DEVELOPMENT_E2E</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.WindowsDesktop.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ensou.Dsh.Contracts\Ensou.Dsh.Contracts.csproj" />
+    <ProjectReference Include="..\Ensou.Dsh.Enterprise.Contracts\Ensou.Dsh.Enterprise.Contracts.csproj" />
+    <ProjectReference Include="..\Ensou.Dsh.Enterprise.Installation\Ensou.Dsh.Enterprise.Installation.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,50 @@
+namespace Ensou.Dsh.Enterprise.Contracts;
+
+public static class EnterpriseErrorCodes
+{
+    public const string QrStateInvalid = "QR_STATE_INVALID";
+    public const string DeviceProofInvalid = "DEVICE_PROOF_INVALID";
+    public const string TokenExpired = "TOKEN_EXPIRED";
+    public const string TokenRevoked = "TOKEN_REVOKED";
+    public const string RefreshTokenInvalid = "REFRESH_TOKEN_INVALID";
+    public const string RefreshTokenReused = "REFRESH_TOKEN_REUSED";
+    public const string AccessTokenInvalid = "ACCESS_TOKEN_INVALID";
+    public const string AuthorizationStale = "AUTHORIZATION_STALE";
+    public const string LeaseExpired = "LEASE_EXPIRED";
+    public const string EnrollmentActivationInvalid = "ENROLLMENT_ACTIVATION_INVALID";
+    public const string WeComIdentityNotPreregistered = "WECOM_IDENTITY_NOT_PREREGISTERED";
+    public const string WeComEnterpriseMemberRequired = "WECOM_ENTERPRISE_MEMBER_REQUIRED";
+    public const string EmployeeSuspended = "EMPLOYEE_SUSPENDED";
+    public const string EmployeeRevoked = "EMPLOYEE_REVOKED";
+    public const string DeviceAlreadyBound = "DEVICE_ALREADY_BOUND";
+    public const string DeviceReplacementNotAuthorized = "DEVICE_REPLACEMENT_NOT_AUTHORIZED";
+    public const string DeviceBindingRevoked = "DEVICE_BINDING_REVOKED";
+    public const string DeviceSecurityQuarantined = "DEVICE_SECURITY_QUARANTINED";
+    public const string ApiProfileUnassigned = "API_PROFILE_UNASSIGNED";
+    public const string ApiProfileDisabled = "API_PROFILE_DISABLED";
+    public const string PluginPolicyDenied = "PLUGIN_POLICY_DENIED";
+    public const string QrSessionConsumed = "QR_SESSION_CONSUMED";
+    public const string IdempotencyKeyReused = "IDEMPOTENCY_KEY_REUSED";
+    public const string PluginIncompatible = "PLUGIN_INCOMPATIBLE";
+    public const string RollbackProtectionTriggered = "ROLLBACK_PROTECTION_TRIGGERED";
+    public const string QrSessionExpired = "QR_SESSION_EXPIRED";
+    public const string QrSessionCancelled = "QR_SESSION_CANCELLED";
+    public const string EmployeeEntitlementMissing = "EMPLOYEE_ENTITLEMENT_MISSING";
+    public const string ReplacementAuthorizationExpired = "REPLACEMENT_AUTHORIZATION_EXPIRED";
+    public const string DeviceConfirmationInvalid = "DEVICE_CONFIRMATION_INVALID";
+    public const string DeviceConfirmationRejected = "DEVICE_CONFIRMATION_REJECTED";
+    public const string ManifestSignatureInvalid = "MANIFEST_SIGNATURE_INVALID";
+    public const string ArtifactHashMismatch = "ARTIFACT_HASH_MISMATCH";
+    public const string ClientUpdateRequired = "CLIENT_UPDATE_REQUIRED";
+    public const string RuntimeUpdateRequired = "RUNTIME_UPDATE_REQUIRED";
+    public const string CriticalPluginUpdateRequired = "CRITICAL_PLUGIN_UPDATE_REQUIRED";
+    public const string ApiQuotaExceeded = "API_QUOTA_EXCEEDED";
+    public const string RateLimited = "RATE_LIMITED";
+    public const string LeaseSignatureInvalid = "LEASE_SIGNATURE_INVALID";
+    public const string AuthorizationEpochMismatch = "AUTHORIZATION_EPOCH_MISMATCH";
+    public const string ClockUntrusted = "CLOCK_UNTRUSTED";
+    public const string ClockRollbackDetected = "CLOCK_ROLLBACK_DETECTED";
+    public const string ControlPlaneUnavailable = "CONTROL_PLANE_UNAVAILABLE";
+    public const string UpstreamApiUnavailable = "UPSTREAM_API_UNAVAILABLE";
+    public const string UpdateServiceUnavailable = "UPDATE_SERVICE_UNAVAILABLE";
+}

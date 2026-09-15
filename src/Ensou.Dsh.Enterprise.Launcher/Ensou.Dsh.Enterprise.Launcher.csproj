@@ -1,0 +1,119 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>Ensou.Dsh.Enterprise.Launcher</RootNamespace>
+    <AssemblyName>Ensou.Dsh.Enterprise.Launcher</AssemblyName>
+    <Product>Ensou DSH Enterprise Launcher</Product>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>..\..\assets\branding\dsh-official-whale.ico</ApplicationIcon>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <PublishTrimmed>false</PublishTrimmed>
+    <EnterpriseDevelopmentE2E Condition="'$(EnterpriseDevelopmentE2E)' == ''">false</EnterpriseDevelopmentE2E>
+    <EnterpriseDirectLocalDevelopmentE2E Condition="'$(EnterpriseDirectLocalDevelopmentE2E)' == ''">false</EnterpriseDirectLocalDevelopmentE2E>
+    <EnterpriseDirectLocalRuntimeAdmission Condition="'$(EnterpriseDirectLocalRuntimeAdmission)' == ''">false</EnterpriseDirectLocalRuntimeAdmission>
+    <EnterpriseUpdateManifestUri Condition="'$(EnterpriseUpdateManifestUri)' == ''"></EnterpriseUpdateManifestUri>
+    <EnterpriseUpdateManifestOrigin Condition="'$(EnterpriseUpdateManifestOrigin)' == ''"></EnterpriseUpdateManifestOrigin>
+    <EnterpriseUpdateArtifactOrigin Condition="'$(EnterpriseUpdateArtifactOrigin)' == ''"></EnterpriseUpdateArtifactOrigin>
+    <EnterpriseUpdateReleaseKeyId Condition="'$(EnterpriseUpdateReleaseKeyId)' == ''"></EnterpriseUpdateReleaseKeyId>
+    <EnterpriseUpdateReleaseKeyX Condition="'$(EnterpriseUpdateReleaseKeyX)' == ''"></EnterpriseUpdateReleaseKeyX>
+    <EnterpriseUpdateReleaseKeyY Condition="'$(EnterpriseUpdateReleaseKeyY)' == ''"></EnterpriseUpdateReleaseKeyY>
+    <EnterpriseControlPlaneOrigin Condition="'$(EnterpriseControlPlaneOrigin)' == ''"></EnterpriseControlPlaneOrigin>
+    <EnterpriseAuthorizationOrigin Condition="'$(EnterpriseAuthorizationOrigin)' == ''"></EnterpriseAuthorizationOrigin>
+    <EnterpriseGatewayOrigin Condition="'$(EnterpriseGatewayOrigin)' == ''"></EnterpriseGatewayOrigin>
+    <EnterpriseManagedArtifactOrigin Condition="'$(EnterpriseManagedArtifactOrigin)' == ''"></EnterpriseManagedArtifactOrigin>
+    <EnterpriseLeaseKeyId Condition="'$(EnterpriseLeaseKeyId)' == ''"></EnterpriseLeaseKeyId>
+    <EnterpriseLeaseKeyX Condition="'$(EnterpriseLeaseKeyX)' == ''"></EnterpriseLeaseKeyX>
+    <EnterpriseLeaseKeyY Condition="'$(EnterpriseLeaseKeyY)' == ''"></EnterpriseLeaseKeyY>
+    <DefineConstants Condition="'$(EnterpriseDevelopmentE2E)' == 'true'">$(DefineConstants);ENTERPRISE_DEVELOPMENT_E2E</DefineConstants>
+    <DefineConstants Condition="'$(EnterpriseDirectLocalDevelopmentE2E)' == 'true'">$(DefineConstants);ENTERPRISE_DIRECT_LOCAL_DEVELOPMENT_E2E</DefineConstants>
+    <DefineConstants Condition="'$(EnterpriseDirectLocalRuntimeAdmission)' == 'true'">$(DefineConstants);ENTERPRISE_DIRECT_LOCAL_RUNTIME_ADMISSION</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <AssemblyMetadata Include="EnterpriseUpdateManifestUri" Value="$(EnterpriseUpdateManifestUri)" />
+    <AssemblyMetadata Include="EnterpriseUpdateManifestOrigin" Value="$(EnterpriseUpdateManifestOrigin)" />
+    <AssemblyMetadata Include="EnterpriseUpdateArtifactOrigin" Value="$(EnterpriseUpdateArtifactOrigin)" />
+    <AssemblyMetadata Include="EnterpriseUpdateReleaseKeyId" Value="$(EnterpriseUpdateReleaseKeyId)" />
+    <AssemblyMetadata Include="EnterpriseUpdateReleaseKeyX" Value="$(EnterpriseUpdateReleaseKeyX)" />
+    <AssemblyMetadata Include="EnterpriseUpdateReleaseKeyY" Value="$(EnterpriseUpdateReleaseKeyY)" />
+    <AssemblyMetadata Include="EnterpriseControlPlaneOrigin" Value="$(EnterpriseControlPlaneOrigin)" />
+    <AssemblyMetadata Include="EnterpriseAuthorizationOrigin" Value="$(EnterpriseAuthorizationOrigin)" />
+    <AssemblyMetadata Include="EnterpriseGatewayOrigin" Value="$(EnterpriseGatewayOrigin)" />
+    <AssemblyMetadata Include="EnterpriseManagedArtifactOrigin" Value="$(EnterpriseManagedArtifactOrigin)" />
+    <AssemblyMetadata Include="EnterpriseLeaseKeyId" Value="$(EnterpriseLeaseKeyId)" />
+    <AssemblyMetadata Include="EnterpriseLeaseKeyX" Value="$(EnterpriseLeaseKeyX)" />
+    <AssemblyMetadata Include="EnterpriseLeaseKeyY" Value="$(EnterpriseLeaseKeyY)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ensou.Dsh.Enterprise.Client\Ensou.Dsh.Enterprise.Client.csproj"
+      GlobalPropertiesToRemove="RuntimeIdentifier;SelfContained;PublishSingleFile" />
+    <ProjectReference Include="..\Ensou.Dsh.Enterprise.Contracts\Ensou.Dsh.Enterprise.Contracts.csproj"
+      GlobalPropertiesToRemove="RuntimeIdentifier;SelfContained;PublishSingleFile" />
+    <ProjectReference Include="..\Ensou.Dsh.Enterprise.Installation\Ensou.Dsh.Enterprise.Installation.csproj"
+      GlobalPropertiesToRemove="RuntimeIdentifier;SelfContained;PublishSingleFile" />
+    <ProjectReference Include="..\Ensou.Dsh.Host\Ensou.Dsh.Host.csproj"
+      GlobalPropertiesToRemove="RuntimeIdentifier;SelfContained;PublishSingleFile" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\assets\branding\dsh-official-whale.svg"
+      LogicalName="Ensou.Dsh.Enterprise.Brand.dsh-official-whale.svg" />
+    <EmbeddedResource Include="..\..\assets\branding\dsh-official-whale.png"
+      LogicalName="Ensou.Dsh.Enterprise.Brand.dsh-official-whale.png" />
+    <EmbeddedResource Include="..\..\assets\branding\dsh-official-whale.ico"
+      LogicalName="Ensou.Dsh.Enterprise.Brand.dsh-official-whale.ico" />
+    <Resource Include="..\..\assets\branding\dsh-official-whale.png">
+      <Link>Assets\dsh-official-whale.png</Link>
+    </Resource>
+    <Content Include="..\..\assets\branding\dsh-official-whale.ico">
+      <Link>dsh-official-whale.ico</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\assets\branding\DEEPSEEK-HARNESS-LICENSE.txt">
+      <Link>licenses\DeepSeek-Harness-LICENSE.txt</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\installer\profiles\enterprise-build-profile.json"
+      Condition="'$(EnterpriseDevelopmentE2E)' != 'true'">
+      <Link>enterprise-build-profile.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="..\..\installer\profiles\development-e2e-build-profile.json"
+      Condition="'$(EnterpriseDevelopmentE2E)' == 'true'">
+      <Link>enterprise-build-profile.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+  <Target Name="ValidateEnterpriseDirectLocalDevelopmentE2E" BeforeTargets="PrepareForBuild">
+    <Error Condition="'$(EnterpriseDirectLocalRuntimeAdmission)' != 'false' and '$(EnterpriseDirectLocalRuntimeAdmission)' != 'true'"
+      Text="EnterpriseDirectLocalRuntimeAdmission must be exactly 'false' or 'true'." />
+    <Error Condition="'$(EnterpriseDirectLocalDevelopmentE2E)' == 'true' and '$(EnterpriseDevelopmentE2E)' != 'true'"
+      Text="Enterprise direct-local composition is an isolated Development-E2E rehearsal only." />
+    <Error Condition="'$(EnterpriseDirectLocalRuntimeAdmission)' == 'true' and '$(EnterpriseDevelopmentE2E)' == 'true'"
+      Text="Production direct-local runtime admission cannot be combined with Development-E2E." />
+  </Target>
+  <Target Name="ValidateEnterpriseLauncherPublish" BeforeTargets="PrepareForPublish">
+    <Error Condition="'$(RuntimeIdentifier)' != 'win-x64'"
+      Text="Enterprise Launcher must publish for win-x64." />
+    <Error Condition="'$(SelfContained)' != 'true'"
+      Text="Enterprise Launcher must be self-contained." />
+    <Error Condition="'$(PublishSingleFile)' != 'true'"
+      Text="Enterprise Launcher managed/runtime files must publish as one executable." />
+    <Error Condition="'$(EnterpriseDevelopmentE2E)' != 'true' and ('$(EnterpriseUpdateManifestUri)' == '' or '$(EnterpriseUpdateManifestOrigin)' == '' or '$(EnterpriseUpdateArtifactOrigin)' == '' or '$(EnterpriseUpdateReleaseKeyId)' == '' or '$(EnterpriseUpdateReleaseKeyX)' == '' or '$(EnterpriseUpdateReleaseKeyY)' == '')"
+      Text="Production Enterprise Launcher publish requires a complete compile-time signed update profile." />
+    <Error Condition="'$(EnterpriseDevelopmentE2E)' != 'true' and ('$(EnterpriseControlPlaneOrigin)' == '' or '$(EnterpriseAuthorizationOrigin)' == '' or '$(EnterpriseManagedArtifactOrigin)' == '' or '$(EnterpriseLeaseKeyId)' == '' or '$(EnterpriseLeaseKeyX)' == '' or '$(EnterpriseLeaseKeyY)' == '')"
+      Text="Production Enterprise Launcher publish requires complete compile-time control-plane origins and lease verification key." />
+    <Error Condition="'$(EnterpriseDevelopmentE2E)' != 'true' and '$(EnterpriseDirectLocalRuntimeAdmission)' == 'false' and '$(EnterpriseGatewayOrigin)' == ''"
+      Text="Production managed-gateway Launcher publish requires a compile-time gateway origin." />
+    <Error Condition="'$(EnterpriseDirectLocalRuntimeAdmission)' == 'true' and '$(EnterpriseGatewayOrigin)' != ''"
+      Text="Production direct-local Launcher publish must omit EnterpriseGatewayOrigin." />
+    <Error Condition="'$(EnterpriseDevelopmentE2E)' != 'true' and '$(EnterpriseAuthenticodeSignerSha256Thumbprint)' == ''"
+      Text="Production Enterprise Launcher publish requires the pinned Authenticode signer SHA-256 thumbprint." />
+  </Target>
+</Project>

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <RootNamespace>Ensou.Dsh.WindowsPilotObserverTests</RootNamespace>
+    <AssemblyName>Ensou.Dsh.WindowsPilotObserverTests</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.WindowsDesktop.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Ensou.Dsh.WindowsPilotObserver\Ensou.Dsh.WindowsPilotObserver.csproj" />
+  </ItemGroup>
+</Project>

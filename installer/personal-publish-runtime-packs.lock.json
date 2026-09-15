@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "dotnetSdkVersion": "10.0.302",
+  "runtimeIdentifier": "win-x64",
+  "selfContained": true,
+  "source": "https://api.nuget.org/v3/index.json",
+  "packages": [
+    {
+      "kind": "runtime-pack",
+      "id": "Microsoft.NETCore.App.Runtime.win-x64",
+      "version": "10.0.10",
+      "bytes": 39889960,
+      "sha512": "d/6m2bwNP35/bBDmtNPb0GBLwlK0eyM8/Qb7zEtIFJDgjAo960bROUlB6XcuLM4VmfA8hklOgGDU98nUg6xDwA=="
+    },
+    {
+      "kind": "runtime-pack",
+      "id": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
+      "version": "10.0.10",
+      "bytes": 39156316,
+      "sha512": "XU2a/UsSXgleK3h7AUxiI3T+RSH806nLK5djtlTFkPMfBbN9By0AFvTQJqE4QYF6GIvb3+wb65GO2yzeJ9fmsA=="
+    },
+    {
+      "kind": "runtime-pack",
+      "id": "Microsoft.AspNetCore.App.Runtime.win-x64",
+      "version": "10.0.10",
+      "bytes": 12758490,
+      "sha512": "/2Ht7wInhxWE4zBsv9itb8mLrM0M28BWCDEkFNwbaMtq57qE8FysTU/+aOL+0WcZX9wAywOOBSm4Gw1Au9Staw=="
+    },
+    {
+      "kind": "publish-tool",
+      "id": "Microsoft.NET.ILLink.Tasks",
+      "version": "10.0.10",
+      "bytes": 1535223,
+      "sha512": "gE8O7DrRAI3Qir3ySzvdRl7DzVf8XrFfI0vbUXl2GHim3dMPdVol9DxwNh/Tzq9ymok1KU+2wu2qrF5jWNv1pQ=="
+    }
+  ]
+}

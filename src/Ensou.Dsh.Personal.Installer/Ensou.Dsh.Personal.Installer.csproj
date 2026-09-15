@@ -1,0 +1,83 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>Ensou.Dsh.Personal.Installer</RootNamespace>
+    <AssemblyName>Ensou.Dsh.Personal.Installer</AssemblyName>
+    <Product>Ensou DSH Personal Installer</Product>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>..\..\assets\branding\dsh-official-whale.ico</ApplicationIcon>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <PublishTrimmed>false</PublishTrimmed>
+    <PublishAot>false</PublishAot>
+    <PersonalProductionBuild Condition="'$(PersonalProductionBuild)' == ''">false</PersonalProductionBuild>
+    <PersonalDevelopmentPublish Condition="'$(PersonalDevelopmentPublish)' == ''">false</PersonalDevelopmentPublish>
+    <PersonalDevelopmentE2E Condition="'$(PersonalDevelopmentE2E)' == ''">false</PersonalDevelopmentE2E>
+    <PersonalCanonicalLowSFromSequence Condition="'$(PersonalCanonicalLowSFromSequence)' == '' and '$(PersonalProductionBuild)' != 'true' and '$(PersonalDevelopmentPublish)' != 'true'">1</PersonalCanonicalLowSFromSequence>
+    <PersonalChannel Condition="'$(PersonalChannel)' == '' and '$(PersonalProductionBuild)' != 'true' and '$(PersonalDevelopmentPublish)' != 'true'">stable</PersonalChannel>
+    <PersonalInstallerPayloadDirectory Condition="'$(PersonalInstallerPayloadDirectory)' != ''">$([System.IO.Path]::GetFullPath('$(PersonalInstallerPayloadDirectory)'))</PersonalInstallerPayloadDirectory>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ensou.Dsh.Contracts\Ensou.Dsh.Contracts.csproj"
+      GlobalPropertiesToRemove="RuntimeIdentifier;SelfContained;PublishSingleFile" />
+    <ProjectReference Include="..\Ensou.Dsh.UpdateEngine\Ensou.Dsh.UpdateEngine.csproj"
+      GlobalPropertiesToRemove="RuntimeIdentifier;SelfContained;PublishSingleFile" />
+  </ItemGroup>
+  <ItemGroup>
+    <AssemblyMetadata Include="PersonalProductionBuild" Value="$(PersonalProductionBuild)" />
+    <AssemblyMetadata Include="PersonalDevelopmentE2E" Value="$(PersonalDevelopmentE2E)" />
+    <AssemblyMetadata Include="PersonalManifestOrigin" Value="$(PersonalManifestOrigin)" />
+    <AssemblyMetadata Include="PersonalArtifactOrigin" Value="$(PersonalArtifactOrigin)" />
+    <AssemblyMetadata Include="PersonalChannel" Value="$(PersonalChannel)" />
+    <AssemblyMetadata Include="PersonalReleaseKeyId" Value="$(PersonalReleaseKeyId)" />
+    <AssemblyMetadata Include="PersonalReleaseKeyX" Value="$(PersonalReleaseKeyX)" />
+    <AssemblyMetadata Include="PersonalReleaseKeyY" Value="$(PersonalReleaseKeyY)" />
+    <AssemblyMetadata Include="PersonalStartupStubVersion" Value="$(PersonalStartupStubVersion)" />
+    <AssemblyMetadata Include="PersonalCanonicalLowSFromSequence" Value="$(PersonalCanonicalLowSFromSequence)" />
+    <AssemblyMetadata Include="PersonalAuthenticodeSignerSha256Thumbprint" Value="$(PersonalAuthenticodeSignerSha256Thumbprint)" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(PersonalInstallerPayloadDirectory)' != ''">
+    <EmbeddedResource Include="$(PersonalInstallerPayloadDirectory)\release-set.v2.json"
+      LogicalName="Ensou.Dsh.Personal.Installer.Payload.release-set.v2.json" />
+    <EmbeddedResource Include="$(PersonalInstallerPayloadDirectory)\Ensou.Dsh.Bootstrapper.exe"
+      LogicalName="Ensou.Dsh.Personal.Installer.Payload.Ensou.Dsh.Bootstrapper.exe" />
+    <EmbeddedResource Include="$(PersonalInstallerPayloadDirectory)\client-bundle.zip"
+      LogicalName="Ensou.Dsh.Personal.Installer.Payload.client-bundle.zip" />
+    <EmbeddedResource Include="$(PersonalInstallerPayloadDirectory)\runtime.zip"
+      LogicalName="Ensou.Dsh.Personal.Installer.Payload.runtime.zip" />
+  </ItemGroup>
+  <Target Name="ValidatePersonalInstallerPublish" BeforeTargets="PrepareForPublish">
+    <Error Condition="'$(RuntimeIdentifier)' != 'win-x64' or '$(SelfContained)' != 'true' or '$(PublishSingleFile)' != 'true' or '$(EnableCompressionInSingleFile)' != 'true'"
+      Text="Personal Installer must publish compressed single-file, self-contained win-x64." />
+    <Error Condition="'$(PublishTrimmed)' == 'true'"
+      Text="Personal Installer publish must not enable trimming." />
+    <Error Condition="'$(PublishAot)' == 'true'"
+      Text="Personal Installer publish must not enable NativeAOT." />
+    <Error Condition="('$(PersonalProductionBuild)' != 'true' and '$(PersonalDevelopmentPublish)' != 'true') or ('$(PersonalProductionBuild)' == 'true' and '$(PersonalDevelopmentPublish)' == 'true')"
+      Text="Personal Installer publish must select exactly one of production or development mode." />
+    <Error Condition="'$(PersonalDevelopmentE2E)' == 'true' and ('$(PersonalDevelopmentPublish)' != 'true' or '$(PersonalProductionBuild)' == 'true')"
+      Text="Personal development E2E installation is limited to an explicit development publish." />
+    <Error Condition="'$(PersonalInstallerPayloadDirectory)' == ''"
+      Text="Personal Installer publish requires one embedded immutable payload directory." />
+    <Error Condition="'$(PersonalManifestOrigin)' == '' or '$(PersonalArtifactOrigin)' == '' or '$(PersonalChannel)' == '' or '$(PersonalReleaseKeyId)' == '' or '$(PersonalReleaseKeyX)' == '' or '$(PersonalReleaseKeyY)' == '' or '$(PersonalStartupStubVersion)' == '' or '$(PersonalCanonicalLowSFromSequence)' == ''"
+      Text="Personal Installer publish requires the complete immutable compiled release trust fingerprint." />
+    <Error Condition="'$(PersonalProductionBuild)' == 'true' and '$(PersonalAuthenticodeSignerSha256Thumbprint)' == ''"
+      Text="Production Personal Installer requires the pinned Authenticode signer." />
+    <Error Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(PersonalCanonicalLowSFromSequence)', '^[1-9][0-9]{0,15}$'))"
+      Text="Personal canonical low-S cutover must be one canonical positive decimal integer." />
+    <Error Condition="$([System.Int64]::Parse('$(PersonalCanonicalLowSFromSequence)')) &gt; 9007199254740991"
+      Text="Personal canonical low-S cutover must not exceed the maximum safe integer." />
+  </Target>
+  <Target Name="RejectLoosePersonalInstallerAssemblies" AfterTargets="Publish">
+    <ItemGroup>
+      <_PersonalLooseManaged Include="$(PublishDir)Ensou.Dsh.*.dll" />
+    </ItemGroup>
+    <Error Condition="'@(_PersonalLooseManaged)' != ''"
+      Text="Personal Installer publish contains replaceable Ensou managed DLLs: @(_PersonalLooseManaged)" />
+  </Target>
+</Project>

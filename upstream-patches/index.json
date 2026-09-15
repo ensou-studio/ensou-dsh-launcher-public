@@ -1,0 +1,45 @@
+{
+  "schema": "ensou.dsh.upstream-patch-index.v1",
+  "entries": [
+    {
+      "id": "dsh-v0.1.1-rc.2-enterprise-managed-v1",
+      "directory": "dsh-v0.1.1-rc.2/enterprise-managed-v1",
+      "repository": "https://github.com/deepseek-ai/deepseek-harness.git",
+      "tag": "dsh-v0.1.1-rc.2",
+      "commit": "b150a551b8d465e31e418e1b2eaf5e79bbb7d28e",
+      "tree": "53915efe4e2126cc7779b73dfc8a3bcec5318c44",
+      "manifestSha256": "2042d43b55a150d9656cf486ad51a0eae156a71a29d385929a42741f580d5611",
+      "patchSha256": "726a72a09cab53c62991223e65744e1100cdb96df31790190f9cd124fb186e0c"
+    },
+    {
+      "id": "dsh-v0.1.2-alpha.1-enterprise-managed-v1",
+      "directory": "dsh-v0.1.2-alpha.1/enterprise-managed-v1",
+      "repository": "https://github.com/deepseek-ai/deepseek-harness.git",
+      "tag": "dsh-v0.1.2-alpha.1",
+      "commit": "cd5ef8148158c3a752a658978873241fdf8e2bbc",
+      "tree": "a712eec535b48badc4fefb4df5176a7002e4280b",
+      "manifestSha256": "a3fbabbcd17c9c6a9c5d2b9767bbf8a8ad5bd32510abc628fb3e16521209a192",
+      "patchSha256": "49241835e12b378648ed5cfae0345dffce188b31ff005449bfc62d1ae51ef2a8"
+    },
+    {
+      "id": "dsh-v0.1.2-alpha.3-enterprise-managed-v1",
+      "directory": "dsh-v0.1.2-alpha.3/enterprise-managed-v1",
+      "repository": "https://github.com/deepseek-ai/deepseek-harness.git",
+      "tag": "dsh-v0.1.2-alpha.3",
+      "commit": "dd6322d604e00eec1ba5e0c8541159906a21094a",
+      "tree": "86be9091c78528b5ef0866ae6d58b01d4a53582e",
+      "manifestSha256": "7a2aaad49a340b440768848a094f7a2aaa07b265629c7fc718112371ae3ca5ef",
+      "patchSha256": "c9c9cfbf9403a1c4c6655bfa9d363beb839cfd51eff071da6a1bb592ac91127e"
+    },
+    {
+      "id": "dsh-v0.1.2-rc.1-enterprise-managed-v1",
+      "directory": "dsh-v0.1.2-rc.1/enterprise-managed-v1",
+      "repository": "https://github.com/deepseek-ai/deepseek-harness.git",
+      "tag": "dsh-v0.1.2-rc.1",
+      "commit": "a66e4702047846cdaa10c66c9d3df3951f5ea70d",
+      "tree": "27ab636bb3d77e698f5637e518db44ae1f61e262",
+      "manifestSha256": "6e420ee233436fe5ce4974d630142320ca039297ccc9c3261a87e512332994e5",
+      "patchSha256": "c5945fb046e4cb3d7897c99dc9f68404bcd5ab3352a322ce9063ae4d00723518"
+    }
+  ]
+}

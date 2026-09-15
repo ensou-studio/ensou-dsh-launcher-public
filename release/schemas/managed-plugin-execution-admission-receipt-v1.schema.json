@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ensou.example/schemas/managed-plugin-execution-admission-receipt-v1.schema.json",
+  "title": "Managed plugin compatibility-execution admission receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "receiptType", "decision", "reviewedAtUnixSeconds",
+    "policyId", "generation", "critical", "launcherReleaseId",
+    "runtimeReleaseId", "archiveSha256", "archiveSizeBytes",
+    "metadataSha256", "metadataSizeBytes", "rawPolicySha256",
+    "rawPolicySizeBytes", "skillPacks", "signature"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "receiptType": { "const": "ensou-dsh-managed-plugin-execution-admission" },
+    "decision": { "const": "admitted-for-compatibility-execution" },
+    "reviewedAtUnixSeconds": { "$ref": "#/$defs/positiveSafeInteger" },
+    "policyId": { "$ref": "#/$defs/uuid" },
+    "generation": { "$ref": "#/$defs/positiveSafeInteger" },
+    "critical": { "type": "boolean" },
+    "launcherReleaseId": { "$ref": "#/$defs/releaseId" },
+    "runtimeReleaseId": { "$ref": "#/$defs/releaseId" },
+    "archiveSha256": { "$ref": "#/$defs/sha256" },
+    "archiveSizeBytes": { "$ref": "#/$defs/positiveSafeInteger" },
+    "metadataSha256": { "$ref": "#/$defs/sha256" },
+    "metadataSizeBytes": { "$ref": "#/$defs/positiveSafeInteger" },
+    "rawPolicySha256": { "$ref": "#/$defs/sha256" },
+    "rawPolicySizeBytes": { "$ref": "#/$defs/positiveSafeInteger" },
+    "skillPacks": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["skillId", "version", "root", "declaredTreeSha256"],
+        "properties": {
+          "skillId": { "$ref": "#/$defs/token" },
+          "version": { "$ref": "#/$defs/token" },
+          "root": { "$ref": "#/$defs/relativePath" },
+          "declaredTreeSha256": { "$ref": "#/$defs/sha256" }
+        }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "keyId", "value"],
+      "properties": {
+        "algorithm": { "const": "ES256" },
+        "keyId": { "$ref": "#/$defs/token" },
+        "value": { "type": "string", "pattern": "^[A-Za-z0-9_-]{86}$" }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "uuid": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$" },
+    "positiveSafeInteger": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+    "releaseId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$" },
+    "token": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$" },
+    "relativePath": { "type": "string", "minLength": 1, "maxLength": 1024, "pattern": "^[^\\/:]+(?:/[^\\/:]+)*$" }
+  }
+}

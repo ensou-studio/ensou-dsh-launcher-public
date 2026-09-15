@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ensou DSH Personal Installer production payload self-check result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "resultType",
+    "command",
+    "status",
+    "installerSha256",
+    "releaseSetId",
+    "manifestSha256",
+    "manifestSizeBytes",
+    "startupStubSha256",
+    "startupStubSizeBytes",
+    "clientBundleSha256",
+    "clientBundleSizeBytes",
+    "runtimeSha256",
+    "runtimeSizeBytes"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "resultType": {
+      "const": "ensou-dsh-personal-installer-production-payload-self-check"
+    },
+    "command": { "const": "--production-payload-self-check" },
+    "status": { "const": "VERIFIED" },
+    "installerSha256": { "$ref": "#/definitions/sha256" },
+    "releaseSetId": { "$ref": "#/definitions/releaseSetId" },
+    "manifestSha256": { "$ref": "#/definitions/sha256" },
+    "manifestSizeBytes": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2097152
+    },
+    "startupStubSha256": { "$ref": "#/definitions/sha256" },
+    "startupStubSizeBytes": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 536870912
+    },
+    "clientBundleSha256": { "$ref": "#/definitions/sha256" },
+    "clientBundleSizeBytes": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1073741824
+    },
+    "runtimeSha256": { "$ref": "#/definitions/sha256" },
+    "runtimeSizeBytes": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 8589934592
+    }
+  },
+  "definitions": {
+    "sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "releaseSetId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"
+    }
+  }
+}

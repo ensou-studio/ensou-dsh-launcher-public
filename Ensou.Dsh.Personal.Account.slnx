@@ -1,0 +1,11 @@
+<Solution>
+  <Project Path="src/Ensou.Dsh.Contracts/Ensou.Dsh.Contracts.csproj" />
+  <Project Path="src/Ensou.Dsh.Host/Ensou.Dsh.Host.csproj" />
+  <Project Path="src/Ensou.Dsh.UpdateEngine/Ensou.Dsh.UpdateEngine.csproj" />
+  <Project Path="src/Ensou.Dsh.Personal.Client/Ensou.Dsh.Personal.Client.csproj" />
+  <Project Path="src/Ensou.Dsh.Personal.Windows/Ensou.Dsh.Personal.Windows.csproj" />
+  <Project Path="src/Ensou.Dsh.Launcher/Ensou.Dsh.Launcher.csproj" />
+  <Project Path="tests/Ensou.Dsh.Personal.ClientTests/Ensou.Dsh.Personal.ClientTests.csproj" />
+  <Project Path="tests/Ensou.Dsh.Personal.WindowsTests/Ensou.Dsh.Personal.WindowsTests.csproj" />
+  <Project Path="tests/Ensou.Dsh.Personal.CngTests/Ensou.Dsh.Personal.CngTests.csproj" />
+</Solution>

@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.ensou.example/enterprise-brand-authorization-receipt-v1.schema.json",
+  "title": "Ensou DSH Enterprise brand authorization receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "receiptType",
+    "authorizationId",
+    "decision",
+    "environment",
+    "channel",
+    "distributionScope",
+    "distributionAudienceId",
+    "releaseBinding",
+    "brand",
+    "evidence",
+    "binaries",
+    "reviewedAtUnixSeconds",
+    "notBeforeUnixSeconds",
+    "expiresAtUnixSeconds",
+    "signature"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "receiptType": { "const": "ensou-dsh-enterprise-brand-authorization" },
+    "authorizationId": { "$ref": "#/$defs/canonicalUuid" },
+    "decision": { "const": "authorized" },
+    "environment": { "const": "production" },
+    "channel": { "const": "pilot" },
+    "distributionScope": { "const": "named-customer-pilot" },
+    "distributionAudienceId": { "$ref": "#/$defs/canonicalUuid" },
+    "releaseBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "releaseSetId",
+        "generation",
+        "sequence",
+        "releaseSetManifestSha256",
+        "launcherReleaseId",
+        "launcherArchiveSha256"
+      ],
+      "properties": {
+        "releaseSetId": { "$ref": "#/$defs/releaseId" },
+        "generation": { "$ref": "#/$defs/positiveSafeInteger" },
+        "sequence": { "$ref": "#/$defs/positiveSafeInteger" },
+        "releaseSetManifestSha256": { "$ref": "#/$defs/sha256" },
+        "launcherReleaseId": { "$ref": "#/$defs/releaseId" },
+        "launcherArchiveSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "brand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "brandProfileId",
+        "brandProfileSha256",
+        "productFamilyName",
+        "launcherProductName",
+        "installerProductName",
+        "bootstrapperProductName",
+        "developerName",
+        "presentationSha256",
+        "officialWhaleSvgSha256",
+        "launcherWhalePngSha256",
+        "windowsWhaleIcoSha256"
+      ],
+      "properties": {
+        "brandProfileId": { "const": "ensou-dsh-enterprise-official-whale-v1" },
+        "brandProfileSha256": {
+          "const": "b11c3eae1687494a17beb8f506b427223b24be321b2507bc0e26d33e12f4c773"
+        },
+        "productFamilyName": { "const": "Ensou DSH Enterprise Launcher" },
+        "launcherProductName": { "const": "Ensou DSH Enterprise Launcher" },
+        "installerProductName": { "const": "Ensou DSH Enterprise Installer" },
+        "bootstrapperProductName": { "const": "Ensou DSH Enterprise Bootstrapper" },
+        "developerName": { "const": "ensou studio" },
+        "presentationSha256": {
+          "const": "50b7b875ffe352ef24e0697d4502dc840185319596ad4f5c15d12f1b9a3f66a0"
+        },
+        "officialWhaleSvgSha256": {
+          "const": "c61a62a9d47d8660f9cfe08aac6775ff0476f7d6c5053f7659c1f8493fd6d814"
+        },
+        "launcherWhalePngSha256": {
+          "const": "9cac1a227c684c848a2d29cf9ebf380b8ec819ccb95c5c3c5c40ca5ef8a27100"
+        },
+        "windowsWhaleIcoSha256": {
+          "const": "7dc1bd71556ddb9eb1c05bdc3c9b3283c8737a742b08cec063702b7f6d2b0b00"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["documentSha256", "sizeBytes", "mediaType"],
+      "properties": {
+        "documentSha256": { "$ref": "#/$defs/sha256" },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 33554432
+        },
+        "mediaType": {
+          "enum": ["application/pdf", "message/rfc822", "application/pkcs7-mime"]
+        }
+      }
+    },
+    "binaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "launcherExecutableSha256",
+        "bootstrapperExecutableSha256",
+        "installerExecutableSha256"
+      ],
+      "properties": {
+        "launcherExecutableSha256": { "$ref": "#/$defs/sha256" },
+        "bootstrapperExecutableSha256": { "$ref": "#/$defs/sha256" },
+        "installerExecutableSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "reviewedAtUnixSeconds": { "$ref": "#/$defs/positiveSafeInteger" },
+    "notBeforeUnixSeconds": { "$ref": "#/$defs/positiveSafeInteger" },
+    "expiresAtUnixSeconds": { "$ref": "#/$defs/positiveSafeInteger" },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "keyId", "value"],
+      "properties": {
+        "algorithm": { "const": "ES256" },
+        "keyId": { "$ref": "#/$defs/keyId" },
+        "value": { "type": "string", "pattern": "^[A-Za-z0-9_-]{86}$" }
+      }
+    }
+  },
+  "$defs": {
+    "canonicalUuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "releaseId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"
+    },
+    "keyId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+    },
+    "positiveSafeInteger": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    }
+  }
+}

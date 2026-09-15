@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/Ensou.Dsh.Personal.Client/Ensou.Dsh.Personal.Client.csproj" />
+  <Project Path="tests/Ensou.Dsh.Personal.ClientTests/Ensou.Dsh.Personal.ClientTests.csproj" />
+</Solution>

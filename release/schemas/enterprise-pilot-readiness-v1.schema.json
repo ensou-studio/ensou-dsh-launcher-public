@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.ensou.example/enterprise-pilot-readiness-v1.schema.json",
+  "title": "Ensou DSH Enterprise Pilot readiness input v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "environment",
+    "channel",
+    "runtimeIdentifier",
+    "layoutProfile",
+    "artifactAuthorization",
+    "releaseSetId",
+    "generation",
+    "sequence",
+    "minAcceptedSequence",
+    "releaseDirectory",
+    "publisherLedgerPath",
+    "publisherLedgerSha256",
+    "installerExecutablePath",
+    "bootstrapperExecutablePath",
+    "launcherExecutablePath",
+    "clientBootstrapperExecutablePath",
+    "maintenanceExecutablePath",
+    "runtimeSourceMetadataPath",
+    "runtimeAdmissionReceiptPath",
+    "pluginPolicyMetadataPath",
+    "launcherTrust",
+    "runtimeAdmissionKey",
+    "brandAuthorizationKey",
+    "brandAuthorization",
+    "startupUpdateContract",
+    "localDataCompatibilityEvidence"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "environment": { "const": "production" },
+    "channel": { "const": "pilot" },
+    "runtimeIdentifier": { "const": "win-x64" },
+    "layoutProfile": { "const": "enterprise" },
+    "artifactAuthorization": { "const": "SIGNED_RELEASE_SET" },
+    "releaseSetId": { "$ref": "#/$defs/releaseId" },
+    "generation": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+    "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+    "minAcceptedSequence": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+    "releaseDirectory": { "$ref": "#/$defs/absolutePath" },
+    "publisherLedgerPath": { "$ref": "#/$defs/absolutePath" },
+    "publisherLedgerSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "installerExecutablePath": { "$ref": "#/$defs/absolutePath" },
+    "bootstrapperExecutablePath": { "$ref": "#/$defs/absolutePath" },
+    "launcherExecutablePath": { "$ref": "#/$defs/absolutePath" },
+    "clientBootstrapperExecutablePath": { "$ref": "#/$defs/absolutePath" },
+    "maintenanceExecutablePath": { "$ref": "#/$defs/absolutePath" },
+    "runtimeSourceMetadataPath": { "$ref": "#/$defs/absolutePath" },
+    "runtimeAdmissionReceiptPath": { "$ref": "#/$defs/absolutePath" },
+    "pluginPolicyMetadataPath": { "$ref": "#/$defs/absolutePath" },
+    "launcherTrust": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "updateManifestUri",
+        "updateManifestOrigin",
+        "updateArtifactOrigin",
+        "releaseKeyId",
+        "releaseKeyX",
+        "releaseKeyY",
+        "controlPlaneOrigin",
+        "authorizationOrigin",
+        "gatewayOrigin",
+        "managedArtifactOrigin",
+        "leaseKeyId",
+        "leaseKeyX",
+        "leaseKeyY",
+        "authenticodeSignerSha256Thumbprint"
+      ],
+      "properties": {
+        "updateManifestUri": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "updateManifestOrigin": { "$ref": "#/$defs/httpsOrigin" },
+        "updateArtifactOrigin": { "$ref": "#/$defs/httpsOrigin" },
+        "releaseKeyId": { "$ref": "#/$defs/keyId" },
+        "releaseKeyX": { "$ref": "#/$defs/p256Coordinate" },
+        "releaseKeyY": { "$ref": "#/$defs/p256Coordinate" },
+        "controlPlaneOrigin": { "$ref": "#/$defs/httpsOrigin" },
+        "authorizationOrigin": { "$ref": "#/$defs/httpsOrigin" },
+        "gatewayOrigin": { "$ref": "#/$defs/httpsOrigin" },
+        "managedArtifactOrigin": { "$ref": "#/$defs/httpsOrigin" },
+        "leaseKeyId": { "$ref": "#/$defs/keyId" },
+        "leaseKeyX": { "$ref": "#/$defs/p256Coordinate" },
+        "leaseKeyY": { "$ref": "#/$defs/p256Coordinate" },
+        "authenticodeSignerSha256Thumbprint": { "type": "string", "pattern": "^[0-9A-Fa-f]{64}$" }
+      }
+    },
+    "runtimeAdmissionKey": { "$ref": "#/$defs/publicKey" },
+    "brandAuthorizationKey": { "$ref": "#/$defs/publicKey" },
+    "brandAuthorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "receiptPath",
+        "receiptSha256",
+        "evidencePath",
+        "evidenceSha256",
+        "distributionAudienceId"
+      ],
+      "properties": {
+        "receiptPath": { "$ref": "#/$defs/absolutePath" },
+        "receiptSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "evidencePath": { "$ref": "#/$defs/absolutePath" },
+        "evidenceSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "distributionAudienceId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        }
+      }
+    },
+    "startupUpdateContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "checkOnEveryStartup",
+        "atomicReleaseSetActivation",
+        "bootstrapHealthRollback",
+        "maximumOfflineGraceHours"
+      ],
+      "properties": {
+        "checkOnEveryStartup": { "const": true },
+        "atomicReleaseSetActivation": { "const": true },
+        "bootstrapHealthRollback": { "const": true },
+        "maximumOfflineGraceHours": { "const": 168 }
+      }
+    },
+    "localDataCompatibilityEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fromUpstreamTag",
+        "toUpstreamTag",
+        "sourceRuntimeArchiveSha256",
+        "targetRuntimeArchiveSha256",
+        "reportPath",
+        "reportSha256",
+        "certification"
+      ],
+      "properties": {
+        "fromUpstreamTag": { "$ref": "#/$defs/upstreamTag" },
+        "toUpstreamTag": { "$ref": "#/$defs/upstreamTag" },
+        "sourceRuntimeArchiveSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "targetRuntimeArchiveSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "reportPath": { "$ref": "#/$defs/absolutePath" },
+        "reportSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "certification": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["receiptPath", "receiptSha256", "certificationAudienceId"],
+          "properties": {
+            "receiptPath": { "$ref": "#/$defs/absolutePath" },
+            "receiptSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+            "certificationAudienceId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "absolutePath": { "type": "string", "minLength": 3, "maxLength": 1024 },
+    "releaseId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$" },
+    "keyId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$" },
+    "p256Coordinate": { "type": "string", "pattern": "^[A-Za-z0-9_-]{43}$" },
+    "upstreamTag": {
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 128,
+      "pattern": "^dsh-v[A-Za-z0-9][A-Za-z0-9._+-]*$"
+    },
+    "httpsOrigin": { "type": "string", "format": "uri", "pattern": "^https://[^/]+/$" },
+    "publicKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["keyId", "x", "y"],
+      "properties": {
+        "keyId": { "$ref": "#/$defs/keyId" },
+        "x": { "$ref": "#/$defs/p256Coordinate" },
+        "y": { "$ref": "#/$defs/p256Coordinate" }
+      }
+    }
+  }
+}

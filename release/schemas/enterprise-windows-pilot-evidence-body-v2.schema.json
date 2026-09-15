@@ -1,0 +1,467 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.ensou.example/enterprise-windows-pilot-evidence-body-v2.schema.json",
+  "title": "Ensou DSH Enterprise Windows Pilot attested evidence body v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "evidenceType",
+    "pilotDecision",
+    "product",
+    "environment",
+    "channel",
+    "runtimeIdentifier",
+    "layoutProfile",
+    "testRunId",
+    "customerAudienceId",
+    "startedAtUtc",
+    "completedAtUtc",
+    "pilotManifestUri",
+    "readiness",
+    "deviceLanes",
+    "pilotObserverExecutableSha256",
+    "weComAdmission",
+    "legacySource",
+    "localDataWitness",
+    "releaseChain",
+    "signedExecutables",
+    "gates"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 2 },
+    "evidenceType": {
+      "const": "ensou-dsh-enterprise-windows-pilot-evidence-body"
+    },
+    "pilotDecision": { "const": "ADMIT" },
+    "product": { "const": "ensou-dsh-enterprise" },
+    "environment": { "const": "production" },
+    "channel": { "const": "pilot" },
+    "runtimeIdentifier": { "const": "win-x64" },
+    "layoutProfile": { "const": "enterprise" },
+    "testRunId": { "$ref": "#/$defs/uuid" },
+    "customerAudienceId": { "$ref": "#/$defs/uuid" },
+    "startedAtUtc": { "$ref": "#/$defs/utcTimestamp" },
+    "completedAtUtc": { "$ref": "#/$defs/utcTimestamp" },
+    "pilotManifestUri": {
+      "type": "string",
+      "pattern": "^https://[^/?#\\s]+/v2/channels/pilot/release-set[.]v2[.]json$"
+    },
+    "readiness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["config", "report", "target"],
+      "properties": {
+        "config": { "$ref": "#/$defs/fileReference" },
+        "report": { "$ref": "#/$defs/fileReference" },
+        "target": { "$ref": "#/$defs/releaseIdentity" }
+      }
+    },
+    "deviceLanes": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "prefixItems": [
+        {
+          "allOf": [
+            { "$ref": "#/$defs/deviceLane" },
+            { "properties": { "lane": { "const": "clean-install" } } }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/$defs/deviceLane" },
+            { "properties": { "lane": { "const": "legacy-migration" } } }
+          ]
+        }
+      ],
+      "items": false
+    },
+    "pilotObserverExecutableSha256": { "$ref": "#/$defs/sha256" },
+    "weComAdmission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authorizationMethod",
+        "adminInviteFallbackEnabled",
+        "authorizedEmployeeSubjectSha256",
+        "unregisteredEmployeeSubjectSha256",
+        "installationIdSha256",
+        "deviceProofPublicKeySha256",
+        "boundDeviceCount",
+        "restartRequiredQr",
+        "unregisteredDenialErrorCode",
+        "contactAdministratorMessageVisible",
+        "secondDeviceDenialErrorCode",
+        "revocationClientState",
+        "apiPolicyRevocationClientState"
+      ],
+      "properties": {
+        "authorizationMethod": { "const": "WECOM" },
+        "adminInviteFallbackEnabled": { "const": false },
+        "authorizedEmployeeSubjectSha256": { "$ref": "#/$defs/sha256" },
+        "unregisteredEmployeeSubjectSha256": { "$ref": "#/$defs/sha256" },
+        "installationIdSha256": { "$ref": "#/$defs/sha256" },
+        "deviceProofPublicKeySha256": { "$ref": "#/$defs/sha256" },
+        "boundDeviceCount": { "const": 1 },
+        "restartRequiredQr": { "const": false },
+        "unregisteredDenialErrorCode": {
+          "const": "WECOM_IDENTITY_NOT_PREREGISTERED"
+        },
+        "contactAdministratorMessageVisible": { "const": true },
+        "secondDeviceDenialErrorCode": { "const": "DEVICE_ALREADY_BOUND" },
+        "revocationClientState": { "const": "DEVICE_REVOKED_RESET_REQUIRED" },
+        "apiPolicyRevocationClientState": { "const": "API_DISABLED" }
+      }
+    },
+    "legacySource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceType", "version", "inventorySha256", "inventorySizeBytes"],
+      "properties": {
+        "sourceType": { "const": "prior-ensou-dsh-enterprise-installation" },
+        "version": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"
+        },
+        "inventorySha256": { "$ref": "#/$defs/sha256" },
+        "inventorySizeBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10485760
+        }
+      }
+    },
+    "localDataWitness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "historyTreeBeforeSha256",
+        "historyTreeAfterSha256",
+        "workspaceTreeBeforeSha256",
+        "workspaceTreeAfterSha256"
+      ],
+      "properties": {
+        "historyTreeBeforeSha256": { "$ref": "#/$defs/sha256" },
+        "historyTreeAfterSha256": { "$ref": "#/$defs/sha256" },
+        "workspaceTreeBeforeSha256": { "$ref": "#/$defs/sha256" },
+        "workspaceTreeAfterSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "releaseChain": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "prefixItems": [
+        { "allOf": [{ "$ref": "#/$defs/releaseSnapshot" }, { "properties": { "stage": { "const": "baseline" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/releaseSnapshot" }, { "properties": { "stage": { "const": "first-update" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/releaseSnapshot" }, { "properties": { "stage": { "const": "second-update" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/releaseSnapshot" }, { "properties": { "stage": { "const": "failed-health-probe" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/releaseSnapshot" }, { "properties": { "stage": { "const": "recovery-target" } } }] }
+      ],
+      "items": false
+    },
+    "signedExecutables": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "prefixItems": [
+        { "allOf": [{ "$ref": "#/$defs/signedExecutable" }, { "properties": { "role": { "const": "release-publisher" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/signedExecutable" }, { "properties": { "role": { "const": "installer" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/signedExecutable" }, { "properties": { "role": { "const": "bootstrapper" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/signedExecutable" }, { "properties": { "role": { "const": "launcher" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/signedExecutable" }, { "properties": { "role": { "const": "client-bootstrapper" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/signedExecutable" }, { "properties": { "role": { "const": "maintenance" } } }] }
+      ],
+      "items": false
+    },
+    "gates": {
+      "type": "array",
+      "minItems": 21,
+      "maxItems": 21,
+      "prefixItems": [
+        { "allOf": [{ "$ref": "#/$defs/gateReceipt" }, { "properties": { "sequenceNumber": { "const": 1 }, "gate": { "const": "clean-standard-user-install" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/gateReceipt" }, { "properties": { "sequenceNumber": { "const": 2 }, "gate": { "const": "no-visible-console-window" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/gateReceipt" }, { "properties": { "sequenceNumber": { "const": 3 }, "gate": { "const": "tray-surface-open" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/gateReceipt" }, { "properties": { "sequenceNumber": { "const": 4 }, "gate": { "const": "actual-runtime-start" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/gateReceipt" }, { "properties": { "sequenceNumber": { "const": 5 }, "gate": { "const": "webui-open" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/gateReceipt" }, { "properties": { "sequenceNumber": { "const": 6 }, "gate": { "const": "wecom-unregistered-denied" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/gateReceipt" }, { "properties": { "sequenceNumber": { "const": 7 }, "gate": { "const": "wecom-authorized-scan" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/gateReceipt" }, { "properties": { "sequenceNumber": { "const": 8 }, "gate": { "const": "single-device-binding" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/gateReceipt" }, { "properties": { "sequenceNumber": { "const": 9 }, "gate": { "const": "second-device-binding-denied" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/gateReceipt" }, { "properties": { "sequenceNumber": { "const": 10 }, "gate": { "const": "restart-without-rescan" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/gateReceipt" }, { "properties": { "sequenceNumber": { "const": 11 }, "gate": { "const": "first-pilot-feed-upgrade" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/gateReceipt" }, { "properties": { "sequenceNumber": { "const": 12 }, "gate": { "const": "second-consecutive-pilot-feed-upgrade" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/gateReceipt" }, { "properties": { "sequenceNumber": { "const": 13 }, "gate": { "const": "failed-health-rollback" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/gateReceipt" }, { "properties": { "sequenceNumber": { "const": 14 }, "gate": { "const": "previous-runtime-restart" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/gateReceipt" }, { "properties": { "sequenceNumber": { "const": 15 }, "gate": { "const": "recovery-target-upgrade" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/gateReceipt" }, { "properties": { "sequenceNumber": { "const": 16 }, "gate": { "const": "legacy-install-migration" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/gateReceipt" }, { "properties": { "sequenceNumber": { "const": 17 }, "gate": { "const": "offline-repair" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/gateReceipt" }, { "properties": { "sequenceNumber": { "const": 18 }, "gate": { "const": "device-revocation-lockout" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/gateReceipt" }, { "properties": { "sequenceNumber": { "const": 19 }, "gate": { "const": "api-policy-revocation-lockout" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/gateReceipt" }, { "properties": { "sequenceNumber": { "const": 20 }, "gate": { "const": "history-preservation" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/gateReceipt" }, { "properties": { "sequenceNumber": { "const": 21 }, "gate": { "const": "workspace-preservation" } } }] }
+      ],
+      "items": false
+    }
+  },
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "safePositiveInteger": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "utcTimestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[.][0-9]{7}Z$"
+    },
+    "absolutePath": {
+      "type": "string",
+      "minLength": 4,
+      "maxLength": 1024,
+      "pattern": "^[A-Za-z]:\\\\"
+    },
+    "fileReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sizeBytes", "sha256"],
+      "properties": {
+        "path": { "$ref": "#/$defs/absolutePath" },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8589934592
+        },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "releaseIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "releaseSetId",
+        "generation",
+        "sequence",
+        "manifestSha256",
+        "runtimeEntryPointSha256"
+      ],
+      "properties": {
+        "releaseSetId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"
+        },
+        "generation": { "$ref": "#/$defs/safePositiveInteger" },
+        "sequence": { "$ref": "#/$defs/safePositiveInteger" },
+        "manifestSha256": { "$ref": "#/$defs/sha256" },
+        "runtimeEntryPointSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "releaseSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stage",
+        "releaseSetId",
+        "generation",
+        "sequence",
+        "manifestSha256",
+        "runtimeEntryPointSha256",
+        "manifest"
+      ],
+      "properties": {
+        "stage": {
+          "enum": [
+            "baseline",
+            "first-update",
+            "second-update",
+            "failed-health-probe",
+            "recovery-target"
+          ]
+        },
+        "releaseSetId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"
+        },
+        "generation": { "$ref": "#/$defs/safePositiveInteger" },
+        "sequence": { "$ref": "#/$defs/safePositiveInteger" },
+        "manifestSha256": { "$ref": "#/$defs/sha256" },
+        "runtimeEntryPointSha256": { "$ref": "#/$defs/sha256" },
+        "manifest": { "$ref": "#/$defs/fileReference" }
+      }
+    },
+    "deviceLane": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lane",
+        "osFamily",
+        "osBuild",
+        "nativeArchitecture",
+        "standardUser",
+        "installationIdSha256",
+        "deviceInventorySha256"
+      ],
+      "properties": {
+        "lane": { "enum": ["clean-install", "legacy-migration"] },
+        "osFamily": { "const": "windows" },
+        "osBuild": {
+          "type": "string",
+          "pattern": "^(10|11)[.][0-9]{4,6}[.][0-9]{1,6}$"
+        },
+        "nativeArchitecture": { "const": "x64" },
+        "standardUser": { "const": true },
+        "installationIdSha256": { "$ref": "#/$defs/sha256" },
+        "deviceInventorySha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "signedExecutable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "file"],
+      "properties": {
+        "role": {
+          "enum": [
+            "release-publisher",
+            "installer",
+            "bootstrapper",
+            "launcher",
+            "client-bootstrapper",
+            "maintenance"
+          ]
+        },
+        "file": { "$ref": "#/$defs/fileReference" }
+      }
+    },
+    "externalEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidenceClass",
+        "mediaType",
+        "sizeBytes",
+        "sha256",
+        "custodianIdSha256"
+      ],
+      "properties": {
+        "evidenceClass": {
+          "enum": [
+            "process-inventory",
+            "window-observation",
+            "event-log-export",
+            "network-observation",
+            "filesystem-witness",
+            "control-plane-audit-receipt",
+            "screen-recording"
+          ]
+        },
+        "mediaType": {
+          "enum": [
+            "application/octet-stream",
+            "application/vnd.ensou.redacted-structured-evidence+json",
+            "image/png",
+            "video/mp4"
+          ]
+        },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1073741824
+        },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "custodianIdSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "gateReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "receiptType",
+        "sequenceNumber",
+        "testRunId",
+        "customerAudienceId",
+        "gate",
+        "status",
+        "deviceLane",
+        "startedAtUtc",
+        "completedAtUtc",
+        "observedProcess",
+        "networkMode",
+        "resultCode",
+        "releaseTuple",
+        "externalEvidence"
+      ],
+      "properties": {
+        "schemaVersion": { "const": 2 },
+        "receiptType": {
+          "const": "ensou-dsh-enterprise-windows-pilot-gate-receipt"
+        },
+        "sequenceNumber": { "type": "integer", "minimum": 1, "maximum": 21 },
+        "testRunId": { "$ref": "#/$defs/uuid" },
+        "customerAudienceId": { "$ref": "#/$defs/uuid" },
+        "gate": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]{1,128}$"
+        },
+        "status": { "const": "PASS" },
+        "deviceLane": { "enum": ["clean-install", "legacy-migration"] },
+        "startedAtUtc": { "$ref": "#/$defs/utcTimestamp" },
+        "completedAtUtc": { "$ref": "#/$defs/utcTimestamp" },
+        "observedProcess": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["role", "state", "executableSha256"],
+          "properties": {
+            "role": {
+              "enum": [
+                "installer",
+                "bootstrapper",
+                "launcher",
+                "maintenance",
+                "runtime",
+                "previous-runtime",
+                "pilot-observer"
+              ]
+            },
+            "state": {
+              "enum": [
+                "completed",
+                "started-and-healthy",
+                "denied-as-expected",
+                "locked-as-expected"
+              ]
+            },
+            "executableSha256": { "$ref": "#/$defs/sha256" }
+          }
+        },
+        "networkMode": { "enum": ["controlled", "offline"] },
+        "resultCode": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,127}$" },
+        "releaseTuple": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["active", "rollbackTarget", "attempted"],
+          "properties": {
+            "active": { "$ref": "#/$defs/releaseIdentity" },
+            "rollbackTarget": {
+              "oneOf": [{ "$ref": "#/$defs/releaseIdentity" }, { "type": "null" }]
+            },
+            "attempted": {
+              "oneOf": [{ "$ref": "#/$defs/releaseIdentity" }, { "type": "null" }]
+            }
+          }
+        },
+        "externalEvidence": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": { "$ref": "#/$defs/externalEvidence" }
+        }
+      }
+    }
+  }
+}

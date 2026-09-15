@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 4,
+  "product": "ensou-dsh-launcher",
+  "buildMode": "official-source",
+  "runtimeWebAuthProtocol": "browser-launch-cookie-v1",
+  "dshVersion": "0.1.2-rc.1",
+  "officialCommit": "a66e4702047846cdaa10c66c9d3df3951f5ea70d",
+  "officialTag": "dsh-v0.1.2-rc.1",
+  "officialTree": "27ab636bb3d77e698f5637e518db44ae1f61e262",
+  "nodeVersion": "24.19.0",
+  "pnpmVersion": "11.7.0",
+  "npmVersion": "11.17.0",
+  "baseLockfileSha256": "e12083149a77f790d39b64d018b6b8745c6a7aa95777ecb73e0a2f5ed5fdd0d9",
+  "lockfileSha256": "07974704247ec18915df8fdf117c682bba2d861aafe7059ea4bca4aab1677080",
+  "managedPatch": {
+    "id": "dsh-v0.1.2-rc.1-enterprise-direct-local-v1",
+    "manifestSha256": "977ebb374bf9449e34daa7b0ef393a06b2c862d944200abb69a30434a2597cf0",
+    "patchSha256": "7f10ec9492b399cede422428013b0c77bc932699fa3a14fa7ced158454272b6f"
+  },
+  "harnessCheckout": "C:\\Agents\\deepseek",
+  "verifiedAt": null,
+  "promotionStatus": "not-built",
+  "notes": "This compile-selected admission contract pins the reviewed enterprise-direct-local-v1 source patch only. It does not assert a completed production build, signature, admission receipt, release publication, or Launcher activation."
+}

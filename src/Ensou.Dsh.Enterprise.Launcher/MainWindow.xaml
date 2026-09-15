@@ -1,0 +1,164 @@
+<Window x:Class="Ensou.Dsh.Enterprise.Launcher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:installation="clr-namespace:Ensou.Dsh.Enterprise.Installation;assembly=Ensou.Dsh.Enterprise.Installation"
+        Title="{x:Static installation:EnterpriseBrandContract.LauncherProductName}"
+        Width="1040"
+        Height="680"
+        MinWidth="920"
+        MinHeight="620"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource PageBrush}">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="242" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+
+    <Border Grid.Column="0" Background="#0F1419" BorderBrush="#222B33" BorderThickness="0,0,1,0">
+      <Grid Margin="26,28,24,24">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="34" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="*" />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal">
+          <Border Width="44" Height="44" CornerRadius="12" Background="#FFFFFF" Padding="7">
+            <Image Source="/Ensou.Dsh.Enterprise.Launcher;component/Assets/dsh-official-whale.png"
+                   Stretch="Uniform" SnapsToDevicePixels="True" />
+          </Border>
+          <StackPanel Margin="12,1,0,0">
+            <TextBlock Text="ENSOU" Foreground="{StaticResource TextBrush}" FontSize="17" FontWeight="Bold" />
+            <TextBlock Text="DSH ENTERPRISE" Foreground="{StaticResource MutedTextBrush}" FontSize="10" />
+          </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2">
+          <Border Background="{StaticResource AccentDarkBrush}" CornerRadius="8" Padding="12,10">
+            <TextBlock Text="企业启动中心" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold" />
+          </Border>
+          <TextBlock Text="企业身份" Foreground="{StaticResource MutedTextBrush}" Margin="12,20,0,0" />
+          <TextBlock Text="受管更新" Foreground="{StaticResource MutedTextBrush}" Margin="12,20,0,0" />
+          <TextBlock Text="插件策略" Foreground="{StaticResource MutedTextBrush}" Margin="12,20,0,0" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="4">
+          <TextBlock Text="DEVELOPER" Foreground="#5D6B76" FontSize="10" />
+          <TextBlock Text="{x:Static installation:EnterpriseBrandContract.DeveloperName}" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
+          <TextBlock Text="{x:Static installation:EnterpriseBrandContract.BasedOnNotice}" Foreground="#64727D" FontSize="10" Margin="0,7,0,0" />
+          <TextBlock Text="{x:Static installation:EnterpriseBrandContract.NonOfficialNotice}" Foreground="#56636D"
+                     FontSize="9" Margin="0,4,0,0" TextWrapping="Wrap" />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Column="1" Margin="42,30,42,30">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="24" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="22" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+
+      <Grid>
+        <StackPanel>
+          <TextBlock Text="{x:Static installation:EnterpriseBrandContract.PresentationHeading}" Foreground="{StaticResource TextBrush}"
+                     FontSize="29" FontWeight="SemiBold" />
+          <TextBlock Text="企业身份授权 · 本机运行 · 对话与工作区留在电脑"
+                     Foreground="{StaticResource MutedTextBrush}" FontSize="13" Margin="0,7,0,0" />
+        </StackPanel>
+        <Border HorizontalAlignment="Right" VerticalAlignment="Top"
+                Background="#2A2116" BorderBrush="#72532C" BorderThickness="1"
+                CornerRadius="12" Padding="13,7">
+          <StackPanel Orientation="Horizontal">
+            <Ellipse x:Name="AuthorizationDot" Width="8" Height="8" Fill="{StaticResource WarningBrush}"
+                     Margin="0,0,8,0" />
+            <TextBlock x:Name="AuthorizationText" Text="尚未验证" Foreground="#E8C98E" FontSize="12" />
+          </StackPanel>
+        </Border>
+      </Grid>
+
+      <Border Grid.Row="2" Background="{StaticResource PanelBrush}" CornerRadius="14"
+              BorderBrush="#222C35" BorderThickness="1" Padding="24">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <StackPanel>
+            <TextBlock Text="企业身份" Foreground="{StaticResource MutedTextBrush}" FontSize="11" />
+            <TextBlock x:Name="IdentityStateText" Text="尚未验证" Foreground="{StaticResource TextBrush}"
+                       FontSize="17" FontWeight="SemiBold" Margin="0,7,0,0" />
+          </StackPanel>
+          <StackPanel Grid.Column="1">
+            <TextBlock Text="设备状态" Foreground="{StaticResource MutedTextBrush}" FontSize="11" />
+            <TextBlock x:Name="DeviceStateText" Text="尚未绑定" Foreground="{StaticResource TextBrush}"
+                       FontSize="17" FontWeight="SemiBold" Margin="0,7,0,0" />
+          </StackPanel>
+          <StackPanel Grid.Column="2">
+            <TextBlock Text="运行端口" Foreground="{StaticResource MutedTextBrush}" FontSize="11" />
+            <TextBlock x:Name="RuntimeEndpointText" Text="— · 本机回环" Foreground="{StaticResource AccentBrush}"
+                       FontSize="17" FontWeight="SemiBold" Margin="0,7,0,0" />
+          </StackPanel>
+        </Grid>
+      </Border>
+
+      <Border Grid.Row="4" Background="{StaticResource PanelRaisedBrush}" CornerRadius="14" Padding="24">
+        <StackPanel>
+          <TextBlock x:Name="StatusTitleText" Text="需要企业微信登录" Foreground="{StaticResource TextBrush}"
+                     FontSize="18" FontWeight="SemiBold" />
+          <TextBlock x:Name="StatusDetailText"
+                     Text="使用企业微信扫码确认身份；管理员未登记或未分配权限时不会绑定本机设备。"
+                     Foreground="{StaticResource MutedTextBrush}" FontSize="13"
+                     Margin="0,8,0,0" TextWrapping="Wrap" />
+          <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+            <Button x:Name="WeComAuthenticateButton" Content="企业微信扫码登录" Width="190"
+                    Click="WeComAuthenticateButton_Click" />
+            <Button x:Name="CancelAuthenticationButton" Content="停止等待" Width="112"
+                    Margin="12,0,0,0" Visibility="Collapsed"
+                    Style="{StaticResource SecondaryButton}"
+                    Click="CancelAuthenticationButton_Click" />
+            <Button x:Name="StartButton" Content="启动 DSH" Width="132" Margin="12,0,0,0"
+                    IsEnabled="False" Style="{StaticResource SecondaryButton}" Click="StartButton_Click" />
+            <Button x:Name="OpenWebUiButton" Content="打开 WebUI" Width="132" Margin="12,0,0,0"
+                    IsEnabled="False" Style="{StaticResource SecondaryButton}" Click="OpenWebUiButton_Click" />
+            <Button x:Name="OpenWorkspaceButton" Content="打开本地工作区" Width="152" Margin="12,0,0,0"
+                    Style="{StaticResource SecondaryButton}" Click="OpenWorkspaceButton_Click" />
+          </StackPanel>
+          <Expander Header="管理员备用激活码" Foreground="{StaticResource MutedTextBrush}"
+                    Margin="0,16,0,0">
+            <StackPanel Margin="0,10,0,0">
+              <PasswordBox x:Name="ActivationCodeInput" MaxLength="43" Width="390"
+                           HorizontalAlignment="Left" />
+              <TextBlock Text="仅在管理员要求时使用；激活码不会保存到本机。"
+                         Foreground="#71808C" FontSize="10" Margin="0,6,0,0" />
+              <Button x:Name="AuthenticateButton" Content="使用激活码" Width="150"
+                      HorizontalAlignment="Left" Margin="0,10,0,0"
+                      Style="{StaticResource SecondaryButton}"
+                      Click="AuthenticateButton_Click" />
+            </StackPanel>
+          </Expander>
+        </StackPanel>
+      </Border>
+
+      <Border Grid.Row="6" BorderBrush="#202933" BorderThickness="0,1,0,0" Padding="0,16,0,0">
+        <Grid>
+          <StackPanel>
+            <TextBlock x:Name="LastActivityText" Text="企业控制面尚未接入" Foreground="#768590" FontSize="11" />
+            <TextBlock x:Name="UpdateStatusText" Text="受管更新尚未检查" Foreground="#667883"
+                       FontSize="10" Margin="0,5,0,0" TextWrapping="Wrap" />
+          </StackPanel>
+          <TextBlock Text="关闭窗口后仍在任务栏托盘运行" Foreground="#596771" FontSize="11"
+                     HorizontalAlignment="Right" />
+        </Grid>
+      </Border>
+    </Grid>
+  </Grid>
+</Window>

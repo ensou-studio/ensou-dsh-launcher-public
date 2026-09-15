@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.ensou.example/release/enterprise-stable-publication-result-v1.schema.json",
+  "title": "Ensou DSH Enterprise stable publication attestation result envelope v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "algorithm", "keyId", "purpose", "payload", "signature"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "algorithm": { "const": "ES256" },
+    "keyId": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$" },
+    "purpose": { "const": "stable-public-promotion-attestation" },
+    "payload": { "type": "string", "minLength": 4, "maxLength": 349528, "pattern": "^[A-Za-z0-9_-]+$" },
+    "signature": { "type": "string", "minLength": 86, "maxLength": 86, "pattern": "^[A-Za-z0-9_-]{86}$" }
+  }
+}

@@ -1,0 +1,13 @@
+# Managed source-patch bundles are byte-addressed release inputs. Keep their
+# checked-out bytes identical on Windows and Linux so manifest and patch hashes
+# remain deterministic across local validation and CI.
+/upstream-patches/** text eol=lf
+/assets/branding/*.svg text eol=lf
+
+# This byte-addressed golden input has a fixed raw SHA-256. Prevent Windows
+# checkout line-ending conversion from changing its production-reader input.
+/release/conformance/launcher-r9-golden-v1/fixture.v1.json -text
+/release/schemas/launcher-feed-promotion-request-v1.schema.json -text
+/release/schemas/launcher-feed-promotion-response-v1.schema.json -text
+/release/schemas/launcher-feed-promotion-state-v1.schema.json -text
+/release/schemas/launcher-feed-promotion-admission-v1.schema.json -text

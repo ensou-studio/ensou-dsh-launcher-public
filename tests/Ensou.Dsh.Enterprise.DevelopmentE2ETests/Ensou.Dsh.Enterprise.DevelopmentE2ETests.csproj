@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RootNamespace>Ensou.Dsh.Enterprise.DevelopmentE2ETests</RootNamespace>
+    <AssemblyName>Ensou.Dsh.Enterprise.DevelopmentE2ETests</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.WindowsDesktop.App" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Ensou.Dsh.Enterprise.Client\Ensou.Dsh.Enterprise.Client.csproj" />
+    <ProjectReference Include="..\..\src\Ensou.Dsh.Enterprise.Contracts\Ensou.Dsh.Enterprise.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Ensou.Dsh.Enterprise.FeedPromoter\Ensou.Dsh.Enterprise.FeedPromoter.csproj" />
+    <ProjectReference Include="..\..\src\Ensou.Dsh.Enterprise.Installation\Ensou.Dsh.Enterprise.Installation.csproj" />
+    <ProjectReference Include="..\..\src\Ensou.Dsh.Host\Ensou.Dsh.Host.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\src\Ensou.Dsh.Enterprise.Launcher\DshHostAdapter.cs" Link="DshHostAdapter.cs" />
+  </ItemGroup>
+</Project>

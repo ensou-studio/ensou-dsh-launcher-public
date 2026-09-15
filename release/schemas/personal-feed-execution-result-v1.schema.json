@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Authenticated Personal Pilot completed feed execution (not offline authorization)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion","resultType","operationId","orchestrationId","releaseSetId","planSha256","sourceIdentitySha256","sourceR7HeadSha256","sourceR8HeadSha256","requestSha256","authorizationSha256","promotionHeadSha256","bundleHeadSha256","bundleSetSha256","completedAtUtc","expiresAtUtc","files","authentication"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "resultType": {"const": "ensou-dsh-personal-feed-execution-result"},
+    "operationId": {"type":"string","pattern":"^[0-9a-f]{32}$"},
+    "orchestrationId": {"type":"string","pattern":"^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"},
+    "releaseSetId": {"type":"string","pattern":"^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"},
+    "planSha256": {"$ref":"#/definitions/digest"},
+    "sourceIdentitySha256": {"$ref":"#/definitions/digest"},
+    "sourceR7HeadSha256": {"$ref":"#/definitions/digest"},
+    "sourceR8HeadSha256": {"$ref":"#/definitions/digest"},
+    "requestSha256": {"$ref":"#/definitions/digest"},
+    "authorizationSha256": {"$ref":"#/definitions/digest"},
+    "promotionHeadSha256": {"$ref":"#/definitions/digest"},
+    "bundleHeadSha256": {"$ref":"#/definitions/digest"},
+    "bundleSetSha256": {"$ref":"#/definitions/digest"},
+    "completedAtUtc": {"$ref":"#/definitions/utc"},
+    "expiresAtUtc": {"$ref":"#/definitions/utc"},
+    "files": {"type":"array","minItems":12,"maxItems":14,"items":{
+      "type":"object","additionalProperties":false,"required":["role","sizeBytes","sha256"],
+      "properties":{
+        "role":{"enum":["offline-request","offline-authorization","feed-identity","operation-request","operation-result","trust-configuration","channel-head","journal-head","journal-entry","release-manifest","launcher","runtime","previous-channel-head","previous-journal-head"]},
+        "sizeBytes":{"type":"integer","minimum":1,"maximum":8589934592},
+        "sha256":{"$ref":"#/definitions/digest"}
+      }
+    }},
+    "authentication":{"type":"object","additionalProperties":false,"required":["algorithm","keyId","purpose","payloadType","value"],"properties":{
+      "algorithm":{"const":"ES256"},
+      "keyId":{"type":"string","pattern":"^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+      "purpose":{"const":"feed-promotion-response"},
+      "payloadType":{"const":"ensou-dsh-personal-feed-execution-result-v1"},
+      "value":{"type":"string","pattern":"^[A-Za-z0-9_-]{86}$"}
+    }}
+  },
+  "definitions":{
+    "digest":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "utc":{"type":"string","pattern":"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"}
+  }
+}

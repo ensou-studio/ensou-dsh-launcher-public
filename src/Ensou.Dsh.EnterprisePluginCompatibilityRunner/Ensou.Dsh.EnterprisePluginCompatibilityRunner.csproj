@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RootNamespace>Ensou.Dsh.EnterprisePluginCompatibilityRunner</RootNamespace>
+    <AssemblyName>Ensou.Dsh.EnterprisePluginCompatibilityRunner</AssemblyName>
+    <Product>Ensou DSH Enterprise Plugin Compatibility Runner</Product>
+    <EnterprisePluginCompatibilityRunnerProductionBuild Condition="'$(EnterprisePluginCompatibilityRunnerProductionBuild)' == ''">false</EnterprisePluginCompatibilityRunnerProductionBuild>
+    <RuntimeIdentifier Condition="'$(EnterprisePluginCompatibilityRunnerProductionBuild)' == 'true'">win-x64</RuntimeIdentifier>
+    <SelfContained Condition="'$(EnterprisePluginCompatibilityRunnerProductionBuild)' == 'true'">true</SelfContained>
+    <PublishSingleFile Condition="'$(EnterprisePluginCompatibilityRunnerProductionBuild)' == 'true'">true</PublishSingleFile>
+    <EnterpriseRuntimeAdmissionKeyId Condition="'$(EnterpriseRuntimeAdmissionKeyId)' == ''"></EnterpriseRuntimeAdmissionKeyId>
+    <EnterpriseRuntimeAdmissionKeyX Condition="'$(EnterpriseRuntimeAdmissionKeyX)' == ''"></EnterpriseRuntimeAdmissionKeyX>
+    <EnterpriseRuntimeAdmissionKeyY Condition="'$(EnterpriseRuntimeAdmissionKeyY)' == ''"></EnterpriseRuntimeAdmissionKeyY>
+    <EnterprisePluginAdmissionKeyId Condition="'$(EnterprisePluginAdmissionKeyId)' == ''"></EnterprisePluginAdmissionKeyId>
+    <EnterprisePluginAdmissionKeyX Condition="'$(EnterprisePluginAdmissionKeyX)' == ''"></EnterprisePluginAdmissionKeyX>
+    <EnterprisePluginAdmissionKeyY Condition="'$(EnterprisePluginAdmissionKeyY)' == ''"></EnterprisePluginAdmissionKeyY>
+    <IncludeNativeLibrariesForSelfExtract Condition="'$(PublishSingleFile)' == 'true'">true</IncludeNativeLibrariesForSelfExtract>
+  </PropertyGroup>
+  <ItemGroup>
+    <AssemblyMetadata Include="EnterpriseRuntimeAdmissionKeyId" Value="$(EnterpriseRuntimeAdmissionKeyId)" />
+    <AssemblyMetadata Include="EnterpriseRuntimeAdmissionKeyX" Value="$(EnterpriseRuntimeAdmissionKeyX)" />
+    <AssemblyMetadata Include="EnterpriseRuntimeAdmissionKeyY" Value="$(EnterpriseRuntimeAdmissionKeyY)" />
+    <AssemblyMetadata Include="EnterprisePluginAdmissionKeyId" Value="$(EnterprisePluginAdmissionKeyId)" />
+    <AssemblyMetadata Include="EnterprisePluginAdmissionKeyX" Value="$(EnterprisePluginAdmissionKeyX)" />
+    <AssemblyMetadata Include="EnterprisePluginAdmissionKeyY" Value="$(EnterprisePluginAdmissionKeyY)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ensou.Dsh.Enterprise.Installation\Ensou.Dsh.Enterprise.Installation.csproj" />
+    <ProjectReference Include="..\Ensou.Dsh.Enterprise.ReleasePublisher\Ensou.Dsh.Enterprise.ReleasePublisher.csproj" />
+    <ProjectReference Include="..\Ensou.Dsh.Host\Ensou.Dsh.Host.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Ensou.Dsh.EnterprisePluginCompatibilityRunnerTests" />
+  </ItemGroup>
+  <Target Name="ValidateEnterprisePluginCompatibilityRunnerPublish" BeforeTargets="PrepareForPublish">
+    <Error Condition="'$(EnterprisePluginCompatibilityRunnerProductionBuild)' != 'true'"
+      Text="Production EnterprisePluginCompatibilityRunner publish must select the explicit production build profile." />
+    <Error Condition="'$(RuntimeIdentifier)' != 'win-x64'"
+      Text="Production EnterprisePluginCompatibilityRunner must publish for win-x64." />
+    <Error Condition="'$(SelfContained)' != 'true' or '$(PublishSingleFile)' != 'true' or '$(IncludeNativeLibrariesForSelfExtract)' != 'true'"
+      Text="Production EnterprisePluginCompatibilityRunner must publish as one self-contained single-file executable." />
+    <Error Condition="'$(EnterpriseRuntimeAdmissionKeyId)' == '' or '$(EnterpriseRuntimeAdmissionKeyX)' == '' or '$(EnterpriseRuntimeAdmissionKeyY)' == ''"
+      Text="Production EnterprisePluginCompatibilityRunner publish requires the compiled runtime-admission public key." />
+    <Error Condition="'$(EnterprisePluginAdmissionKeyId)' == '' or '$(EnterprisePluginAdmissionKeyX)' == '' or '$(EnterprisePluginAdmissionKeyY)' == ''"
+      Text="Production EnterprisePluginCompatibilityRunner publish requires the independent compiled plugin-execution-admission public key." />
+  </Target>
+  <Target Name="FinalizeEnterprisePluginCompatibilityRunnerSingleFile" AfterTargets="Publish">
+    <Delete Files="$(PublishDir)Ensou.Dsh.Enterprise.ReleasePublisher.runtimeconfig.json" />
+    <ItemGroup>
+      <UnexpectedRunnerPublishFile Include="$(PublishDir)*"
+        Exclude="$(PublishDir)$(AssemblyName).exe" />
+    </ItemGroup>
+    <Error Condition="'@(UnexpectedRunnerPublishFile)' != ''"
+      Text="Production EnterprisePluginCompatibilityRunner publish emitted files outside its single executable: @(UnexpectedRunnerPublishFile)." />
+  </Target>
+</Project>

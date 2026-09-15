@@ -1,0 +1,173 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ensou DSH Enterprise production Pilot evidence trust policy v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "policyType",
+    "environment",
+    "orchestrationId",
+    "maximumEvidenceAgeHours",
+    "minimumRemainingValidityMinutes",
+    "windowsPilotEvidence",
+    "windowsPilotVerifier",
+    "localDataCertification",
+    "stablePrivatePilotKeys"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "policyType": {
+      "const": "ensou-dsh-enterprise-production-pilot-evidence-trust"
+    },
+    "environment": { "const": "production" },
+    "orchestrationId": { "$ref": "#/definitions/uuid" },
+    "maximumEvidenceAgeHours": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 168
+    },
+    "minimumRemainingValidityMinutes": {
+      "type": "integer",
+      "minimum": 5,
+      "maximum": 1440
+    },
+    "windowsPilotEvidence": {
+      "allOf": [
+        { "$ref": "#/definitions/publicKey" },
+        {
+          "properties": {
+            "purpose": {
+              "const": "enterprise-windows-pilot-evidence-attestation"
+            }
+          }
+        }
+      ]
+    },
+    "windowsPilotVerifier": {
+      "allOf": [
+        { "$ref": "#/definitions/publicKey" },
+        {
+          "properties": {
+            "purpose": {
+              "const": "enterprise-windows-pilot-verifier-report"
+            }
+          }
+        }
+      ]
+    },
+    "localDataCertification": {
+      "allOf": [
+        { "$ref": "#/definitions/publicKey" },
+        {
+          "properties": {
+            "purpose": {
+              "const": "enterprise-local-data-certification"
+            }
+          }
+        }
+      ]
+    },
+    "stablePrivatePilotKeys": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "server",
+        "freshInstallDevice",
+        "onlineUpgradeDevice",
+        "unauthorizedControl"
+      ],
+      "properties": {
+        "server": {
+          "allOf": [
+            { "$ref": "#/definitions/publicKey" },
+            {
+              "properties": {
+                "purpose": {
+                  "const": "stable-private-pilot-server-attestation"
+                }
+              }
+            }
+          ]
+        },
+        "freshInstallDevice": {
+          "allOf": [
+            { "$ref": "#/definitions/publicKey" },
+            {
+              "properties": {
+                "purpose": {
+                  "const": "stable-private-pilot-device-attestation"
+                }
+              }
+            }
+          ]
+        },
+        "onlineUpgradeDevice": {
+          "allOf": [
+            { "$ref": "#/definitions/publicKey" },
+            {
+              "properties": {
+                "purpose": {
+                  "const": "stable-private-pilot-device-attestation"
+                }
+              }
+            }
+          ]
+        },
+        "unauthorizedControl": {
+          "allOf": [
+            { "$ref": "#/definitions/publicKey" },
+            {
+              "properties": {
+                "purpose": {
+                  "const": "stable-private-pilot-control-attestation"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "uuid": {
+      "type": "string",
+      "minLength": 36,
+      "maxLength": 36,
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "keyId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+    },
+    "coordinate": {
+      "type": "string",
+      "minLength": 43,
+      "maxLength": 43,
+      "pattern": "^[A-Za-z0-9_-]{43}$"
+    },
+    "publicKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "purpose", "keyId", "x", "y"],
+      "properties": {
+        "algorithm": { "const": "ES256" },
+        "purpose": {
+          "enum": [
+            "enterprise-windows-pilot-evidence-attestation",
+            "enterprise-windows-pilot-verifier-report",
+            "enterprise-local-data-certification",
+            "stable-private-pilot-server-attestation",
+            "stable-private-pilot-device-attestation",
+            "stable-private-pilot-control-attestation"
+          ]
+        },
+        "keyId": { "$ref": "#/definitions/keyId" },
+        "x": { "$ref": "#/definitions/coordinate" },
+        "y": { "$ref": "#/definitions/coordinate" }
+      }
+    }
+  }
+}

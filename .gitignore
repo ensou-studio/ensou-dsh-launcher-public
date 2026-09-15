@@ -1,0 +1,44 @@
+# Visual Studio and .NET
+.vs/
+**/bin/
+**/obj/
+*.user
+*.suo
+
+# Packaged runtime and release output
+out/
+artifacts/
+packages/
+.test-out/
+*.zip
+*.sha256
+*.nupkg
+*.snupkg
+
+# Local state and configuration
+*.local.json
+launcher.settings.json
+pending-update.json
+current.json.tmp
+.env
+.env.*
+!.env.example
+
+# Secrets and signing material
+*.pfx
+*.p12
+*.snk
+*.key
+*.pem
+!security/public-keys/*.pem
+
+# Node/source-build working trees
+node_modules/
+.pnpm-store/
+.vite/
+*.tsbuildinfo
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store

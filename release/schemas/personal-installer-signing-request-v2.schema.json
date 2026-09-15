@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ensou DSH Personal Installer signing request draft v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "requestType", "orchestrationId", "edition", "releaseSetId",
+    "channel", "planSha256", "baseHeadSha256", "baseRevision", "basePhase",
+    "requestedRevision", "requestNonce", "createdAtUtc", "expiresAtUtc",
+    "source", "payload", "compiledTrust", "toolchain", "buildExecution",
+    "unsignedInstaller", "resourceBinding", "trustedBuildEvidence",
+    "responseAuthentication", "admission"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 2 },
+    "requestType": { "const": "ensou-dsh-personal-installer-signing-request" },
+    "orchestrationId": { "$ref": "#/definitions/uuid" },
+    "edition": { "const": "Personal" },
+    "releaseSetId": { "$ref": "#/definitions/token" },
+    "channel": { "const": "pilot" },
+    "planSha256": { "$ref": "#/definitions/sha256" },
+    "baseHeadSha256": { "$ref": "#/definitions/sha256" },
+    "baseRevision": { "const": 5 },
+    "basePhase": { "const": "PILOT_SIGNED_CANDIDATE_IMPORTED" },
+    "requestedRevision": { "const": 6 },
+    "requestNonce": {
+      "type": "string",
+      "minLength": 43,
+      "maxLength": 43,
+      "pattern": "^[A-Za-z0-9_-]{43}$"
+    },
+    "createdAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+    "expiresAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+    "source": { "$ref": "personal-installer-trusted-build-evidence-v1.schema.json#/definitions/source" },
+    "payload": { "$ref": "personal-installer-trusted-build-evidence-v1.schema.json#/definitions/payload" },
+    "compiledTrust": { "$ref": "personal-installer-trusted-build-evidence-v1.schema.json#/definitions/compiledTrust" },
+    "toolchain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["packageClosure", "sdkClosure", "toolchainIdentitySha256"],
+      "properties": {
+        "packageClosure": { "$ref": "personal-installer-trusted-build-evidence-v1.schema.json#/definitions/packageClosure" },
+        "sdkClosure": { "$ref": "personal-installer-trusted-build-evidence-v1.schema.json#/definitions/sdkClosure" },
+        "toolchainIdentitySha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "buildExecution": { "$ref": "personal-installer-trusted-build-evidence-v1.schema.json#/definitions/buildExecution" },
+    "unsignedInstaller": { "$ref": "personal-installer-trusted-build-evidence-v1.schema.json#/definitions/unsignedInstaller" },
+    "resourceBinding": { "$ref": "personal-installer-trusted-build-evidence-v1.schema.json#/definitions/resourceBinding" },
+    "trustedBuildEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fileName", "relativePath", "sizeBytes", "sha256", "productionAdmission"],
+      "properties": {
+        "fileName": { "const": "trusted-build-evidence.v1.json" },
+        "relativePath": { "const": "trusted-build/trusted-build-evidence.v1.json" },
+        "sizeBytes": { "type": "integer", "minimum": 1, "maximum": 67108864 },
+        "sha256": { "$ref": "#/definitions/sha256" },
+        "productionAdmission": { "const": "NO_GO" }
+      }
+    },
+    "responseAuthentication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "keyId", "purpose", "payloadType", "trustSha256", "maximumResponseAgeMinutes"],
+      "properties": {
+        "algorithm": { "const": "ES256" },
+        "keyId": { "$ref": "#/definitions/token" },
+        "purpose": { "const": "personal-installer-signing-response" },
+        "payloadType": { "const": "ensou-dsh-personal-installer-signing-response-authentication-v2" },
+        "trustSha256": { "$ref": "#/definitions/sha256" },
+        "maximumResponseAgeMinutes": { "type": "integer", "minimum": 1, "maximum": 1440 }
+      }
+    },
+    "admission": { "$ref": "personal-installer-trusted-build-evidence-v1.schema.json#/definitions/admission" }
+  },
+  "definitions": {
+    "sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "uuid": {
+      "type": "string",
+      "minLength": 36,
+      "maxLength": 36,
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "token": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"
+    },
+    "wholeSecondUtc": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 20,
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    }
+  }
+}

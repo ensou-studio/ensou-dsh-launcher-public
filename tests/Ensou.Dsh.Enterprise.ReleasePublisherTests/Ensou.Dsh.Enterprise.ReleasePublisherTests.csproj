@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RootNamespace>Ensou.Dsh.Enterprise.ReleasePublisherTests</RootNamespace>
+    <AssemblyName>Ensou.Dsh.Enterprise.ReleasePublisherTests</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Ensou.Dsh.Enterprise.Installation\Ensou.Dsh.Enterprise.Installation.csproj" />
+    <ProjectReference Include="..\..\src\Ensou.Dsh.Enterprise.ReleasePublisher\Ensou.Dsh.Enterprise.ReleasePublisher.csproj" />
+  </ItemGroup>
+</Project>

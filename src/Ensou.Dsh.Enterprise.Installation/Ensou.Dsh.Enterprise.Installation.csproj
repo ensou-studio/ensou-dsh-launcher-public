@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RootNamespace>Ensou.Dsh.Enterprise.Installation</RootNamespace>
+    <AssemblyName>Ensou.Dsh.Enterprise.Installation</AssemblyName>
+    <Product>Ensou DSH Enterprise Installation Core</Product>
+    <EnterpriseAuthenticodeSignerSha256Thumbprint
+      Condition="'$(EnterpriseAuthenticodeSignerSha256Thumbprint)' == ''"></EnterpriseAuthenticodeSignerSha256Thumbprint>
+  </PropertyGroup>
+  <ItemGroup>
+    <AssemblyMetadata Include="EnterpriseAuthenticodeSignerSha256Thumbprint"
+      Value="$(EnterpriseAuthenticodeSignerSha256Thumbprint)" />
+  </ItemGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.WindowsDesktop.App" />
+    <ProjectReference Include="..\Ensou.Dsh.Contracts\Ensou.Dsh.Contracts.csproj" />
+    <ProjectReference Include="..\Ensou.Dsh.Enterprise.ReleaseContracts\Ensou.Dsh.Enterprise.ReleaseContracts.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Ensou.Dsh.Enterprise.InstallationTests" />
+    <InternalsVisibleTo Include="Ensou.Dsh.Enterprise.DevelopmentE2ETests" />
+    <InternalsVisibleTo Include="Ensou.Dsh.Enterprise.LegacyMigrationTests" />
+    <InternalsVisibleTo Include="Ensou.Dsh.Enterprise.UpdateTests" />
+    <InternalsVisibleTo Include="Ensou.Dsh.ManagedArtifactGcTests" />
+    <InternalsVisibleTo Include="Ensou.Dsh.Enterprise.Bootstrapper" />
+    <InternalsVisibleTo Include="Ensou.Dsh.Enterprise.ClientBootstrapper" />
+    <InternalsVisibleTo Include="Ensou.Dsh.Enterprise.Launcher" />
+    <InternalsVisibleTo Include="Ensou.Dsh.EnterprisePluginCompatibilityRunner" />
+  </ItemGroup>
+</Project>

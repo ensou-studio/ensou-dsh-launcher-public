@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.ensou.example/dsh/enterprise-local-data-compatibility-certification-receipt-v1.schema.json",
+  "title": "Ensou DSH Enterprise Local Data Compatibility Certification Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "receiptType",
+    "certificationId",
+    "decision",
+    "environment",
+    "channel",
+    "distributionScope",
+    "certificationAudienceId",
+    "fromUpstreamTag",
+    "toUpstreamTag",
+    "sourceRuntimeZipSha256",
+    "targetRuntimeZipSha256",
+    "evidenceReportSha256",
+    "runnerSha256",
+    "issuedAtUnixSeconds",
+    "expiresAtUnixSeconds",
+    "signature"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "receiptType": {
+      "const": "ensou-dsh-enterprise-local-data-compatibility-certification"
+    },
+    "certificationId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "decision": { "const": "PASS" },
+    "environment": { "const": "production" },
+    "channel": { "const": "pilot" },
+    "distributionScope": { "const": "named-customer-pilot" },
+    "certificationAudienceId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "fromUpstreamTag": {
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 64,
+      "pattern": "^dsh-v[A-Za-z0-9.-]+$"
+    },
+    "toUpstreamTag": {
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 64,
+      "pattern": "^dsh-v[A-Za-z0-9.-]+$"
+    },
+    "sourceRuntimeZipSha256": { "$ref": "#/$defs/sha256" },
+    "targetRuntimeZipSha256": { "$ref": "#/$defs/sha256" },
+    "evidenceReportSha256": { "$ref": "#/$defs/sha256" },
+    "runnerSha256": { "$ref": "#/$defs/sha256" },
+    "issuedAtUnixSeconds": { "type": "integer", "minimum": 1 },
+    "expiresAtUnixSeconds": { "type": "integer", "minimum": 1 },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "keyId", "value"],
+      "properties": {
+        "algorithm": { "const": "ES256" },
+        "keyId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[A-Za-z0-9._-]+$"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{86}$"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

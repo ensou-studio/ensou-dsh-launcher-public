@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Ensou.Dsh.Contracts\Ensou.Dsh.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Ensou.Dsh.Enterprise.Client\Ensou.Dsh.Enterprise.Client.csproj" />
+    <ProjectReference Include="..\..\src\Ensou.Dsh.Enterprise.Contracts\Ensou.Dsh.Enterprise.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Ensou.Dsh.Host\Ensou.Dsh.Host.csproj" />
+    <ProjectReference Include="..\..\src\Ensou.Dsh.UpdateEngine\Ensou.Dsh.UpdateEngine.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\release\examples\canonical-payload-v1.vector.json">
+      <Link>Fixtures\canonical-payload-v1.vector.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Fixtures\authorization-lease-v1.json">
+      <Link>Fixtures\authorization-lease-v1.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>

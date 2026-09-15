@@ -1,0 +1,71 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>Ensou.Dsh.Enterprise.Bootstrapper</RootNamespace>
+    <AssemblyName>Ensou.Dsh.Enterprise.Bootstrapper</AssemblyName>
+    <Product>Ensou DSH Enterprise Bootstrapper</Product>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>..\..\assets\branding\dsh-official-whale.ico</ApplicationIcon>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <PublishTrimmed>false</PublishTrimmed>
+    <EnterpriseDevelopmentE2E Condition="'$(EnterpriseDevelopmentE2E)' == ''">false</EnterpriseDevelopmentE2E>
+    <EnterpriseUpdateManifestUri Condition="'$(EnterpriseUpdateManifestUri)' == ''"></EnterpriseUpdateManifestUri>
+    <EnterpriseUpdateManifestOrigin Condition="'$(EnterpriseUpdateManifestOrigin)' == ''"></EnterpriseUpdateManifestOrigin>
+    <EnterpriseUpdateArtifactOrigin Condition="'$(EnterpriseUpdateArtifactOrigin)' == ''"></EnterpriseUpdateArtifactOrigin>
+    <EnterpriseUpdateReleaseKeyId Condition="'$(EnterpriseUpdateReleaseKeyId)' == ''"></EnterpriseUpdateReleaseKeyId>
+    <EnterpriseUpdateReleaseKeyX Condition="'$(EnterpriseUpdateReleaseKeyX)' == ''"></EnterpriseUpdateReleaseKeyX>
+    <EnterpriseUpdateReleaseKeyY Condition="'$(EnterpriseUpdateReleaseKeyY)' == ''"></EnterpriseUpdateReleaseKeyY>
+    <DefineConstants Condition="'$(EnterpriseDevelopmentE2E)' == 'true'">$(DefineConstants);ENTERPRISE_DEVELOPMENT_E2E</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <AssemblyMetadata Include="EnterpriseUpdateManifestUri" Value="$(EnterpriseUpdateManifestUri)" />
+    <AssemblyMetadata Include="EnterpriseUpdateManifestOrigin" Value="$(EnterpriseUpdateManifestOrigin)" />
+    <AssemblyMetadata Include="EnterpriseUpdateArtifactOrigin" Value="$(EnterpriseUpdateArtifactOrigin)" />
+    <AssemblyMetadata Include="EnterpriseUpdateReleaseKeyId" Value="$(EnterpriseUpdateReleaseKeyId)" />
+    <AssemblyMetadata Include="EnterpriseUpdateReleaseKeyX" Value="$(EnterpriseUpdateReleaseKeyX)" />
+    <AssemblyMetadata Include="EnterpriseUpdateReleaseKeyY" Value="$(EnterpriseUpdateReleaseKeyY)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ensou.Dsh.Enterprise.Installation\Ensou.Dsh.Enterprise.Installation.csproj"
+      GlobalPropertiesToRemove="RuntimeIdentifier;SelfContained;PublishSingleFile" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\assets\branding\dsh-official-whale.svg"
+      LogicalName="Ensou.Dsh.Enterprise.Brand.dsh-official-whale.svg" />
+    <EmbeddedResource Include="..\..\assets\branding\dsh-official-whale.png"
+      LogicalName="Ensou.Dsh.Enterprise.Brand.dsh-official-whale.png" />
+    <EmbeddedResource Include="..\..\assets\branding\dsh-official-whale.ico"
+      LogicalName="Ensou.Dsh.Enterprise.Brand.dsh-official-whale.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\installer\profiles\enterprise-build-profile.json"
+      Condition="'$(EnterpriseDevelopmentE2E)' != 'true'">
+      <Link>enterprise-build-profile.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="..\..\installer\profiles\development-e2e-build-profile.json"
+      Condition="'$(EnterpriseDevelopmentE2E)' == 'true'">
+      <Link>enterprise-build-profile.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+  <Target Name="ValidateEnterpriseBootstrapperPublish" BeforeTargets="PrepareForPublish">
+    <Error Condition="'$(RuntimeIdentifier)' != 'win-x64'"
+      Text="Enterprise Bootstrapper must publish for win-x64." />
+    <Error Condition="'$(SelfContained)' != 'true'"
+      Text="Enterprise Bootstrapper must be self-contained." />
+    <Error Condition="'$(PublishSingleFile)' != 'true'"
+      Text="Enterprise Bootstrapper must publish as one executable." />
+    <Error Condition="'$(EnterpriseDevelopmentE2E)' != 'true' and '$(EnterpriseAuthenticodeSignerSha256Thumbprint)' == ''"
+      Text="Production Enterprise Bootstrapper publish requires the pinned Authenticode signer SHA-256 thumbprint." />
+    <Error Condition="'$(EnterpriseDevelopmentE2E)' != 'true' and ('$(EnterpriseUpdateManifestUri)' == '' or '$(EnterpriseUpdateManifestOrigin)' == '' or '$(EnterpriseUpdateArtifactOrigin)' == '' or '$(EnterpriseUpdateReleaseKeyId)' == '' or '$(EnterpriseUpdateReleaseKeyX)' == '' or '$(EnterpriseUpdateReleaseKeyY)' == '')"
+      Text="Production Enterprise Bootstrapper publish requires complete compiled release trust." />
+  </Target>
+</Project>

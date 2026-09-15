@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 4,
+  "product": "ensou-dsh-launcher",
+  "buildMode": "official-source",
+  "runtimeWebAuthProtocol": "browser-launch-cookie-v1",
+  "dshVersion": "0.1.2-rc.1",
+  "officialCommit": "a66e4702047846cdaa10c66c9d3df3951f5ea70d",
+  "officialTag": "dsh-v0.1.2-rc.1",
+  "officialTree": "27ab636bb3d77e698f5637e518db44ae1f61e262",
+  "nodeVersion": "24.19.0",
+  "pnpmVersion": "11.7.0",
+  "baseLockfileSha256": "e12083149a77f790d39b64d018b6b8745c6a7aa95777ecb73e0a2f5ed5fdd0d9",
+  "lockfileSha256": "0cc4aba6915e0221cf65f806c5ab932849137d5aa4f8f8d129afd6501b8bef7f",
+  "managedPatch": {
+    "id": "dsh-v0.1.2-rc.1-enterprise-managed-v1",
+    "manifestSha256": "6e420ee233436fe5ce4974d630142320ca039297ccc9c3261a87e512332994e5",
+    "patchSha256": "c5945fb046e4cb3d7897c99dc9f68404bcd5ab3352a322ce9063ae4d00723518"
+  },
+  "harnessCheckout": "C:\\Agents\\deepseek",
+  "verifiedAt": null,
+  "promotionStatus": "not-built",
+  "notes": "企业候选只允许 exact official base 加 installation-owned reviewed managed patch；员工不 clone GitHub。活动源码基线已锁定 dsh-v0.1.2-rc.1；managed composition 继续使用 JSONL 持久化且不引入 session-persistence-sqlite。若检测到旧版可选 SQLite 持久存储，必须阻止自动升级并要求在旧版本中先导出；本版本不宣称自动迁移。已生成的本机未签名 runtime 仍只是候选构建，不改变 production promotionStatus；旧 build-runtime.ps1 仅保留作 Lab 诊断，不得提升 Stable。"
+}

@@ -1,0 +1,1140 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ensou DSH Launcher production release state documents v2",
+  "oneOf": [
+    { "$ref": "#/definitions/identity" },
+    { "$ref": "#/definitions/head" },
+    { "$ref": "#/definitions/receipt" }
+  ],
+  "definitions": {
+    "githubRepository": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 140,
+      "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?/[A-Za-z0-9](?:[A-Za-z0-9._-]{0,98}[A-Za-z0-9_-])?$"
+    },
+    "githubCommit": {
+      "type": "string",
+      "minLength": 40,
+      "maxLength": 40,
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^(?![\\s\\S]*\\p{Cc})[0-9a-f]{64}$"
+    },
+    "keyId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "wholeSecondUtc": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 20,
+      "pattern": "^(?![\\s\\S]*\\p{Cc})[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "orchestrationId": {
+      "type": "string",
+      "minLength": 36,
+      "maxLength": 36,
+      "pattern": "^(?![\\s\\S]*\\p{Cc})[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "edition": { "enum": ["Personal", "Enterprise"] },
+    "targetChannel": { "enum": ["pilot", "stable"] },
+    "phase": {
+      "enum": [
+        "PLAN_ADMITTED",
+        "CLIENT_SIGNING_REQUESTED",
+        "CLIENT_SIGNATURES_IMPORTED",
+        "PILOT_MANIFEST_SIGNING_REQUESTED",
+        "PILOT_SIGNED_CANDIDATE_IMPORTED",
+        "INSTALLER_SIGNING_REQUESTED",
+        "INSTALLER_SIGNATURE_IMPORTED",
+        "PILOT_PROMOTION_REQUESTED",
+        "PILOT_FEED_PROMOTED",
+        "STABLE_MANIFEST_SIGNING_REQUESTED",
+        "STABLE_SIGNED_CANDIDATE_IMPORTED",
+        "PILOT_EVIDENCE_BOUND",
+        "STABLE_PROMOTION_REQUESTED",
+        "STABLE_FEED_PROMOTED"
+      ]
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion", "identityType", "orchestrationId", "edition",
+        "targetChannel", "planSha256", "initializationSha256", "createdAtUtc"
+      ],
+      "properties": {
+        "schemaVersion": { "const": 2 },
+        "identityType": { "const": "ensou-dsh-launcher-production-release-state" },
+        "orchestrationId": { "$ref": "#/definitions/orchestrationId" },
+        "edition": { "$ref": "#/definitions/edition" },
+        "targetChannel": { "$ref": "#/definitions/targetChannel" },
+        "planSha256": { "$ref": "#/definitions/sha256" },
+        "initializationSha256": { "$ref": "#/definitions/sha256" },
+        "createdAtUtc": { "$ref": "#/definitions/wholeSecondUtc" }
+      }
+    },
+    "headBase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion", "stateType", "orchestrationId", "edition",
+        "targetChannel", "planSha256", "identitySha256", "revision", "phase",
+        "receiptFileName", "receiptSha256", "updatedAtUtc"
+      ],
+      "properties": {
+        "schemaVersion": { "const": 2 },
+        "stateType": { "const": "ensou-dsh-launcher-production-release-head" },
+        "orchestrationId": { "$ref": "#/definitions/orchestrationId" },
+        "edition": { "$ref": "#/definitions/edition" },
+        "targetChannel": { "$ref": "#/definitions/targetChannel" },
+        "planSha256": { "$ref": "#/definitions/sha256" },
+        "identitySha256": { "$ref": "#/definitions/sha256" },
+        "revision": { "type": "integer", "minimum": 1, "maximum": 10 },
+        "phase": { "$ref": "#/definitions/phase" },
+        "receiptFileName": {
+          "type": "string",
+          "minLength": 11,
+          "maxLength": 128,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[0-9]{4}-[a-z0-9-]+\\.json$"
+        },
+        "receiptSha256": { "$ref": "#/definitions/sha256" },
+        "updatedAtUtc": { "$ref": "#/definitions/wholeSecondUtc" }
+      }
+    },
+    "head": {
+      "allOf": [
+        { "$ref": "#/definitions/headBase" },
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "targetChannel": { "const": "pilot" },
+                "revision": { "minimum": 1, "maximum": 9 }
+              }
+            },
+            {
+              "properties": {
+                "targetChannel": { "const": "stable" },
+                "revision": { "minimum": 1, "maximum": 10 }
+              }
+            }
+          ]
+        },
+        {
+          "oneOf": [
+            { "properties": { "revision": { "const": 1 }, "phase": { "const": "PLAN_ADMITTED" } } },
+            { "properties": { "revision": { "const": 2 }, "phase": { "const": "CLIENT_SIGNING_REQUESTED" } } },
+            { "properties": { "revision": { "const": 3 }, "phase": { "const": "CLIENT_SIGNATURES_IMPORTED" } } },
+            { "properties": { "targetChannel": { "const": "pilot" }, "revision": { "const": 4 }, "phase": { "const": "PILOT_MANIFEST_SIGNING_REQUESTED" } } },
+            { "properties": { "targetChannel": { "const": "stable" }, "revision": { "const": 4 }, "phase": { "const": "STABLE_MANIFEST_SIGNING_REQUESTED" } } },
+            { "properties": { "targetChannel": { "const": "pilot" }, "revision": { "const": 5 }, "phase": { "const": "PILOT_SIGNED_CANDIDATE_IMPORTED" } } },
+            { "properties": { "targetChannel": { "const": "stable" }, "revision": { "const": 5 }, "phase": { "const": "STABLE_SIGNED_CANDIDATE_IMPORTED" } } },
+            { "properties": { "revision": { "const": 6 }, "phase": { "const": "INSTALLER_SIGNING_REQUESTED" } } },
+            { "properties": { "revision": { "const": 7 }, "phase": { "const": "INSTALLER_SIGNATURE_IMPORTED" } } },
+            { "properties": { "targetChannel": { "const": "pilot" }, "revision": { "const": 8 }, "phase": { "const": "PILOT_PROMOTION_REQUESTED" } } },
+            { "properties": { "targetChannel": { "const": "stable" }, "revision": { "const": 8 }, "phase": { "const": "PILOT_EVIDENCE_BOUND" } } },
+            { "properties": { "targetChannel": { "const": "pilot" }, "revision": { "const": 9 }, "phase": { "const": "PILOT_FEED_PROMOTED" } } },
+            { "properties": { "targetChannel": { "const": "stable" }, "revision": { "const": 9 }, "phase": { "const": "STABLE_PROMOTION_REQUESTED" } } },
+            { "properties": { "targetChannel": { "const": "stable" }, "revision": { "const": 10 }, "phase": { "const": "STABLE_FEED_PROMOTED" } } }
+          ]
+        }
+      ]
+    },
+    "artifactIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "fileName", "sizeBytes", "sha256", "peContentSha256"],
+      "properties": {
+        "role": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[a-z][a-z0-9-]*$"
+        },
+        "fileName": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 255,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._-]*\\.exe$"
+        },
+        "sizeBytes": { "type": "integer", "minimum": 1, "maximum": 536870912 },
+        "sha256": { "$ref": "#/definitions/sha256" },
+        "peContentSha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "signedArtifactIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role", "fileName", "sizeBytes", "sha256", "peContentSha256",
+        "timestampProtocol"
+      ],
+      "properties": {
+        "role": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[a-z][a-z0-9-]*$"
+        },
+        "fileName": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 255,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._-]*\\.exe$"
+        },
+        "sizeBytes": { "type": "integer", "minimum": 1, "maximum": 536870912 },
+        "sha256": { "$ref": "#/definitions/sha256" },
+        "peContentSha256": { "$ref": "#/definitions/sha256" },
+        "timestampProtocol": { "const": "RFC3161" }
+      }
+    },
+    "planData": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "releaseSetId", "targetChannel", "sourceCommit", "sourceTree",
+        "manifestUri", "artifactBaseUri", "releaseManifestTrustSha256",
+        "releaseCompatibilitySha256", "runtimeCandidate", "clientInputs"
+      ],
+      "properties": {
+        "releaseSetId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "targetChannel": { "$ref": "#/definitions/targetChannel" },
+        "sourceCommit": {
+          "type": "string",
+          "minLength": 40,
+          "maxLength": 64,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+        },
+        "sourceTree": {
+          "type": "string",
+          "minLength": 40,
+          "maxLength": 64,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+        },
+        "manifestUri": {
+          "type": "string",
+          "minLength": 12,
+          "maxLength": 2048,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})https://[\\s\\S]+$"
+        },
+        "artifactBaseUri": {
+          "type": "string",
+          "minLength": 12,
+          "maxLength": 2048,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})https://[\\s\\S]+$"
+        },
+        "releaseManifestTrustSha256": { "$ref": "#/definitions/sha256" },
+        "releaseCompatibilitySha256": { "$ref": "#/definitions/sha256" },
+        "runtimeCandidate": {
+          "type": "object",
+          "additionalProperties": false,
+          "dependencies": {
+            "githubRepository": ["githubReleaseCommit"],
+            "githubReleaseCommit": ["githubRepository"]
+          },
+          "required": [
+            "releaseId", "githubReleaseTag", "harnessSourceTag",
+            "harnessSourceCommit", "archiveSha256",
+            "metadataSha256", "hashEvidenceSha256",
+            "localMetadataPromotionEligible", "publicationStatus"
+          ],
+          "properties": {
+            "releaseId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._-]*$"
+            },
+            "harnessSourceTag": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._-]*$"
+            },
+            "harnessSourceCommit": {
+              "type": "string",
+              "minLength": 40,
+              "maxLength": 64,
+              "pattern": "^(?![\\s\\S]*\\p{Cc})(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+            },
+            "githubReleaseTag": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._-]*$"
+            },
+            "githubRepository": { "$ref": "#/definitions/githubRepository" },
+            "githubReleaseCommit": { "$ref": "#/definitions/githubCommit" },
+            "archiveSha256": { "$ref": "#/definitions/sha256" },
+            "metadataSha256": { "$ref": "#/definitions/sha256" },
+            "hashEvidenceSha256": { "$ref": "#/definitions/sha256" },
+            "localMetadataPromotionEligible": { "const": true },
+            "publicationStatus": { "const": "IMMUTABLE_SOURCE_RELEASE_UNVERIFIED" }
+          }
+        },
+        "clientInputs": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": { "$ref": "#/definitions/artifactIdentity" }
+        }
+      }
+    },
+    "requestData": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requestRelativePath", "requestSha256", "nonce", "createdAtUtc",
+        "expiresAtUtc", "files"
+      ],
+      "properties": {
+        "requestRelativePath": {
+          "const": "requests/client-signing.v1/signing-request.v1.json"
+        },
+        "requestSha256": { "$ref": "#/definitions/sha256" },
+        "nonce": {
+          "type": "string",
+          "minLength": 43,
+          "maxLength": 43,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9_-]{43}$"
+        },
+        "createdAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "expiresAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "files": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["role", "fileName", "sha256", "peContentSha256"],
+            "properties": {
+              "role": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64,
+                "pattern": "^(?![\\s\\S]*\\p{Cc})[a-z][a-z0-9-]*$"
+              },
+              "fileName": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 255,
+                "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._-]*\\.exe$"
+              },
+              "sha256": { "$ref": "#/definitions/sha256" },
+              "peContentSha256": { "$ref": "#/definitions/sha256" }
+            }
+          }
+        }
+      }
+    },
+    "importData": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "responseRelativePath", "responseSha256", "completedAtUtc",
+        "authenticationKeyId", "authenticationPurpose",
+        "authenticationPayloadType", "releaseManifestTrustProbeStatus",
+        "releaseManifestTrustProbes", "files"
+      ],
+      "properties": {
+        "responseRelativePath": {
+          "const": "imports/client-signing.v1/signing-response.v1.json"
+        },
+        "responseSha256": { "$ref": "#/definitions/sha256" },
+        "completedAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "authenticationKeyId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._:-]*$"
+        },
+        "authenticationPurpose": { "const": "client-signing-response" },
+        "authenticationPayloadType": {
+          "const": "ensou-dsh-launcher-external-signing-response-authentication-v2"
+        },
+        "releaseManifestTrustProbeStatus": { "const": "VERIFIED" },
+        "releaseManifestTrustProbes": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["role", "fileName", "probeSha256"],
+            "properties": {
+              "role": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64,
+                "pattern": "^(?![\\s\\S]*\\p{Cc})[a-z][a-z0-9-]*$"
+              },
+              "fileName": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 255,
+                "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._-]*\\.exe$"
+              },
+              "probeSha256": { "$ref": "#/definitions/sha256" }
+            }
+          }
+        },
+        "files": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": { "$ref": "#/definitions/signedArtifactIdentity" }
+        }
+      }
+    },
+    "publisherInputFileIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "fileName", "relativePath", "sizeBytes", "sha256"],
+      "properties": {
+        "role": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 96,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[a-z][a-z0-9-]*$"
+        },
+        "fileName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "relativePath": {
+          "type": "string",
+          "minLength": 9,
+          "maxLength": 263,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})payload/[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "sizeBytes": { "type": "integer", "minimum": 1, "maximum": 8589934592 },
+        "sha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "candidateFileIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "fileName", "relativePath", "sizeBytes", "sha256"],
+      "properties": {
+        "role": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 96,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[a-z][a-z0-9-]*$"
+        },
+        "fileName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "relativePath": {
+          "type": "string",
+          "minLength": 11,
+          "maxLength": 265,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})candidate/[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "sizeBytes": { "type": "integer", "minimum": 1, "maximum": 8589934592 },
+        "sha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "manifestPublishingRequestData": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requestRelativePath", "requestSha256", "publisherInputDescriptorSha256",
+        "baseHeadSha256", "requestNonce", "createdAtUtc", "expiresAtUtc",
+        "responseAuthenticationKeyId", "responseAuthenticationPurpose",
+        "responseAuthenticationPayloadType", "releaseManifestTrustSha256",
+        "releaseCompatibilitySha256", "componentReleaseIdsSha256",
+        "runtimeProvenanceSha256",
+        "compiledReleaseTrustStatus", "files"
+      ],
+      "properties": {
+        "requestRelativePath": {
+          "enum": [
+            "requests/pilot-manifest-publishing.v1/manifest-publishing-request.v1.json",
+            "requests/stable-manifest-publishing.v1/manifest-publishing-request.v1.json"
+          ]
+        },
+        "requestSha256": { "$ref": "#/definitions/sha256" },
+        "publisherInputDescriptorSha256": { "$ref": "#/definitions/sha256" },
+        "baseHeadSha256": { "$ref": "#/definitions/sha256" },
+        "requestNonce": {
+          "type": "string",
+          "minLength": 43,
+          "maxLength": 43,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9_-]{43}$"
+        },
+        "createdAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "expiresAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "responseAuthenticationKeyId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._:-]*$"
+        },
+        "responseAuthenticationPurpose": { "const": "manifest-publishing-response" },
+        "responseAuthenticationPayloadType": {
+          "const": "ensou-dsh-launcher-manifest-publishing-response-authentication-v1"
+        },
+        "releaseManifestTrustSha256": { "$ref": "#/definitions/sha256" },
+        "releaseCompatibilitySha256": { "$ref": "#/definitions/sha256" },
+        "componentReleaseIdsSha256": { "$ref": "#/definitions/sha256" },
+        "runtimeProvenanceSha256": { "$ref": "#/definitions/sha256" },
+        "compiledReleaseTrustStatus": { "const": "VERIFIED" },
+        "files": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 64,
+          "items": { "$ref": "#/definitions/publisherInputFileIdentity" }
+        }
+      }
+    },
+    "signedCandidateImportData": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "responseRelativePath", "responseSha256", "requestSha256", "requestNonce",
+        "baseHeadSha256", "admissionHeadSha256", "admissionRevision",
+        "requestExpiresAtUtc", "completedAtUtc", "authenticationKeyId",
+        "authenticationPurpose", "authenticationPayloadType", "manifestRelativePath",
+        "manifestSha256", "releaseManifestTrustSha256",
+        "releaseCompatibilitySha256", "componentReleaseIdsSha256",
+        "runtimeProvenanceSha256",
+        "compiledReleaseTrustStatus",
+        "productionAdmission", "files"
+      ],
+      "properties": {
+        "responseRelativePath": {
+          "enum": [
+            "imports/pilot-signed-candidate.v1/manifest-publishing-response.v1.json",
+            "imports/stable-signed-candidate.v1/manifest-publishing-response.v1.json"
+          ]
+        },
+        "responseSha256": { "$ref": "#/definitions/sha256" },
+        "requestSha256": { "$ref": "#/definitions/sha256" },
+        "requestNonce": {
+          "type": "string",
+          "minLength": 43,
+          "maxLength": 43,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9_-]{43}$"
+        },
+        "baseHeadSha256": { "$ref": "#/definitions/sha256" },
+        "admissionHeadSha256": { "$ref": "#/definitions/sha256" },
+        "admissionRevision": { "const": 4 },
+        "requestExpiresAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "completedAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "authenticationKeyId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._:-]*$"
+        },
+        "authenticationPurpose": { "const": "manifest-publishing-response" },
+        "authenticationPayloadType": {
+          "const": "ensou-dsh-launcher-manifest-publishing-response-authentication-v1"
+        },
+        "manifestRelativePath": {
+          "enum": [
+            "imports/pilot-signed-candidate.v1/candidate/release-set.v2.json",
+            "imports/stable-signed-candidate.v1/candidate/release-set.v2.json"
+          ]
+        },
+        "manifestSha256": { "$ref": "#/definitions/sha256" },
+        "releaseManifestTrustSha256": { "$ref": "#/definitions/sha256" },
+        "releaseCompatibilitySha256": { "$ref": "#/definitions/sha256" },
+        "componentReleaseIdsSha256": { "$ref": "#/definitions/sha256" },
+        "runtimeProvenanceSha256": { "$ref": "#/definitions/sha256" },
+        "compiledReleaseTrustStatus": { "const": "VERIFIED" },
+        "productionAdmission": { "const": "NO_GO" },
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": { "$ref": "#/definitions/candidateFileIdentity" }
+        }
+      }
+    },
+    "installerIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fileName", "relativePath", "sizeBytes", "sha256", "peContentSha256"
+      ],
+      "properties": {
+        "fileName": { "const": "Ensou.Dsh.Enterprise.Installer.exe" },
+        "relativePath": {
+          "enum": [
+            "requests/installer-signing.v1/unsigned/Ensou.Dsh.Enterprise.Installer.exe",
+            "requests/installer-signing.v2/unsigned/Ensou.Dsh.Enterprise.Installer.exe",
+            "imports/installer-signing.v1/signed/Ensou.Dsh.Enterprise.Installer.exe"
+          ]
+        },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1073741824
+        },
+        "sha256": { "$ref": "#/definitions/sha256" },
+        "peContentSha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "personalInstallerIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fileName", "relativePath", "sizeBytes", "sha256", "peContentSha256"
+      ],
+      "properties": {
+        "fileName": { "const": "Ensou.Dsh.Personal.Installer.exe" },
+        "relativePath": {
+          "enum": [
+            "requests/installer-signing.v2/unsigned/Ensou.Dsh.Personal.Installer.exe",
+            "imports/installer-signing.v2/signed/Ensou.Dsh.Personal.Installer.exe"
+          ]
+        },
+        "sizeBytes": {
+          "type": "integer", "minimum": 1, "maximum": 1073741824
+        },
+        "sha256": { "$ref": "#/definitions/sha256" },
+        "peContentSha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "personalInstallerSigningRequestData": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidenceType", "requestSchemaVersion", "requestRelativePath",
+        "requestSha256", "baseHeadSha256", "baseReceiptSha256",
+        "sourceSha256", "payloadSha256", "compiledTrustSha256",
+        "toolchainSha256", "buildExecutionSha256", "resourceBindingSha256",
+        "trustedBuildEvidenceSha256", "admissionSha256", "r5ManifestSha256",
+        "r5ClientBundleSha256", "r5RuntimeSha256", "unsignedInstaller",
+        "createdAtUtc", "expiresAtUtc", "authenticationKeyId",
+        "authenticationPurpose", "authenticationPayloadType",
+        "admissionReason", "productionAdmission"
+      ],
+      "properties": {
+        "evidenceType": { "const": "INSTALLER_SIGNING_REQUESTED" },
+        "requestSchemaVersion": { "const": 2 },
+        "requestRelativePath": { "const": "requests/installer-signing.v2/installer-signing-request.v2.json" },
+        "requestSha256": { "$ref": "#/definitions/sha256" },
+        "baseHeadSha256": { "$ref": "#/definitions/sha256" },
+        "baseReceiptSha256": { "$ref": "#/definitions/sha256" },
+        "sourceSha256": { "$ref": "#/definitions/sha256" },
+        "payloadSha256": { "$ref": "#/definitions/sha256" },
+        "compiledTrustSha256": { "$ref": "#/definitions/sha256" },
+        "toolchainSha256": { "$ref": "#/definitions/sha256" },
+        "buildExecutionSha256": { "$ref": "#/definitions/sha256" },
+        "resourceBindingSha256": { "$ref": "#/definitions/sha256" },
+        "trustedBuildEvidenceSha256": { "$ref": "#/definitions/sha256" },
+        "admissionSha256": { "$ref": "#/definitions/sha256" },
+        "r5ManifestSha256": { "$ref": "#/definitions/sha256" },
+        "r5ClientBundleSha256": { "$ref": "#/definitions/sha256" },
+        "r5RuntimeSha256": { "$ref": "#/definitions/sha256" },
+        "unsignedInstaller": {
+          "allOf": [
+            { "$ref": "#/definitions/personalInstallerIdentity" },
+            { "properties": { "relativePath": { "const": "requests/installer-signing.v2/unsigned/Ensou.Dsh.Personal.Installer.exe" } } }
+          ]
+        },
+        "createdAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "expiresAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "authenticationKeyId": { "$ref": "#/definitions/keyId" },
+        "authenticationPurpose": { "const": "personal-installer-signing-response" },
+        "authenticationPayloadType": { "const": "ensou-dsh-personal-installer-signing-response-authentication-v2" },
+        "admissionReason": { "const": "INSTALLER_SIGNING_RESPONSE_REQUIRED" },
+        "productionAdmission": { "const": "NO_GO" }
+      }
+    },
+    "personalInstallerSignatureImportData": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidenceType", "responseRelativePath", "responseSha256",
+        "requestSchemaVersion", "requestSha256", "admissionHeadSha256",
+        "r6ReceiptSha256", "sourceSha256", "payloadSha256",
+        "compiledTrustSha256", "toolchainSha256", "buildExecutionSha256",
+        "resourceBindingSha256", "trustedBuildEvidenceSha256",
+        "admissionSha256", "signedInstaller", "signerCertificateSha256",
+        "timestampSignerCertificateSha256", "timestampProtocol", "timestampUtc",
+        "authenticationKeyId", "authenticationPurpose",
+        "authenticationPayloadType", "payloadSelfCheckCanonicalJsonSha256",
+        "completedAtUtc", "admissionReason", "productionAdmission"
+      ],
+      "properties": {
+        "evidenceType": { "const": "INSTALLER_SIGNATURE_IMPORTED" },
+        "responseRelativePath": { "const": "imports/installer-signing.v2/personal-installer-signing-response.v2.json" },
+        "responseSha256": { "$ref": "#/definitions/sha256" },
+        "requestSchemaVersion": { "const": 2 },
+        "requestSha256": { "$ref": "#/definitions/sha256" },
+        "admissionHeadSha256": { "$ref": "#/definitions/sha256" },
+        "r6ReceiptSha256": { "$ref": "#/definitions/sha256" },
+        "sourceSha256": { "$ref": "#/definitions/sha256" },
+        "payloadSha256": { "$ref": "#/definitions/sha256" },
+        "compiledTrustSha256": { "$ref": "#/definitions/sha256" },
+        "toolchainSha256": { "$ref": "#/definitions/sha256" },
+        "buildExecutionSha256": { "$ref": "#/definitions/sha256" },
+        "resourceBindingSha256": { "$ref": "#/definitions/sha256" },
+        "trustedBuildEvidenceSha256": { "$ref": "#/definitions/sha256" },
+        "admissionSha256": { "$ref": "#/definitions/sha256" },
+        "signedInstaller": {
+          "allOf": [
+            { "$ref": "#/definitions/personalInstallerIdentity" },
+            { "properties": { "relativePath": { "const": "imports/installer-signing.v2/signed/Ensou.Dsh.Personal.Installer.exe" } } }
+          ]
+        },
+        "signerCertificateSha256": { "$ref": "#/definitions/sha256" },
+        "timestampSignerCertificateSha256": { "$ref": "#/definitions/sha256" },
+        "timestampProtocol": { "const": "RFC3161" },
+        "timestampUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "authenticationKeyId": { "$ref": "#/definitions/keyId" },
+        "authenticationPurpose": { "const": "personal-installer-signing-response" },
+        "authenticationPayloadType": { "const": "ensou-dsh-personal-installer-signing-response-authentication-v2" },
+        "payloadSelfCheckCanonicalJsonSha256": { "$ref": "#/definitions/sha256" },
+        "completedAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "admissionReason": { "const": "PERSONAL_SIGNED_WINDOWS_PILOT_REQUIRED" },
+        "productionAdmission": { "const": "NO_GO" }
+      }
+    },
+    "installerSigningRequestData": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidenceType", "requestSchemaVersion", "requestRelativePath",
+        "requestSha256",
+        "baseHeadSha256", "baseReceiptSha256", "sourceBuildInputSetSha256",
+        "targetBuildIdentitySha256", "payloadSetSha256", "r5LauncherSha256",
+        "r5RuntimeSha256", "trustedBuildEvidenceRelativePath",
+        "trustedBuildEvidenceSha256", "resourceBindingSha256",
+        "sdkFileClosureStatus", "signingRequestEligibilityStatus",
+        "unsignedInstaller", "createdAtUtc", "expiresAtUtc",
+        "authenticationKeyId", "authenticationPurpose", "admissionReason",
+        "productionAdmission"
+      ],
+      "properties": {
+        "evidenceType": { "const": "INSTALLER_SIGNING_REQUESTED" },
+        "requestSchemaVersion": { "const": 2 },
+        "requestRelativePath": {
+          "const": "requests/installer-signing.v2/installer-signing-request.v2.json"
+        },
+        "requestSha256": { "$ref": "#/definitions/sha256" },
+        "baseHeadSha256": { "$ref": "#/definitions/sha256" },
+        "baseReceiptSha256": { "$ref": "#/definitions/sha256" },
+        "sourceBuildInputSetSha256": { "$ref": "#/definitions/sha256" },
+        "targetBuildIdentitySha256": { "$ref": "#/definitions/sha256" },
+        "payloadSetSha256": { "$ref": "#/definitions/sha256" },
+        "r5LauncherSha256": { "$ref": "#/definitions/sha256" },
+        "r5RuntimeSha256": { "$ref": "#/definitions/sha256" },
+        "trustedBuildEvidenceRelativePath": {
+          "const": "requests/installer-signing.v2/trusted-build/trusted-build-evidence.v1.json"
+        },
+        "trustedBuildEvidenceSha256": { "$ref": "#/definitions/sha256" },
+        "resourceBindingSha256": { "$ref": "#/definitions/sha256" },
+        "sdkFileClosureStatus": {
+          "const": "VERIFIED"
+        },
+        "signingRequestEligibilityStatus": {
+          "const": "ELIGIBLE_FOR_PILOT_SIGNING"
+        },
+        "unsignedInstaller": {
+          "allOf": [
+            { "$ref": "#/definitions/installerIdentity" },
+            {
+              "properties": {
+                "relativePath": {
+                  "const": "requests/installer-signing.v2/unsigned/Ensou.Dsh.Enterprise.Installer.exe"
+                }
+              }
+            }
+          ]
+        },
+        "createdAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "expiresAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "authenticationKeyId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._:-]*$"
+        },
+        "authenticationPurpose": { "const": "installer-signing-response" },
+        "admissionReason": {
+          "const": "INSTALLER_SIGNING_RESPONSE_REQUIRED"
+        },
+        "productionAdmission": { "const": "NO_GO" }
+      }
+    },
+    "installerSignatureImportData": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidenceType", "responseRelativePath", "responseSha256",
+        "requestSchemaVersion", "requestSha256",
+        "admissionHeadSha256", "r6ReceiptSha256", "r5LauncherSha256",
+        "r5RuntimeSha256", "trustedBuildEvidenceSha256",
+        "resourceBindingSha256", "sdkFileClosureStatus",
+        "signingRequestEligibilityStatus", "sourceBuildInputSetSha256",
+        "targetBuildIdentitySha256", "payloadSetSha256",
+        "signedInstaller", "signerCertificateSha256",
+        "timestampSignerCertificateSha256", "timestampProtocol", "timestampUtc",
+        "authenticationKeyId", "authenticationPurpose", "completedAtUtc",
+        "admissionReason", "productionAdmission"
+      ],
+      "properties": {
+        "evidenceType": { "const": "INSTALLER_SIGNATURE_IMPORTED" },
+        "responseRelativePath": {
+          "const": "imports/installer-signing.v1/installer-signing-response.v1.json"
+        },
+        "responseSha256": { "$ref": "#/definitions/sha256" },
+        "requestSchemaVersion": { "const": 2 },
+        "requestSha256": { "$ref": "#/definitions/sha256" },
+        "admissionHeadSha256": { "$ref": "#/definitions/sha256" },
+        "r6ReceiptSha256": { "$ref": "#/definitions/sha256" },
+        "r5LauncherSha256": { "$ref": "#/definitions/sha256" },
+        "r5RuntimeSha256": { "$ref": "#/definitions/sha256" },
+        "trustedBuildEvidenceSha256": { "$ref": "#/definitions/sha256" },
+        "resourceBindingSha256": { "$ref": "#/definitions/sha256" },
+        "sdkFileClosureStatus": {
+          "const": "VERIFIED"
+        },
+        "signingRequestEligibilityStatus": {
+          "const": "ELIGIBLE_FOR_PILOT_SIGNING"
+        },
+        "sourceBuildInputSetSha256": { "$ref": "#/definitions/sha256" },
+        "targetBuildIdentitySha256": { "$ref": "#/definitions/sha256" },
+        "payloadSetSha256": { "$ref": "#/definitions/sha256" },
+        "signedInstaller": {
+          "allOf": [
+            { "$ref": "#/definitions/installerIdentity" },
+            {
+              "properties": {
+                "relativePath": {
+                  "const": "imports/installer-signing.v1/signed/Ensou.Dsh.Enterprise.Installer.exe"
+                }
+              }
+            }
+          ]
+        },
+        "signerCertificateSha256": { "$ref": "#/definitions/sha256" },
+        "timestampSignerCertificateSha256": { "$ref": "#/definitions/sha256" },
+        "timestampProtocol": { "const": "RFC3161" },
+        "timestampUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "authenticationKeyId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._:-]*$"
+        },
+        "authenticationPurpose": { "const": "installer-signing-response" },
+        "completedAtUtc": { "$ref": "#/definitions/wholeSecondUtc" },
+        "admissionReason": {
+          "const": "INSTALLER_SIGNING_RESPONSE_REQUIRED"
+        },
+        "productionAdmission": { "const": "NO_GO" }
+      }
+    },
+    "externalEvidenceData": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidenceType", "relativePath", "sha256"],
+      "properties": {
+        "evidenceType": {
+          "enum": [
+            "PILOT_MANIFEST_SIGNING_REQUESTED",
+            "PILOT_SIGNED_CANDIDATE_IMPORTED",
+            "INSTALLER_SIGNING_REQUESTED",
+            "INSTALLER_SIGNATURE_IMPORTED",
+            "PILOT_PROMOTION_REQUESTED",
+            "PILOT_FEED_PROMOTED",
+            "STABLE_MANIFEST_SIGNING_REQUESTED",
+            "STABLE_SIGNED_CANDIDATE_IMPORTED",
+            "PILOT_EVIDENCE_BOUND",
+            "STABLE_PROMOTION_REQUESTED",
+            "STABLE_FEED_PROMOTED"
+          ]
+        },
+        "relativePath": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 1024,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})(?:requests|imports|evidence)/(?:[A-Za-z0-9][A-Za-z0-9._-]*/)*[A-Za-z0-9][A-Za-z0-9._-]*\\.json$"
+        },
+        "sha256": { "$ref": "#/definitions/sha256" }
+      }
+    },
+    "receiptBase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion", "receiptType", "orchestrationId", "edition",
+        "targetChannel", "planSha256", "identitySha256", "revision", "phase",
+        "previousReceiptSha256", "transitionSha256", "data", "recordedAtUtc"
+      ],
+      "properties": {
+        "schemaVersion": { "const": 2 },
+        "receiptType": { "const": "ensou-dsh-launcher-production-release-transition" },
+        "orchestrationId": { "$ref": "#/definitions/orchestrationId" },
+        "edition": { "$ref": "#/definitions/edition" },
+        "targetChannel": { "$ref": "#/definitions/targetChannel" },
+        "planSha256": { "$ref": "#/definitions/sha256" },
+        "identitySha256": { "$ref": "#/definitions/sha256" },
+        "revision": { "type": "integer", "minimum": 1, "maximum": 10 },
+        "phase": { "$ref": "#/definitions/phase" },
+        "previousReceiptSha256": { "$ref": "#/definitions/sha256" },
+        "transitionSha256": { "$ref": "#/definitions/sha256" },
+        "data": { "type": "object" },
+        "recordedAtUtc": { "$ref": "#/definitions/wholeSecondUtc" }
+      }
+    },
+    "receipt": {
+      "allOf": [
+        { "$ref": "#/definitions/receiptBase" },
+        {
+          "if": {
+            "properties": {
+              "data": {
+                "properties": {
+                  "runtimeCandidate": { "required": ["githubRepository"] }
+                },
+                "required": ["runtimeCandidate"]
+              }
+            },
+            "required": ["data"]
+          },
+          "then": {
+            "properties": {
+              "edition": { "const": "Enterprise" },
+              "targetChannel": { "const": "stable" }
+            }
+          }
+        },
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "targetChannel": { "const": "pilot" },
+                "revision": { "minimum": 1, "maximum": 9 }
+              }
+            },
+            {
+              "properties": {
+                "targetChannel": { "const": "stable" },
+                "revision": { "minimum": 1, "maximum": 10 }
+              }
+            }
+          ]
+        },
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "revision": { "const": 1 },
+                "phase": { "const": "PLAN_ADMITTED" },
+                "data": { "$ref": "#/definitions/planData" }
+              }
+            },
+            {
+              "properties": {
+                "revision": { "const": 2 },
+                "phase": { "const": "CLIENT_SIGNING_REQUESTED" },
+                "data": { "$ref": "#/definitions/requestData" }
+              }
+            },
+            {
+              "properties": {
+                "revision": { "const": 3 },
+                "phase": { "const": "CLIENT_SIGNATURES_IMPORTED" },
+                "data": { "$ref": "#/definitions/importData" }
+              }
+            },
+            { "$ref": "#/definitions/externalReceipt4" },
+            { "$ref": "#/definitions/externalReceipt5" },
+            { "$ref": "#/definitions/externalReceipt6" },
+            { "$ref": "#/definitions/externalReceipt7" },
+            { "$ref": "#/definitions/externalReceipt8" },
+            { "$ref": "#/definitions/externalReceipt9" },
+            { "$ref": "#/definitions/externalReceipt10" }
+          ]
+        }
+      ]
+    },
+    "externalReceipt4": {
+      "oneOf": [
+        {
+          "properties": {
+            "targetChannel": { "const": "pilot" },
+            "revision": { "const": 4 },
+            "phase": { "const": "PILOT_MANIFEST_SIGNING_REQUESTED" },
+            "data": { "$ref": "#/definitions/manifestPublishingRequestData" }
+          }
+        },
+        {
+          "properties": {
+            "targetChannel": { "const": "stable" },
+            "revision": { "const": 4 },
+            "phase": { "const": "STABLE_MANIFEST_SIGNING_REQUESTED" },
+            "data": { "$ref": "#/definitions/manifestPublishingRequestData" }
+          }
+        }
+      ]
+    },
+    "externalReceipt5": {
+      "oneOf": [
+        {
+          "properties": {
+            "targetChannel": { "const": "pilot" },
+            "revision": { "const": 5 },
+            "phase": { "const": "PILOT_SIGNED_CANDIDATE_IMPORTED" },
+            "data": { "$ref": "#/definitions/signedCandidateImportData" }
+          }
+        },
+        {
+          "properties": {
+            "targetChannel": { "const": "stable" },
+            "revision": { "const": 5 },
+            "phase": { "const": "STABLE_SIGNED_CANDIDATE_IMPORTED" },
+            "data": { "$ref": "#/definitions/signedCandidateImportData" }
+          }
+        }
+      ]
+    },
+    "externalReceipt6": {
+      "oneOf": [
+        {
+          "properties": {
+            "edition": { "const": "Personal" },
+            "revision": { "const": 6 },
+            "phase": { "const": "INSTALLER_SIGNING_REQUESTED" },
+            "data": {
+              "allOf": [
+                { "$ref": "#/definitions/personalInstallerSigningRequestData" }
+              ]
+            }
+          }
+        },
+        {
+          "properties": {
+            "edition": { "const": "Enterprise" },
+            "revision": { "const": 6 },
+            "phase": { "const": "INSTALLER_SIGNING_REQUESTED" },
+            "data": { "$ref": "#/definitions/installerSigningRequestData" }
+          }
+        }
+      ]
+    },
+    "externalReceipt7": {
+      "oneOf": [
+        {
+          "properties": {
+            "edition": { "const": "Personal" },
+            "revision": { "const": 7 },
+            "phase": { "const": "INSTALLER_SIGNATURE_IMPORTED" },
+            "data": {
+              "allOf": [
+                { "$ref": "#/definitions/personalInstallerSignatureImportData" }
+              ]
+            }
+          }
+        },
+        {
+          "properties": {
+            "edition": { "const": "Enterprise" },
+            "revision": { "const": 7 },
+            "phase": { "const": "INSTALLER_SIGNATURE_IMPORTED" },
+            "data": { "$ref": "#/definitions/installerSignatureImportData" }
+          }
+        }
+      ]
+    },
+    "externalReceipt8": {
+      "oneOf": [
+        {
+          "properties": {
+            "targetChannel": { "const": "pilot" },
+            "revision": { "const": 8 },
+            "phase": { "const": "PILOT_PROMOTION_REQUESTED" },
+            "data": {
+              "allOf": [
+                { "$ref": "#/definitions/externalEvidenceData" },
+                { "properties": { "evidenceType": { "const": "PILOT_PROMOTION_REQUESTED" } } }
+              ]
+            }
+          }
+        },
+        {
+          "properties": {
+            "targetChannel": { "const": "stable" },
+            "revision": { "const": 8 },
+            "phase": { "const": "PILOT_EVIDENCE_BOUND" },
+            "data": {
+              "allOf": [
+                { "$ref": "#/definitions/externalEvidenceData" },
+                { "properties": { "evidenceType": { "const": "PILOT_EVIDENCE_BOUND" } } }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "externalReceipt9": {
+      "oneOf": [
+        {
+          "properties": {
+            "targetChannel": { "const": "pilot" },
+            "revision": { "const": 9 },
+            "phase": { "const": "PILOT_FEED_PROMOTED" },
+            "data": {
+              "allOf": [
+                { "$ref": "#/definitions/externalEvidenceData" },
+                { "properties": { "evidenceType": { "const": "PILOT_FEED_PROMOTED" } } }
+              ]
+            }
+          }
+        },
+        {
+          "properties": {
+            "targetChannel": { "const": "stable" },
+            "revision": { "const": 9 },
+            "phase": { "const": "STABLE_PROMOTION_REQUESTED" },
+            "data": {
+              "allOf": [
+                { "$ref": "#/definitions/externalEvidenceData" },
+                { "properties": { "evidenceType": { "const": "STABLE_PROMOTION_REQUESTED" } } }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "externalReceipt10": {
+      "properties": {
+        "targetChannel": { "const": "stable" },
+        "revision": { "const": 10 },
+        "phase": { "const": "STABLE_FEED_PROMOTED" },
+        "data": {
+          "allOf": [
+            { "$ref": "#/definitions/externalEvidenceData" },
+            { "properties": { "evidenceType": { "const": "STABLE_FEED_PROMOTED" } } }
+          ]
+        }
+      }
+    }
+  }
+}

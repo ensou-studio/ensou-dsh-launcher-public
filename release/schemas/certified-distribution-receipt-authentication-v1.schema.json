@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://updates.ensou.example/schemas/certified-distribution-receipt-authentication-v1.schema.json",
+  "title": "Ensou DSH certified distribution receipt authentication v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "authenticationType",
+    "product",
+    "releaseSetId",
+    "receiptSha256",
+    "signature"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "authenticationType": {
+      "const": "ensou-dsh-certified-distribution-receipt-authentication"
+    },
+    "product": {
+      "enum": ["ensou-dsh-personal", "ensou-dsh-enterprise"]
+    },
+    "releaseSetId": {
+      "type": "string",
+      "pattern": "^managed-v[0-9]{4}\\.[0-9]{2}\\.[0-9]{2}\\.[1-9][0-9]*$"
+    },
+    "receiptSha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "keyId", "value"],
+      "properties": {
+        "algorithm": { "const": "ES256" },
+        "keyId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{86}$"
+        }
+      }
+    }
+  }
+}

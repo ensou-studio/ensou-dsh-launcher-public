@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ensou.example/schemas/managed-plugin-organization-admission-receipt-v1.schema.json",
+  "title": "Managed plugin organization admission receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "receiptType", "decision", "reviewedAtUnixSeconds",
+    "compatibilityTestRunId", "policyId", "generation", "critical",
+    "pluginReleaseId", "archiveSha256", "archiveSizeBytes", "metadataSha256",
+    "metadataSizeBytes", "rawPolicySha256", "rawPolicySizeBytes",
+    "launcherReleaseId", "launcherArchiveSha256", "launcherArchiveSizeBytes",
+    "runtimeReleaseId", "runtimeArchiveSha256", "runtimeArchiveSizeBytes",
+    "runtimeSourceMetadataSha256", "harnessSourceTag",
+    "compatibilityReceiptSha256", "compatibilityReceiptSizeBytes",
+    "compatibilityObservedAtUtc", "promotionHandoffSha256",
+    "promotionHandoffSizeBytes", "reservationSha256", "reservationSizeBytes",
+    "generationLedgerNamespace", "generationLedgerPathSha256",
+    "generationLedgerSha256", "observedHighestPromotedGeneration", "signature"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "receiptType": { "const": "ensou-dsh-plugin-organization-admission" },
+    "decision": { "const": "admitted" },
+    "reviewedAtUnixSeconds": { "$ref": "#/$defs/positiveSafeInteger" },
+    "compatibilityTestRunId": { "$ref": "#/$defs/uuid" },
+    "policyId": { "$ref": "#/$defs/uuid" },
+    "generation": { "$ref": "#/$defs/positiveSafeInteger" },
+    "critical": { "type": "boolean" },
+    "pluginReleaseId": { "$ref": "#/$defs/releaseId" },
+    "archiveSha256": { "$ref": "#/$defs/sha256" },
+    "archiveSizeBytes": { "$ref": "#/$defs/positiveSafeInteger" },
+    "metadataSha256": { "$ref": "#/$defs/sha256" },
+    "metadataSizeBytes": { "$ref": "#/$defs/positiveSafeInteger" },
+    "rawPolicySha256": { "$ref": "#/$defs/sha256" },
+    "rawPolicySizeBytes": { "$ref": "#/$defs/positiveSafeInteger" },
+    "launcherReleaseId": { "$ref": "#/$defs/releaseId" },
+    "launcherArchiveSha256": { "$ref": "#/$defs/sha256" },
+    "launcherArchiveSizeBytes": { "$ref": "#/$defs/positiveSafeInteger" },
+    "runtimeReleaseId": { "$ref": "#/$defs/releaseId" },
+    "runtimeArchiveSha256": { "$ref": "#/$defs/sha256" },
+    "runtimeArchiveSizeBytes": { "$ref": "#/$defs/positiveSafeInteger" },
+    "runtimeSourceMetadataSha256": { "$ref": "#/$defs/sha256" },
+    "harnessSourceTag": { "const": "dsh-v0.1.2-rc.1" },
+    "compatibilityReceiptSha256": { "$ref": "#/$defs/sha256" },
+    "compatibilityReceiptSizeBytes": { "$ref": "#/$defs/positiveSafeInteger" },
+    "compatibilityObservedAtUtc": { "$ref": "#/$defs/wholeSecondUtc" },
+    "promotionHandoffSha256": { "$ref": "#/$defs/sha256" },
+    "promotionHandoffSizeBytes": { "$ref": "#/$defs/positiveSafeInteger" },
+    "reservationSha256": { "$ref": "#/$defs/sha256" },
+    "reservationSizeBytes": { "$ref": "#/$defs/positiveSafeInteger" },
+    "generationLedgerNamespace": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$"
+    },
+    "generationLedgerPathSha256": { "$ref": "#/$defs/sha256" },
+    "generationLedgerSha256": { "$ref": "#/$defs/sha256" },
+    "observedHighestPromotedGeneration": { "$ref": "#/$defs/nonNegativeSafeInteger" },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "keyId", "value"],
+      "properties": {
+        "algorithm": { "const": "ES256" },
+        "keyId": { "$ref": "#/$defs/token" },
+        "value": {
+          "type": "string",
+          "minLength": 86,
+          "maxLength": 86,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "wholeSecondUtc": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "nonNegativeSafeInteger": {
+      "type": "integer", "minimum": 0, "maximum": 9007199254740991
+    },
+    "positiveSafeInteger": {
+      "type": "integer", "minimum": 1, "maximum": 9007199254740991
+    },
+    "releaseId": {
+      "type": "string", "minLength": 1, "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$"
+    },
+    "token": {
+      "type": "string", "minLength": 1, "maxLength": 64,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    }
+  }
+}

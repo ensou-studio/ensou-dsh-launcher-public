@@ -1,0 +1,175 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ensou DSH Launcher production release plan v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "planType",
+    "orchestrationId",
+    "edition",
+    "releaseSetId",
+    "channel",
+    "sourceCommit",
+    "manifestUri",
+    "artifactBaseUri",
+    "runtimeCandidate",
+    "authenticodePolicy",
+    "externalResponseTrust",
+    "clientSigningInputs"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "planType": { "const": "ensou-dsh-launcher-production-release" },
+    "orchestrationId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "edition": { "enum": ["Personal", "Enterprise"] },
+    "releaseSetId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "channel": { "enum": ["pilot", "stable"] },
+    "sourceCommit": {
+      "type": "string",
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "manifestUri": {
+      "type": "string",
+      "minLength": 12,
+      "maxLength": 2048,
+      "pattern": "^https://"
+    },
+    "artifactBaseUri": {
+      "type": "string",
+      "minLength": 12,
+      "maxLength": 2048,
+      "pattern": "^https://"
+    },
+    "runtimeCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["releaseId", "githubReleaseTag", "archive", "metadata", "hashEvidence"],
+      "properties": {
+        "releaseId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "githubReleaseTag": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "archive": { "$ref": "#/definitions/inputFile" },
+        "metadata": { "$ref": "#/definitions/inputFile" },
+        "hashEvidence": { "$ref": "#/definitions/inputFile" }
+      }
+    },
+    "authenticodePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["signerSha256Thumbprint", "requireTrustedTimestamp", "maximumResponseAgeMinutes"],
+      "properties": {
+        "signerSha256Thumbprint": { "$ref": "#/definitions/sha256" },
+        "requireTrustedTimestamp": { "const": true },
+        "maximumResponseAgeMinutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1440
+        }
+      }
+    },
+    "externalResponseTrust": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "keyId", "x", "y"],
+      "properties": {
+        "algorithm": { "const": "ES256" },
+        "keyId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+        },
+        "x": { "$ref": "#/definitions/p256Coordinate" },
+        "y": { "$ref": "#/definitions/p256Coordinate" }
+      }
+    },
+    "clientSigningInputs": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "fileName", "path", "sizeBytes", "sha256", "peContentSha256"],
+        "properties": {
+          "role": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "fileName": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 255,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*\\.exe$"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 32767
+          },
+          "sizeBytes": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 536870912
+          },
+          "sha256": { "$ref": "#/definitions/sha256" },
+          "peContentSha256": { "$ref": "#/definitions/sha256" }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "p256Coordinate": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{43}$"
+    },
+    "inputFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fileName", "path", "sizeBytes", "sha256"],
+      "properties": {
+        "fileName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 32767
+        },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8589934592
+        },
+        "sha256": { "$ref": "#/definitions/sha256" }
+      }
+    }
+  }
+}

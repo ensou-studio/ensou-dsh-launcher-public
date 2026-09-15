@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0-windows7.0": {
+      "Microsoft.NET.ILLink.Tasks": {
+        "type": "Direct",
+        "requested": "[10.0.10, )",
+        "resolved": "10.0.10",
+        "contentHash": "f5VCIE7AJpd5YvzNTeMGVzQIgyE9tX+AreTYwQF+REbu+DZo/2Ae+jNSwhPEYrVz6RRkd7y8ubXjk6Nn6Ka+Cg=="
+      },
+      "ensou.dsh.contracts": {
+        "type": "Project"
+      },
+      "ensou.dsh.enterprise.installation": {
+        "type": "Project",
+        "dependencies": {
+          "Ensou.Dsh.Contracts": "[0.1.0-lab.1, )",
+          "Ensou.Dsh.Enterprise.ReleaseContracts": "[0.1.0-lab.1, )"
+        }
+      },
+      "ensou.dsh.enterprise.releasecontracts": {
+        "type": "Project"
+      }
+    },
+    "net10.0-windows7.0/win-x64": {}
+  }
+}

@@ -1,0 +1,265 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://updates.ensou.example/schemas/personal-lifecycle-evidence-receipt-v1.schema.json",
+  "title": "Ensou DSH Personal certified lifecycle evidence receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "receiptType",
+    "product",
+    "environment",
+    "channel",
+    "kind",
+    "testRunId",
+    "releaseSetId",
+    "generation",
+    "sequence",
+    "pilotManifestSha256",
+    "artifacts",
+    "completedAtUtc",
+    "updateChain",
+    "localDataWitness",
+    "requiredGates"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "receiptType": { "const": "ensou-dsh-personal-certified-lifecycle-evidence" },
+    "product": { "const": "ensou-dsh-personal" },
+    "environment": { "const": "production" },
+    "channel": { "const": "pilot" },
+    "kind": {
+      "enum": [
+        "clean-device-lifecycle",
+        "two-update-upgrade-lifecycle",
+        "failure-recovery-lifecycle"
+      ]
+    },
+    "testRunId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "releaseSetId": { "$ref": "#/$defs/releaseSetId" },
+    "generation": { "$ref": "#/$defs/safePositiveInteger" },
+    "sequence": { "$ref": "#/$defs/safePositiveInteger" },
+    "pilotManifestSha256": { "$ref": "#/$defs/sha256" },
+    "artifacts": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "prefixItems": [
+        {
+          "allOf": [
+            { "$ref": "#/$defs/artifact" },
+            { "properties": { "component": { "const": "client-bundle" } } }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/$defs/artifact" },
+            { "properties": { "component": { "const": "runtime" } } }
+          ]
+        }
+      ],
+      "items": false
+    },
+    "completedAtUtc": { "$ref": "#/$defs/utcTimestamp" },
+    "updateChain": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/updateHop" }
+    },
+    "localDataWitness": { "$ref": "#/$defs/localDataWitness" },
+    "requiredGates": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/gate" }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "kind": { "const": "clean-device-lifecycle" } } },
+      "then": {
+        "properties": {
+          "updateChain": { "maxItems": 0 },
+          "requiredGates": {
+            "minItems": 9,
+            "maxItems": 9,
+            "prefixItems": [
+              { "$ref": "#/$defs/gateCleanInstall" },
+              { "$ref": "#/$defs/gateLauncherSelfUpdate" },
+              { "$ref": "#/$defs/gateActualRuntimeStart" },
+              { "$ref": "#/$defs/gateWebUiOpen" },
+              { "$ref": "#/$defs/gateClientRestart" },
+              { "$ref": "#/$defs/gateRepairOffline" },
+              { "$ref": "#/$defs/gateHistoryPreservation" },
+              { "$ref": "#/$defs/gateWorkspacePreservation" },
+              { "$ref": "#/$defs/gatePilotSoak" }
+            ],
+            "items": false
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "kind": { "const": "two-update-upgrade-lifecycle" } } },
+      "then": {
+        "properties": {
+          "updateChain": { "minItems": 2, "maxItems": 2 },
+          "requiredGates": {
+            "minItems": 7,
+            "maxItems": 7,
+            "prefixItems": [
+              { "$ref": "#/$defs/gateOldInstallUpgrade" },
+              { "$ref": "#/$defs/gateLauncherSelfUpdate" },
+              { "$ref": "#/$defs/gateSecondConsecutiveUpdate" },
+              { "$ref": "#/$defs/gateActualRuntimeStart" },
+              { "$ref": "#/$defs/gateClientRestart" },
+              { "$ref": "#/$defs/gateHistoryPreservation" },
+              { "$ref": "#/$defs/gateWorkspacePreservation" }
+            ],
+            "items": false
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "kind": { "const": "failure-recovery-lifecycle" } } },
+      "then": {
+        "properties": {
+          "updateChain": { "maxItems": 0 },
+          "requiredGates": {
+            "minItems": 8,
+            "maxItems": 8,
+            "prefixItems": [
+              { "$ref": "#/$defs/gateWholeHomeRestore" },
+              { "$ref": "#/$defs/gatePreviousRuntimeRestart" },
+              { "$ref": "#/$defs/gateInterruptionMatrix" },
+              { "$ref": "#/$defs/gateWeakNetworkResume" },
+              { "$ref": "#/$defs/gateOfflineReplayMatrix" },
+              { "$ref": "#/$defs/gateRepairOffline" },
+              { "$ref": "#/$defs/gateHistoryPreservation" },
+              { "$ref": "#/$defs/gateWorkspacePreservation" }
+            ],
+            "items": false
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "releaseSetId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"
+    },
+    "safePositiveInteger": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "utcTimestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[.][0-9]{7}Z$"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component",
+        "releaseId",
+        "fileName",
+        "sizeBytes",
+        "sha256",
+        "completeTreeSha256"
+      ],
+      "properties": {
+        "component": { "enum": ["client-bundle", "runtime"] },
+        "releaseId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "fileName": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,254}$"
+        },
+        "sizeBytes": { "$ref": "#/$defs/safePositiveInteger" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "completeTreeSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "releaseIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["releaseSetId", "generation", "sequence", "manifestSha256"],
+      "properties": {
+        "releaseSetId": { "$ref": "#/$defs/releaseSetId" },
+        "generation": { "$ref": "#/$defs/safePositiveInteger" },
+        "sequence": { "$ref": "#/$defs/safePositiveInteger" },
+        "manifestSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "updateHop": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": { "$ref": "#/$defs/releaseIdentity" },
+        "to": { "$ref": "#/$defs/releaseIdentity" }
+      }
+    },
+    "localDataWitness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "historyBeforeSha256",
+        "historyAfterSha256",
+        "workspaceBeforeSha256",
+        "workspaceAfterSha256"
+      ],
+      "properties": {
+        "historyBeforeSha256": { "$ref": "#/$defs/sha256" },
+        "historyAfterSha256": { "$ref": "#/$defs/sha256" },
+        "workspaceBeforeSha256": { "$ref": "#/$defs/sha256" },
+        "workspaceAfterSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "gate",
+        "status",
+        "evidenceSha256",
+        "observedProcessRole",
+        "observedProcessState",
+        "observedProcessExecutableSha256",
+        "networkMode",
+        "localDataWitnessSha256"
+      ],
+      "properties": {
+        "gate": { "type": "string" },
+        "status": { "const": "PASS" },
+        "evidenceSha256": { "$ref": "#/$defs/sha256" },
+        "observedProcessRole": {
+          "enum": ["launcher", "runtime", "previous-runtime", "maintenance", "test-runner"]
+        },
+        "observedProcessState": { "enum": ["completed", "started-and-healthy"] },
+        "observedProcessExecutableSha256": { "$ref": "#/$defs/sha256" },
+        "networkMode": { "enum": ["controlled", "offline"] },
+        "localDataWitnessSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "gateCleanInstall": { "allOf": [{ "$ref": "#/$defs/gate" }, { "properties": { "gate": { "const": "clean-install" } } }] },
+    "gateLauncherSelfUpdate": { "allOf": [{ "$ref": "#/$defs/gate" }, { "properties": { "gate": { "const": "launcher-self-update" } } }] },
+    "gateActualRuntimeStart": { "allOf": [{ "$ref": "#/$defs/gate" }, { "properties": { "gate": { "const": "actual-runtime-start" } } }] },
+    "gateWebUiOpen": { "allOf": [{ "$ref": "#/$defs/gate" }, { "properties": { "gate": { "const": "webui-open" } } }] },
+    "gateClientRestart": { "allOf": [{ "$ref": "#/$defs/gate" }, { "properties": { "gate": { "const": "client-restart" } } }] },
+    "gateRepairOffline": { "allOf": [{ "$ref": "#/$defs/gate" }, { "properties": { "gate": { "const": "repair-offline" }, "observedProcessRole": { "const": "maintenance" }, "observedProcessState": { "const": "completed" }, "networkMode": { "const": "offline" } } }] },
+    "gateHistoryPreservation": { "allOf": [{ "$ref": "#/$defs/gate" }, { "properties": { "gate": { "const": "history-preservation" } } }] },
+    "gateWorkspacePreservation": { "allOf": [{ "$ref": "#/$defs/gate" }, { "properties": { "gate": { "const": "workspace-preservation" } } }] },
+    "gatePilotSoak": { "allOf": [{ "$ref": "#/$defs/gate" }, { "properties": { "gate": { "const": "pilot-soak" } } }] },
+    "gateOldInstallUpgrade": { "allOf": [{ "$ref": "#/$defs/gate" }, { "properties": { "gate": { "const": "old-install-upgrade" } } }] },
+    "gateSecondConsecutiveUpdate": { "allOf": [{ "$ref": "#/$defs/gate" }, { "properties": { "gate": { "const": "second-consecutive-update" } } }] },
+    "gateWholeHomeRestore": { "allOf": [{ "$ref": "#/$defs/gate" }, { "properties": { "gate": { "const": "whole-home-restore" } } }] },
+    "gatePreviousRuntimeRestart": { "allOf": [{ "$ref": "#/$defs/gate" }, { "properties": { "gate": { "const": "previous-runtime-restart" }, "observedProcessRole": { "const": "previous-runtime" }, "observedProcessState": { "const": "started-and-healthy" } } }] },
+    "gateInterruptionMatrix": { "allOf": [{ "$ref": "#/$defs/gate" }, { "properties": { "gate": { "const": "interruption-matrix" } } }] },
+    "gateWeakNetworkResume": { "allOf": [{ "$ref": "#/$defs/gate" }, { "properties": { "gate": { "const": "weak-network-resume" } } }] },
+    "gateOfflineReplayMatrix": { "allOf": [{ "$ref": "#/$defs/gate" }, { "properties": { "gate": { "const": "offline-replay-matrix" }, "networkMode": { "const": "offline" } } }] }
+  }
+}

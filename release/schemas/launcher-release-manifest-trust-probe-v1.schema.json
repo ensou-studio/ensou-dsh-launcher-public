@@ -1,0 +1,134 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ensou DSH Launcher release-manifest trust probe v1",
+  "oneOf": [
+    { "$ref": "#/definitions/personalProbe" },
+    { "$ref": "#/definitions/enterpriseProbe" }
+  ],
+  "definitions": {
+    "sha256Lower": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "sha256Upper": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9A-F]{64}$"
+    },
+    "token": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^(?![\\s\\S]*\\p{Cc})[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "p256Coordinate": {
+      "type": "string",
+      "minLength": 43,
+      "maxLength": 43,
+      "pattern": "^[A-Za-z0-9_-]{43}$"
+    },
+    "httpsUri": {
+      "type": "string",
+      "minLength": 12,
+      "maxLength": 2048,
+      "pattern": "^(?![\\s\\S]*\\p{Cc})https://[\\s\\S]+$"
+    },
+    "releaseManifestTrust": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "purpose", "keyId", "x", "y"],
+      "properties": {
+        "algorithm": { "const": "ES256" },
+        "purpose": { "const": "release-manifest-signing" },
+        "keyId": { "$ref": "#/definitions/token" },
+        "x": { "$ref": "#/definitions/p256Coordinate" },
+        "y": { "$ref": "#/definitions/p256Coordinate" }
+      }
+    },
+    "personalProbe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "productionBuild",
+        "manifestOrigin",
+        "artifactOrigin",
+        "product",
+        "environment",
+        "channel",
+        "startupStubVersion",
+        "releaseKeyId",
+        "releaseKeyX",
+        "releaseKeyY",
+        "canonicalLowSFromSequence",
+        "authenticodeSignerSha256Thumbprint"
+      ],
+      "properties": {
+        "schemaVersion": { "const": 2 },
+        "productionBuild": { "const": true },
+        "manifestOrigin": { "$ref": "#/definitions/httpsUri" },
+        "artifactOrigin": { "$ref": "#/definitions/httpsUri" },
+        "product": { "const": "ensou-dsh-personal" },
+        "environment": { "const": "production" },
+        "channel": { "enum": ["pilot", "stable"] },
+        "startupStubVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^(?![\\s\\S]*\\p{Cc})[0-9]+(?:\\.[0-9]+){1,3}(?:[-+][A-Za-z0-9.-]+)?$"
+        },
+        "releaseKeyId": { "$ref": "#/definitions/token" },
+        "releaseKeyX": { "$ref": "#/definitions/p256Coordinate" },
+        "releaseKeyY": { "$ref": "#/definitions/p256Coordinate" },
+        "canonicalLowSFromSequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "authenticodeSignerSha256Thumbprint": { "$ref": "#/definitions/sha256Upper" }
+      }
+    },
+    "enterpriseProbe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "probeType",
+        "edition",
+        "product",
+        "environment",
+        "channel",
+        "manifestUri",
+        "manifestOrigin",
+        "artifactOrigin",
+        "authenticodeSignerSha256Thumbprint",
+        "releaseManifestTrust",
+        "releaseCompatibility"
+      ],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "probeType": { "const": "ensou-dsh-enterprise-release-manifest-trust-probe-v1" },
+        "edition": { "const": "Enterprise" },
+        "product": { "const": "ensou-dsh-enterprise" },
+        "environment": { "const": "production" },
+        "channel": { "const": "stable" },
+        "manifestUri": { "$ref": "#/definitions/httpsUri" },
+        "manifestOrigin": { "$ref": "#/definitions/httpsUri" },
+        "artifactOrigin": { "$ref": "#/definitions/httpsUri" },
+        "authenticodeSignerSha256Thumbprint": { "$ref": "#/definitions/sha256Lower" },
+        "releaseManifestTrust": { "$ref": "#/definitions/releaseManifestTrust" },
+        "releaseCompatibility": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["startupStubProtocol"],
+          "properties": {
+            "startupStubProtocol": { "const": 1 }
+          }
+        }
+      }
+    }
+  }
+}

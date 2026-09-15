@@ -1,0 +1,288 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ensou.example/schemas/dsh/source-runtime-metadata.schema.json",
+  "title": "Ensou source-built DSH runtime metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "releaseId",
+    "promotionEligible",
+    "artifactType",
+    "sourceBuilt",
+    "platform",
+    "sourceIdentity",
+    "sourceRepository",
+    "sourceTag",
+    "sourceCommit",
+    "sourceTree",
+    "dshVersion",
+    "baseLockfileSha256",
+    "lockfileSha256",
+    "runtimeWebAuthProtocol",
+    "managedPatch",
+    "managedPolicy",
+    "builtAtUtc",
+    "toolchain",
+    "verification",
+    "artifact",
+    "licensing"
+  ],
+  "oneOf": [
+    {
+      "properties": {
+        "promotionEligible": { "const": true },
+        "releaseId": {
+          "pattern": "^managed-v[0-9]{4}\\.[0-9]{2}\\.[0-9]{2}\\.[1-9][0-9]*$"
+        }
+      }
+    },
+    {
+      "properties": {
+        "promotionEligible": { "const": false },
+        "releaseId": {
+          "pattern": "^lab-[A-Za-z0-9][A-Za-z0-9._-]{0,123}$"
+        }
+      }
+    }
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 2
+    },
+    "releaseId": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^(?:managed-v[0-9]{4}\\.[0-9]{2}\\.[0-9]{2}\\.[1-9][0-9]*|lab-[A-Za-z0-9][A-Za-z0-9._-]{0,123})$"
+    },
+    "promotionEligible": { "type": "boolean" },
+    "artifactType": {
+      "const": "ensou-dsh-enterprise-managed-source-runtime"
+    },
+    "sourceBuilt": {
+      "const": true
+    },
+    "platform": {
+      "const": "win32-x64"
+    },
+    "sourceIdentity": {
+      "const": "github-https-tag-plus-ensou-managed-patch"
+    },
+    "sourceRepository": {
+      "const": "https://github.com/deepseek-ai/deepseek-harness.git"
+    },
+    "sourceTag": {
+      "const": "dsh-v0.1.2-rc.1"
+    },
+    "sourceCommit": {
+      "const": "a66e4702047846cdaa10c66c9d3df3951f5ea70d"
+    },
+    "sourceTree": {
+      "const": "27ab636bb3d77e698f5637e518db44ae1f61e262"
+    },
+    "dshVersion": {
+      "const": "0.1.2-rc.1"
+    },
+    "baseLockfileSha256": {
+      "const": "e12083149a77f790d39b64d018b6b8745c6a7aa95777ecb73e0a2f5ed5fdd0d9"
+    },
+    "lockfileSha256": {
+      "const": "0cc4aba6915e0221cf65f806c5ab932849137d5aa4f8f8d129afd6501b8bef7f"
+    },
+    "runtimeWebAuthProtocol": {
+      "const": "browser-launch-cookie-v1"
+    },
+    "managedPatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "manifestSchema", "manifestSha256", "patchSha256",
+        "patchBytes", "changedFileCount", "modifiedPreimageCount"
+      ],
+      "properties": {
+        "id": { "const": "dsh-v0.1.2-rc.1-enterprise-managed-v1" },
+        "manifestSchema": { "const": "ensou.dsh.upstream-patch-manifest.v3" },
+        "manifestSha256": { "const": "6e420ee233436fe5ce4974d630142320ca039297ccc9c3261a87e512332994e5" },
+        "patchSha256": { "const": "c5945fb046e4cb3d7897c99dc9f68404bcd5ab3352a322ce9063ae4d00723518" },
+        "patchBytes": { "const": 252249 },
+        "changedFileCount": { "const": 43 },
+        "modifiedPreimageCount": { "const": 35 }
+      }
+    },
+    "managedPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "signal", "profile", "webArguments", "model", "maxTokens",
+        "gatewayAllowedModel", "gatewayMaxTokens", "managedSkillsRootEnvironment", "sandboxMode",
+        "sandboxMaximumMode", "approvalPolicy", "permissionPresets",
+        "workspaceRootSource", "restoredSessionCwdPolicy", "hostCompositionCanonicalSha256",
+        "presetCompositionCanonicalSha256", "presetMetadataCanonicalSha256",
+        "loaderRootCanonicalSha256", "pluginResolutionPolicy"
+      ],
+      "properties": {
+        "signal": { "const": "DSH_ENTERPRISE_MANAGED_BOOT=ensou-dsh-launcher/v1" },
+        "profile": { "const": "enterprise-managed" },
+        "webArguments": { "const": "--host 127.0.0.1 --port <canonical 1..65535>" },
+        "model": { "const": "deepseek-v4-flash" },
+        "maxTokens": { "const": 8192 },
+        "gatewayAllowedModel": { "const": "deepseek-v4-flash" },
+        "gatewayMaxTokens": { "const": 8192 },
+        "managedSkillsRootEnvironment": { "const": "ENSOU_DSH_ENTERPRISE_SKILLS_ROOT" },
+        "sandboxMode": { "const": "workspace-write" },
+        "sandboxMaximumMode": { "const": "workspace-write" },
+        "approvalPolicy": { "const": "ask" },
+        "permissionPresets": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": { "const": "workspace-write" }
+        },
+        "workspaceRootSource": { "const": "process.cwd()" },
+        "restoredSessionCwdPolicy": { "const": "must-equal-workspace-root" },
+        "hostCompositionCanonicalSha256": { "const": "fff23b1e6602c2125408f4ce609662d301c5a3633ef5acaf9a14edfa918a6efb" },
+        "presetCompositionCanonicalSha256": { "const": "22044243781ab948f0c649843181835ab2b0b676246583ef675db4ad0f51b3b9" },
+        "presetMetadataCanonicalSha256": { "const": "4cb4661afe8d79f3687d1c58b401a2c072131dfd83a4c7389cec9e948f3d5eea" },
+        "loaderRootCanonicalSha256": { "const": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945" },
+        "pluginResolutionPolicy": { "const": "frozen exact installation map from managed base/web bundles; no ambient fallback" }
+      }
+    },
+    "builtAtUtc": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "toolchain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nodeVersion", "nodeSha256", "pnpmVersion", "npmVersion"],
+      "properties": {
+        "nodeVersion": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "nodeSha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "pnpmVersion": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "npmVersion": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cleanCheckout",
+        "tagCommitMatch",
+        "remoteTagCommitMatch",
+        "tagSignatureVerified",
+        "officialCheckoutUnchanged",
+        "patchManifestValidated",
+        "patchPreimagesVerified",
+        "patchApplyCheck",
+        "patchPostimagesVerified",
+        "frozenLockfileInstall",
+        "managedFocusedTests",
+        "managedWindowsExcludedFocusedTests",
+        "managedChangedPackageTypeBuild",
+        "managedCliBundle",
+        "managedSourceGates",
+        "sourceBuild",
+        "builtPackageInvariants",
+        "deploymentMode",
+        "runtimeClosureAgainstPinnedSourceAndLock",
+        "runtimeClosurePackageCount",
+        "portableCommandShimGate",
+        "symlinkFreeRuntime",
+        "bundledNodeVersionSmoke",
+        "nativeModuleSmoke",
+        "webProfileDumpSmoke",
+        "webHttpSmoke",
+        "managedExactEnvironmentSmoke",
+        "managedWorkspaceCwdSmoke",
+        "managedRefusalSmoke",
+        "extractedArtifactHashManifestVerified",
+        "extractedArtifactSmoke",
+        "buildToolingExcluded",
+        "webSmokeUrl",
+        "externalNetworkIsolation"
+      ],
+      "properties": {
+        "cleanCheckout": { "const": true },
+        "tagCommitMatch": { "const": true },
+        "remoteTagCommitMatch": { "const": true },
+        "tagSignatureVerified": { "const": false },
+        "officialCheckoutUnchanged": { "const": true },
+        "patchManifestValidated": { "const": true },
+        "patchPreimagesVerified": { "const": true },
+        "patchApplyCheck": { "const": true },
+        "patchPostimagesVerified": { "const": true },
+        "frozenLockfileInstall": { "const": true },
+        "managedFocusedTests": { "const": true },
+        "managedWindowsExcludedFocusedTests": { "const": true },
+        "managedChangedPackageTypeBuild": { "const": true },
+        "managedCliBundle": { "const": true },
+        "managedSourceGates": { "const": true },
+        "sourceBuild": { "const": "pnpm run build (reviewed managed patch applied)" },
+        "builtPackageInvariants": { "const": true },
+        "deploymentMode": { "const": "pnpm-dedicated-lockfile-offline-deploy" },
+        "runtimeClosureAgainstPinnedSourceAndLock": { "const": true },
+        "runtimeClosurePackageCount": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "portableCommandShimGate": { "const": true },
+        "symlinkFreeRuntime": { "const": true },
+        "bundledNodeVersionSmoke": { "const": true },
+        "nativeModuleSmoke": {
+          "const": ["node-pty", "koffi"]
+        },
+        "webProfileDumpSmoke": { "const": true },
+        "webHttpSmoke": { "const": true },
+        "managedExactEnvironmentSmoke": { "const": true },
+        "managedWorkspaceCwdSmoke": { "const": true },
+        "managedRefusalSmoke": { "const": true },
+        "extractedArtifactHashManifestVerified": { "const": true },
+        "extractedArtifactSmoke": { "const": true },
+        "buildToolingExcluded": { "const": true },
+        "webSmokeUrl": { "const": "http://127.0.0.1:<ephemeral-port>/" },
+        "externalNetworkIsolation": { "const": false }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fileName", "sizeBytes", "sha256"],
+      "properties": {
+        "fileName": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*\\.zip$"
+        },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "licensing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["harnessLicense", "noticesIncluded", "organizationReviewRequired"],
+      "properties": {
+        "harnessLicense": { "const": "MIT" },
+        "noticesIncluded": { "const": true },
+        "organizationReviewRequired": { "const": true }
+      }
+    }
+  }
+}
